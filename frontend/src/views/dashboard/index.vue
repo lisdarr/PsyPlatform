@@ -1,23 +1,57 @@
 <template>
   <div class="dashboard-container">
-   <!--    <div class="dashboard-text">name: {{ name }}</div>-->
+    <!--    <div class="dashboard-text">name: {{ name }}</div>-->
     <el-row style="height: 550px" :gutter="20">
       <el-col :span="15">
         <el-row style="width: 750px; height: 250px">
           <el-card class="box-card" style="width: auto">
-
+            <div style="width: 70%; float: left;">
+              <div style="float: left;">
+                <el-avatar shape="square" :size="200" :src="squareUrl" />
+              </div>
+              <div style="margin-left: 220px">
+                <div style="margin-bottom: 30%; font-size: 20px; font-weight: bold">咨询师</div>
+                <div style="font-size: 20px; margin-bottom: 10%">我的综合评价</div>
+                <div>
+                  <el-rate v-model="value" disabled show-score text-color="#ff9900" score-template="{value}" />
+                </div>
+              </div>
+            </div>
+            <div style="margin-left: 70%; background-color: #304156; height: 200px">
+              <div style="text-align: center; color: white; padding-top: 30%; font-size: 20px">累积完成咨询</div>
+              <div style="text-align: center; color: white; padding-top: 10%; font-size: 50px">{{ consultNum }}</div>
+            </div>
           </el-card>
         </el-row>
-        <el-row  style="width: 750px; height: 250px">
+        <el-row style="width: 750px; height: 250px">
           <el-card class="box-card" style="width: auto">
-
+            <div style="display: flex; justify-content: space-around">
+              <div style="text-align: center; padding-top: 5%">
+                <div style="font-size: 20px; color: #304156; font-weight: bold">今日咨询数</div>
+                <div style="padding-top: 20px; font-size: 60px">{{ consultTodayNum }}</div>
+              </div>
+              <div>
+                <el-divider direction="vertical" style="height: 250px" />
+              </div>
+              <div style="text-align: center;  padding-top: 5%">
+                <div style="font-size: 20px; color: #304156; font-weight: bold">今日咨询时长</div>
+                <div style="padding-top: 20px; font-size: 60px">{{ consultTodayTimeHour }}:{{ consultTodayTimeMinute }}:{{ consultTodayTimeSecond }}</div>
+              </div>
+              <div>
+                <el-divider direction="vertical" style="height: 250px" />
+              </div>
+              <div style="text-align: center;  padding-top: 5%">
+                <div style="font-size: 20px; color: #304156; font-weight: bold">当前会话数</div>
+                <div style="padding-top: 20px; font-size: 60px">{{ callNum }}</div>
+              </div>
+            </div>
           </el-card>
         </el-row>
       </el-col>
+      <!--        值班日历部分 -->
       <el-col :span="9" style="height: 520px;">
-        <el-card class="box-card" style="width: auto; height: 520px" >
-          日历
-          <a-calendar :fullscreen="false" @panelChange="onPanelChange" />
+        <el-card class="box-card" style="width: auto; height: 520px">
+          <Calendar v-model="value" />
         </el-card>
       </el-col>
     </el-row>
@@ -25,75 +59,31 @@
       <!--        data:数组类型-->
       <el-col>
         <el-card style="width: auto;">
-          <el-table
-            :data="tableData">
-            <el-table-column
-              label="咨询人"
-              width="100">
-              <template slot-scope="scope">
-                <i class="el-icon-time"></i>
-                <span style="margin-left: 10px">{{ scope.row.date }}</span>
+          <div style="width: 100%; text-align: justify">
+            <div style="display: inline-block; color: #304156; float: left; margin-left: 10px; font-size: 18px; font-weight: bold">
+              最近完成的咨询
+              <el-divider />
+            </div>
+            <div style="display: inline-block; float: right; font-size: 18px;">
+              查看全部
+            </div>
+          </div>
+          <el-table :data="tableData" style="width: 100%">
+            <el-table-column prop="name" label="咨询人" width="180" />
+            <el-table-column prop="time" label="咨询时长" width="180" />
+            <el-table-column prop="date" label="咨询日期" width="180" />
+            <el-table-column prop="rate" label="咨询评级" width="180">
+              <template slot-scope="scope" >
+                <el-rate v-model="scope.row.rate" :allow-half="true"  disabled text-color="#ff9900"></el-rate>
               </template>
             </el-table-column>
-            <el-table-column
-              label="咨询时长"
-              width="180">
-              <template slot-scope="scope">
-                <el-popover trigger="hover" placement="top">
-                  <p>姓名: {{ scope.row.name }}</p>
-                  <p>住址: {{ scope.row.address }}</p>
-                  <div slot="reference" class="name-wrapper">
-                    <el-tag size="medium">{{ scope.row.name }}</el-tag>
-                  </div>
-                </el-popover>
-              </template>
-            </el-table-column>
-            <el-table-column
-              label="咨询日期"
-              width="180">
-              <template slot-scope="scope">
-                <i class="el-icon-time"></i>
-                <span style="margin-left: 10px">{{ scope.row.date }}</span>
-              </template>
-            </el-table-column>
-            <el-table-column
-              label="咨询评级"
-              width="180">
-              <template slot-scope="scope">
-                <el-popover trigger="hover" placement="top">
-                  <p>姓名: {{ scope.row.name }}</p>
-                  <p>住址: {{ scope.row.address }}</p>
-                  <div slot="reference" class="name-wrapper">
-                    <el-tag size="medium">{{ scope.row.name }}</el-tag>
-                  </div>
-                </el-popover>
-              </template>
-            </el-table-column>
-            <el-table-column
-              label="咨询评价"
-              width="180">
-              <template slot-scope="scope">
-                <el-popover trigger="hover" placement="top">
-                  <p>姓名: {{ scope.row.name }}</p>
-                  <p>住址: {{ scope.row.address }}</p>
-                  <div slot="reference" class="name-wrapper">
-                    <el-tag size="medium">{{ scope.row.name }}</el-tag>
-                  </div>
-                </el-popover>
-              </template>
-            </el-table-column>
-            <el-table-column label="操作">
-              <template slot-scope="scope">
-                <el-button
-                  size="mini"
-                  @click="handleEdit(scope.$index, scope.row)">编辑</el-button>
-                <el-button
-                  size="mini"
-                  type="danger"
-                  @click="handleDelete(scope.$index, scope.row)">删除</el-button>
-              </template>
+            <el-table-column prop="comment" label="咨询评价" width="180" />
+            <el-table-column label="操作" width="300">
+              <el-button size="mini" type="primary">查看详情</el-button>
+              <el-button size="mini" type="success">导出记录</el-button>
             </el-table-column>
           </el-table>
+
         </el-card>
       </el-col>
     </el-row>
@@ -102,6 +92,7 @@
 
 <script>
 import { mapGetters } from 'vuex'
+import Calendar from '@/components/Calendar'
 
 // export default {
 //   name: 'Dashboard',
@@ -115,43 +106,42 @@ import { mapGetters } from 'vuex'
 // 表格-element ui自定义列模板
 export default {
   name: 'Dashboard',
+  components: { Calendar },
+  data() {
+    return {
+      tableData: [{
+        name: '王小虎',
+        time: '00:12:54',
+        date: '2016-05-02',
+        rate: 3.7,
+        comment: '很好的咨询师！'
+      }],
+      // value: new Date()
+      squareUrl: 'https://cube.elemecdn.com/9/c2/f0ee8a3c7c9638a54940382568c9dpng.png',
+      value: 3.7,
+      consultNum: 12345,
+      consultTodayNum: 35,
+      consultTodayTimeHour: 6,
+      consultTodayTimeMinute: 32,
+      consultTodayTimeSecond: 24,
+      callNum: 2
+    }
+  },
   computed: {
     ...mapGetters([
       'name'
     ])
   },
-  data() {
-    return {
-      tableData: [{
-        date: '2016-05-02',
-        name: '王小虎',
-        address: '上海市普陀区金沙江路 1518 弄'
-      }, {
-        date: '2016-05-04',
-        name: '王小虎',
-        address: '上海市普陀区金沙江路 1517 弄'
-      }, {
-        date: '2016-05-01',
-        name: '王小虎',
-        address: '上海市普陀区金沙江路 1519 弄'
-      }, {
-        date: '2016-05-03',
-        name: '王小虎',
-        address: '上海市普陀区金沙江路 1516 弄'
-      }],
-      // value: new Date()
-    }
-  },
   methods: {
     handleEdit(index, row) {
-      console.log(index, row);
+      console.log(index, row)
     },
     handleDelete(index, row) {
-      console.log(index, row);
+      console.log(index, row)
     },
     onPanelChange(value, mode) {
-      console.log(value, mode);
-    },
+      console.log(value, mode)
+    }
   }
 }
 </script>
@@ -178,5 +168,13 @@ export default {
 }
 .el-col {
   border-radius: 4px;
+}
+.el-divider--vertical {
+  display: inline-block;
+  width: 1px;
+  height: 210px;
+  margin: 0 8px;
+  vertical-align: middle;
+  position: absolute;
 }
 </style>

@@ -226,7 +226,7 @@ $light_gray:#eee;
     position: relative;
 
     .title {
-      font-size: 26px;
+      font-size: 40px;
       color: $light_gray;
       margin: 0px auto 40px auto;
       text-align: center;
