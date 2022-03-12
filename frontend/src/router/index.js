@@ -46,7 +46,7 @@ export const constantRoutes = [
   {
     path: '/',
     component: Layout,
-    redirect: '/dashboard',
+    // redirect: '/dashboard',
     children: [{
       path: 'dashboard',
       name: 'Dashboard',
@@ -59,8 +59,13 @@ export const constantRoutes = [
   {
     path: '/record',
     component: Layout,
-    name: 'Record',
-    meta: { title: '咨询记录', icon: 'el-icon-document' },
+    children: [{
+      path: 'record',
+      component: () => import('@/views/record/index'),
+      name: 'Record',
+      // title设置sidebar标题
+      meta: { title: '咨询记录', icon: 'el-icon-document' }
+    }]
   },
 
   // 404 page must be placed at the end !!!

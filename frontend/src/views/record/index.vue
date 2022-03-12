@@ -1,10 +1,191 @@
 <template>
-  <div>咨询记录</div>
+  <div>
+    <div style="display: inline">
+      <div style="width: 300px;float: left;margin-top: 20px;margin-left: 20px">
+        <div style="color: #304156; font-size: 15px; margin-bottom: 10px">搜索姓名：</div>
+        <el-input v-model="inputValue" style="width: 200px" type="text" label="搜索" placeholder="请输入姓名进行搜索" />
+      </div>
+      <div style="width: 300px;float: left;margin-top: 20px;margin-left: 20px">
+        <div style="color: #304156; font-size: 15px; margin-bottom: 10px">选择日期：</div>
+        <el-date-picker v-model="dataValue" type="daterange" range-separator="至" start-placeholder="开始日期" end-placeholder="结束日期" value-format="yyyy-MM-dd" />
+      </div>
+    </div>
+    <el-table :data="tableData.slice((currentPage-1)*pageSize, currentPage*pageSize)" style="width: 100%; margin-left: 12px; padding-top: 15px">
+      <el-table-column prop="name" label="咨询人" width="180" />
+      <el-table-column prop="time" label="咨询时长" width="180" />
+      <el-table-column prop="date" label="咨询日期" width="180" sortable />
+      <el-table-column prop="rate" label="咨询评级" width="180">
+        <template slot-scope="scope">
+          <el-rate v-model="scope.row.rate" :allow-half="true" disabled text-color="#ff9900" />
+        </template>
+      </el-table-column>
+      <el-table-column prop="comment" label="咨询评价" width="380" />
+      <el-table-column label="操作" width="300">
+        <el-button size="mini" type="primary">查看详情</el-button>
+        <el-button size="mini" type="success">导出记录</el-button>
+      </el-table-column>
+    </el-table>
+    <el-pagination
+      style="float: right;margin-top: 20px"
+      :current-page.sync="currentPage"
+      :page-sizes="[10, 20, 30, 40]"
+      :page-size="pageSize"
+      :total="totalSize"
+      layout="total, jumper, sizes, prev, pager, next"
+      @size-change="handleSizeChange"
+      @current-change="handleCurrentChange"
+    />
+  </div>
 </template>
 
 <script>
 export default {
-  name: "records"
+  name: 'Record',
+  data() {
+    return {
+      tableData: [
+        {
+          name: '王小虎',
+          time: '00:12:54',
+          date: '2016-05-02',
+          rate: 3.7,
+          comment: '很好的咨询师！'
+        },
+        {
+          name: '王小红',
+          time: '00:12:54',
+          date: '2016-05-02',
+          rate: 3.7,
+          comment: '很好的咨询师！'
+        },
+        {
+          name: '王小虎',
+          time: '00:12:54',
+          date: '2016-05-02',
+          rate: 3.7,
+          comment: '很好的咨询师！'
+        },
+        {
+          name: '王小虎',
+          time: '00:12:54',
+          date: '2016-05-02',
+          rate: 3.7,
+          comment: '很好的咨询师！'
+        },
+        {
+          name: '王小虎',
+          time: '00:12:54',
+          date: '2016-05-02',
+          rate: 3.7,
+          comment: '很好的咨询师！'
+        },
+        {
+          name: '王小虎',
+          time: '00:12:54',
+          date: '2016-05-02',
+          rate: 3.7,
+          comment: '很好的咨询师！'
+        },
+        {
+          name: '王小虎',
+          time: '00:12:54',
+          date: '2016-05-02',
+          rate: 3.7,
+          comment: '很好的咨询师！'
+        },
+        {
+          name: '王小虎',
+          time: '00:12:54',
+          date: '2016-05-02',
+          rate: 3.7,
+          comment: '很好的咨询师！'
+        },
+        {
+          name: '王小虎',
+          time: '00:12:54',
+          date: '2016-05-02',
+          rate: 3.7,
+          comment: '很好的咨询师！'
+        },
+        {
+          name: '王小虎',
+          time: '00:12:54',
+          date: '2016-05-02',
+          rate: 3.7,
+          comment: '很好的咨询师！'
+        },
+        {
+          name: '王小虎',
+          time: '00:12:54',
+          date: '2016-05-02',
+          rate: 3.7,
+          comment: '很好的咨询师！'
+        },
+        {
+          name: '王小虎',
+          time: '00:12:54',
+          date: '2016-05-02',
+          rate: 3.7,
+          comment: '很好的咨询师！'
+        },
+        {
+          name: '王小虎',
+          time: '00:12:54',
+          date: '2016-05-02',
+          rate: 3.7,
+          comment: '很好的咨询师！'
+        },
+        {
+          name: '王小虎',
+          time: '00:12:54',
+          date: '2016-05-02',
+          rate: 3.7,
+          comment: '很好的咨询师！'
+        },
+        {
+          name: '王小虎',
+          time: '00:12:54',
+          date: '2016-05-02',
+          rate: 3.7,
+          comment: '很好的咨询师！'
+        },
+        {
+          name: '王小虎',
+          time: '00:12:54',
+          date: '2016-05-02',
+          rate: 3.7,
+          comment: '很好的咨询师！'
+        },
+        {
+          name: '王小虎',
+          time: '00:12:54',
+          date: '2016-05-02',
+          rate: 3.7,
+          comment: '很好的咨询师！'
+        },
+        {
+          name: '王小虎',
+          time: '00:12:54',
+          date: '2016-05-02',
+          rate: 3.7,
+          comment: '很好的咨询师！'
+        }
+      ],
+      inputValue: '',
+      dataValue: '',
+      currentPage: 1,
+      pageSize: 10,
+      totalSize: 18
+    }
+  },
+  methods: {
+    handleSizeChange(val) {
+      console.log(`每页 ${val} 条`)
+    },
+    handleCurrentChange(val) {
+      console.log(`当前页: ${val}`)
+    }
+  }
 }
 </script>
 

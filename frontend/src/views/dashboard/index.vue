@@ -73,8 +73,8 @@
             <el-table-column prop="time" label="咨询时长" width="180" />
             <el-table-column prop="date" label="咨询日期" width="180" />
             <el-table-column prop="rate" label="咨询评级" width="180">
-              <template slot-scope="scope" >
-                <el-rate v-model="scope.row.rate" :allow-half="true"  disabled text-color="#ff9900"></el-rate>
+              <template slot-scope="scope">
+                <el-rate v-model="scope.row.rate" :allow-half="true" disabled text-color="#ff9900" />
               </template>
             </el-table-column>
             <el-table-column prop="comment" label="咨询评价" width="180" />
