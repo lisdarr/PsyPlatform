@@ -37,11 +37,11 @@ export const constantRoutes = [
     hidden: true
   },
 
-  {
-    path: '/404',
-    component: () => import('@/views/404'),
-    hidden: true
-  },
+  // {
+  //   path: '/404',
+  //   component: () => import('@/views/404'),
+  //   hidden: true
+  // },
 
   {
     path: '/',
@@ -76,8 +76,8 @@ export const constantRoutes = [
       path: 'consultrecord',
       name: 'consultRecord',
       component: () => import('@/views/consultRecord/index'),
-    meta: { title: '咨询记录', icon: 'el-icon-document' }
-    }]  
+      meta: { title: '咨询记录', icon: 'el-icon-document' }
+    }]
   },
 
   // {
@@ -95,8 +95,8 @@ export const constantRoutes = [
       path: 'schedule',
       name: 'schedule',
       component: () => import('@/views/schedule/index'),
-    meta: { title: '排班表', icon: 'el-icon-date' }
-    }]  
+      meta: { title: '排班表', icon: 'el-icon-date' }
+    }]
   },
 
   {
@@ -107,8 +107,8 @@ export const constantRoutes = [
       path: 'consultantmanage',
       name: 'consultantManage',
       component: () => import('@/views/consultantManage/index'),
-    meta: { title: '咨询师管理', icon: 'el-icon-service' }
-    }]  
+      meta: { title: '咨询师管理', icon: 'el-icon-service' }
+    }]
   },
 
   {
@@ -119,8 +119,8 @@ export const constantRoutes = [
       path: 'monitormanage',
       name: 'monitorManage',
       component: () => import('@/views/monitorManage/index'),
-    meta: { title: '督导管理', icon: 'el-icon-s-platform' }
-    }]  
+      meta: { title: '督导管理', icon: 'el-icon-s-platform' }
+    }]
   },
 
   {
@@ -131,10 +131,9 @@ export const constantRoutes = [
       path: 'usermanage',
       name: 'userManage',
       component: () => import('@/views/userManage/index'),
-    meta: { title: '用户管理', icon: 'el-icon-s-custom' }
-    }]  
+      meta: { title: '用户管理', icon: 'el-icon-s-custom' }
+    }]
   },
-
 
   // 404 page must be placed at the end !!!
   { path: '*', redirect: '/404', hidden: true }
