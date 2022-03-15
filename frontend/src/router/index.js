@@ -52,7 +52,7 @@ export const constantRoutes = [
       name: 'Dashboard',
       component: () => import('@/views/dashboard/index'),
       // title设置sidebar标题
-      meta: { title: '首页', icon: 'dashboard' }
+      meta: { title: '首页', icon: 'el-icon-s-home' }
     }]
   },
 
@@ -67,6 +67,74 @@ export const constantRoutes = [
       meta: { title: '咨询记录', icon: 'el-icon-document' }
     }]
   },
+
+  {
+    path: '/',
+    name: 'consultRecord',
+    component: Layout,
+    children: [{
+      path: 'consultrecord',
+      name: 'consultRecord',
+      component: () => import('@/views/consultRecord/index'),
+    meta: { title: '咨询记录', icon: 'el-icon-document' }
+    }]  
+  },
+
+  // {
+  //   path: '/consultrecord',
+  //   conponent: Layout,
+  //   name: 'consultRecord',
+  //   meta: { title: '咨询记录', icon: 'el-icon-document' }
+  // },
+
+  {
+    path: '/',
+    name: 'schedule',
+    component: Layout,
+    children: [{
+      path: 'schedule',
+      name: 'schedule',
+      component: () => import('@/views/schedule/index'),
+    meta: { title: '排班表', icon: 'el-icon-date' }
+    }]  
+  },
+
+  {
+    path: '/',
+    name: 'consultantManage',
+    component: Layout,
+    children: [{
+      path: 'consultantmanage',
+      name: 'consultantManage',
+      component: () => import('@/views/consultantManage/index'),
+    meta: { title: '咨询师管理', icon: 'el-icon-service' }
+    }]  
+  },
+
+  {
+    path: '/',
+    name: 'monitorManage',
+    component: Layout,
+    children: [{
+      path: 'monitormanage',
+      name: 'monitorManage',
+      component: () => import('@/views/monitorManage/index'),
+    meta: { title: '督导管理', icon: 'el-icon-s-platform' }
+    }]  
+  },
+
+  {
+    path: '/',
+    name: 'userManage',
+    component: Layout,
+    children: [{
+      path: 'usermanage',
+      name: 'userManage',
+      component: () => import('@/views/userManage/index'),
+    meta: { title: '用户管理', icon: 'el-icon-s-custom' }
+    }]  
+  },
+
 
   // 404 page must be placed at the end !!!
   { path: '*', redirect: '/404', hidden: true }
