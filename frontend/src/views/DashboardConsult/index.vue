@@ -148,7 +148,7 @@ export default {
       console.log(value, mode)
     },
     jump() {
-      this.$router.push({ path: '/record' })
+      this.$router.push({ path: '/RecordConsult' })
     }
   }
 }

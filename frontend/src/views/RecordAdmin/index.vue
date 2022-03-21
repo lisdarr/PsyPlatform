@@ -7,13 +7,22 @@
       </div>
       <div style="width: 300px;float: left;margin-top: 20px;margin-left: 20px">
         <div style="color: #304156; font-size: 15px; margin-bottom: 10px">选择日期：</div>
-        <el-date-picker v-model="dataValue" type="daterange" range-separator="至" start-placeholder="开始日期"
-                        end-placeholder="结束日期" value-format="yyyy-MM-dd"
+        <el-date-picker
+          v-model="dataValue"
+          type="daterange"
+          range-separator="至"
+          start-placeholder="开始日期"
+          end-placeholder="结束日期"
+          value-format="yyyy-MM-dd"
         />
       </div>
     </div>
-    <el-table style="width: 100%; margin-left: 12px; padding-top: 15px; height = 400px"
-              :data="list.slice((page-1)*limit, page*limit)"
+    <el-table
+      style="width: 100%;
+      margin-left: 12px;
+      padding-top: 15px;
+      height: 400px"
+      :data="list.slice((page-1)*limit, page*limit)"
     >
       <el-table-column
         prop="name"
