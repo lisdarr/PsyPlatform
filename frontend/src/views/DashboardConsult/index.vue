@@ -7,13 +7,13 @@
           <el-card class="box-card" style="width: auto">
             <div style="width: 70%; float: left;">
               <div style="float: left;">
-                <el-avatar shape="square" :size="200" :src="squareUrl" />
+                <el-avatar shape="square" :size="200" :src="squareUrl"/>
               </div>
               <div style="margin-left: 220px">
                 <div style="margin-bottom: 30%; font-size: 20px; font-weight: bold">咨询师</div>
                 <div style="font-size: 20px; margin-bottom: 10%">我的综合评价</div>
                 <div>
-                  <el-rate v-model="value" disabled show-score text-color="#ff9900" score-template="{value}" />
+                  <el-rate v-model="value" disabled show-score text-color="#ff9900" score-template="{value}"/>
                 </div>
               </div>
             </div>
@@ -31,14 +31,17 @@
                 <div style="padding-top: 20px; font-size: 60px">{{ consultTodayNum }}</div>
               </div>
               <div>
-                <el-divider direction="vertical" style="height: 250px" />
+                <el-divider direction="vertical" style="height: 250px"/>
               </div>
               <div style="text-align: center;  padding-top: 5%">
                 <div style="font-size: 20px; color: #304156; font-weight: bold">今日咨询时长</div>
-                <div style="padding-top: 20px; font-size: 60px">{{ consultTodayTimeHour }}:{{ consultTodayTimeMinute }}:{{ consultTodayTimeSecond }}</div>
+                <div style="padding-top: 20px; font-size: 60px">{{ consultTodayTimeHour }}:{{
+                    consultTodayTimeMinute
+                  }}:{{ consultTodayTimeSecond }}
+                </div>
               </div>
               <div>
-                <el-divider direction="vertical" style="height: 250px" />
+                <el-divider direction="vertical" style="height: 250px"/>
               </div>
               <div style="text-align: center;  padding-top: 5%">
                 <div style="font-size: 20px; color: #304156; font-weight: bold">当前会话数</div>
@@ -51,7 +54,7 @@
       <!--        值班日历部分 -->
       <el-col :span="9" style="height: 520px;">
         <el-card class="box-card" style="width: auto; height: 520px">
-          <Calendar v-model="value" />
+          <Calendar v-model="value"/>
         </el-card>
       </el-col>
     </el-row>
@@ -60,24 +63,26 @@
       <el-col>
         <el-card style="width: auto;">
           <div style="width: 100%; text-align: justify">
-            <div style="display: inline-block; color: #304156; float: left; margin-left: 10px; font-size: 18px; font-weight: bold">
+            <div
+              style="display: inline-block; color: #304156; float: left; margin-left: 10px; font-size: 18px; font-weight: bold"
+            >
               最近完成的咨询
-              <el-divider />
+              <el-divider/>
             </div>
-            <div style="display: inline-block; float: right; font-size: 18px;">
+            <el-button style="display: inline-block; float: right; font-size: 10px;" @click="jump">
               查看全部
-            </div>
+            </el-button>
           </div>
           <el-table :data="tableData" style="width: 100%">
-            <el-table-column prop="name" label="咨询人" width="180" />
-            <el-table-column prop="time" label="咨询时长" width="180" />
-            <el-table-column prop="date" label="咨询日期" width="180" />
+            <el-table-column prop="name" label="咨询人" width="180"/>
+            <el-table-column prop="time" label="咨询时长" width="180"/>
+            <el-table-column prop="date" label="咨询日期" width="180"/>
             <el-table-column prop="rate" label="咨询评级" width="180">
               <template slot-scope="scope">
-                <el-rate v-model="scope.row.rate" :allow-half="true" disabled text-color="#ff9900" />
+                <el-rate v-model="scope.row.rate" :allow-half="true" disabled text-color="#ff9900"/>
               </template>
             </el-table-column>
-            <el-table-column prop="comment" label="咨询评价" width="180" />
+            <el-table-column prop="comment" label="咨询评价" width="180"/>
             <el-table-column label="操作" width="300">
               <el-button size="mini" type="primary">查看详情</el-button>
               <el-button size="mini" type="success">导出记录</el-button>
@@ -141,6 +146,9 @@ export default {
     },
     onPanelChange(value, mode) {
       console.log(value, mode)
+    },
+    jump() {
+      this.$router.push({ path: '/record' })
     }
   }
 }
@@ -151,24 +159,29 @@ export default {
   &-container {
     margin: 30px;
   }
+
   &-text {
     font-size: 30px;
     line-height: 46px;
   }
 }
+
 .box-card {
   width: 700px;
   height: 250px;
 }
+
 .el-row {
   margin-bottom: 20px;
   //&:last-child {
   //  margin-bottom: 0;
   //}
 }
+
 .el-col {
   border-radius: 4px;
 }
+
 .el-divider--vertical {
   display: inline-block;
   width: 1px;

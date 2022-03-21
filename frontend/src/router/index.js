@@ -1,10 +1,9 @@
 import Vue from 'vue'
 import Router from 'vue-router'
-
-Vue.use(Router)
-
 /* Layout */
 import Layout from '@/layout'
+
+Vue.use(Router)
 
 /**
  * Note: sub-menu only appear when route children.length >= 1
@@ -35,7 +34,7 @@ export const constantRoutes = [
     path: '/login',
     component: () => import('@/views/login/index'),
     hidden: true
-  },
+  }
 
   // {
   //   path: '/404',
@@ -43,99 +42,174 @@ export const constantRoutes = [
   //   hidden: true
   // },
 
+  // {
+  //   path: '/',
+  //   name: 'userManage',
+  //   component: Layout,
+  //   children: [{
+  //     path: 'usermanage',
+  //     name: 'userManage',
+  //     component: () => import('@/views/userManage/index'),
+  //     meta: { title: '用户管理', icon: 'el-icon-s-custom' }
+  //   }]
+  // }
+
+  // 404 page must be placed at the end !!!
+  // { path: '*', redirect: '/404', hidden: true }
+]
+
+// 异步挂载的路由
+// 动态需要根据权限加载的路由表
+export const asyncRoutes = [
+  // 心理咨询师动态路由
   {
     path: '/',
     component: Layout,
     // redirect: '/dashboard',
+    meta: { roles: ['consult'] },
     children: [{
-      path: 'dashboard',
-      name: 'Dashboard',
-      component: () => import('@/views/dashboard/index'),
+      path: 'DashboardConsult',
+      name: 'DashboardConsult',
+      component: () => import('@/views/DashboardConsult/index'),
       // title设置sidebar标题
-      meta: { title: '首页', icon: 'el-icon-s-home' }
-    }]
-  },
-
-  {
-    path: '/record',
-    component: Layout,
-    children: [{
-      path: 'record',
-      component: () => import('@/views/record/index'),
-      name: 'Record',
-      // title设置sidebar标题
-      meta: { title: '咨询记录', icon: 'el-icon-document' }
+      meta: { roles: ['consult'], title: '首页', icon: 'el-icon-s-home' }
     }]
   },
 
   {
     path: '/',
-    name: 'consultRecord',
     component: Layout,
+    meta: { roles: ['consult'] },
     children: [{
-      path: 'consultrecord',
-      name: 'consultRecord',
-      component: () => import('@/views/consultRecord/index'),
-      meta: { title: '咨询记录', icon: 'el-icon-document' }
+      path: 'RecordConsult',
+      component: () => import('@/views/RecordConsult/index'),
+      name: 'RecordConsult',
+      // title设置sidebar标题
+      meta: { roles: ['consult'], title: '咨询记录', icon: 'el-icon-document' }
     }]
   },
 
-  // {
-  //   path: '/consultrecord',
-  //   conponent: Layout,
-  //   name: 'consultRecord',
-  //   meta: { title: '咨询记录', icon: 'el-icon-document' }
-  // },
+  {
+    path: '/',
+    component: Layout,
+    meta: { roles: ['consult'] },
+    children: [{
+      path: 'ChatConsult',
+      component: () => import('@/views/ChatConsult/index'),
+      name: 'ChatConsult',
+      meta: { roles: ['consult'], title: '会话', icon: 'el-icon-chat-dot-square' }
+    }]
+  },
+  // 督导动态路由
+  {
+    path: '/',
+    component: Layout,
+    meta: { roles: ['director'] },
+    children: [{
+      path: 'DashboardDirector',
+      component: () => import('@/views/DashboardDirector/index'),
+      name: 'DashboardDirector',
+      meta: { roles: ['director'], title: '首页', icon: 'el-icon-s-home' }
+    }]
+  },
+  {
+    path: '/',
+    component: Layout,
+    meta: { roles: ['director'] },
+    children: [{
+      path: 'RecordDirector',
+      component: () => import('@/views/RecordDirector/index'),
+      name: 'RecordDirector',
+      // title设置sidebar标题
+      meta: { roles: ['director'], title: '咨询记录', icon: 'el-icon-document' }
+    }]
+  },
 
   {
     path: '/',
-    name: 'schedule',
+    component: Layout,
+    meta: { roles: ['director'] },
+    children: [{
+      path: 'ChatDirector',
+      component: () => import('@/views/ChatDirector/index'),
+      name: 'ChatDirector',
+      meta: { roles: ['director'], title: '会话', icon: 'el-icon-chat-dot-square' }
+    }]
+  },
+  // 管理员动态路由
+  {
+    path: '/',
+    component: Layout,
+    meta: { roles: ['adminlim'] },
+    children: [{
+      path: 'DashboardAdmin',
+      component: () => import('@/views/DashboardAdmin/index'),
+      name: 'DashboardAdmin',
+      meta: { roles: ['adminlim'], title: '首页', icon: 'el-icon-s-home' }
+    }]
+  },
+  {
+    path: '/',
+    name: 'RecordAdmin',
+    component: Layout,
+    meta: { roles: ['adminlim'] },
+    children: [{
+      path: 'RecordAdmin',
+      name: 'RecordAdmin',
+      component: () => import('@/views/RecordAdmin/index'),
+      meta: { roles: ['adminlim'], title: '咨询记录', icon: 'el-icon-document' }
+    }]
+  },
+  {
+    path: '/',
+    name: 'ScheduleAdmin',
+    meta: { roles: ['adminlim'] },
     component: Layout,
     children: [{
-      path: 'schedule',
-      name: 'schedule',
-      component: () => import('@/views/schedule/index'),
-      meta: { title: '排班表', icon: 'el-icon-date' }
+      path: 'ScheduleAdmin',
+      name: 'ScheduleAdmin',
+      component: () => import('@/views/ScheduleAdmin/index'),
+      meta: { roles: ['adminlim'], title: '排班表', icon: 'el-icon-date' }
     }]
   },
 
   {
     path: '/',
     name: 'consultantManage',
+    meta: { roles: ['adminlim'] },
     component: Layout,
     children: [{
       path: 'consultantmanage',
       name: 'consultantManage',
       component: () => import('@/views/consultantManage/index'),
-      meta: { title: '咨询师管理', icon: 'el-icon-service' }
+      meta: { roles: ['adminlim'], title: '咨询师管理', icon: 'el-icon-service' }
     }]
   },
 
   {
     path: '/',
     name: 'monitorManage',
+    meta: { roles: ['adminlim'] },
     component: Layout,
     children: [{
       path: 'monitormanage',
       name: 'monitorManage',
       component: () => import('@/views/monitorManage/index'),
-      meta: { title: '督导管理', icon: 'el-icon-s-platform' }
+      meta: { roles: ['adminlim'], title: '督导管理', icon: 'el-icon-s-platform' }
     }]
   },
-
   {
     path: '/',
     name: 'userManage',
     component: Layout,
+    meta: { roles: ['adminlim'] },
     children: [{
       path: 'usermanage',
       name: 'userManage',
       component: () => import('@/views/userManage/index'),
-      meta: { title: '用户管理', icon: 'el-icon-s-custom' }
+      meta: { roles: ['adminlim'], title: '用户管理', icon: 'el-icon-s-custom' }
     }]
   },
-
-  // 404 page must be placed at the end !!!
   { path: '*', redirect: '/404', hidden: true }
 ]
 
@@ -154,3 +228,4 @@ export function resetRouter() {
 }
 
 export default router
+

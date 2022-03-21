@@ -1,12 +1,13 @@
-import { login, logout, getInfo } from '@/api/user'
-import { getToken, setToken, removeToken } from '@/utils/auth'
-import { resetRouter } from '@/router'
+import { getInfo, login, logout } from '@/api/user'
+import { getToken, removeToken, setToken } from '@/utils/auth'
+import router, { resetRouter } from '@/router'
 
 const getDefaultState = () => {
   return {
     token: getToken(),
     name: '',
-    avatar: ''
+    avatar: '',
+    roles: []
   }
 }
 
@@ -24,6 +25,9 @@ const mutations = {
   },
   SET_AVATAR: (state, avatar) => {
     state.avatar = avatar
+  },
+  SET_ROLES: (state, roles) => {
+    state.roles = roles
   }
 }
 
@@ -70,15 +74,16 @@ const actions = {
     return new Promise((resolve, reject) => {
       getInfo(state.token).then(response => {
         const { data } = response
-
         if (!data) {
           return reject('Verification failed, please Login again.')
         }
-
-        const { name, avatar } = data
-
+        const { roles, name, avatar } = data
+        if (!roles || roles.length <= 0) {
+          reject('getInfo: roles must be a non-null array!')
+        }
         commit('SET_NAME', name)
         commit('SET_AVATAR', avatar)
+        commit('SET_ROLES', roles)
         resolve(data)
       }).catch(error => {
         reject(error)
@@ -107,6 +112,26 @@ const actions = {
       commit('RESET_STATE')
       resolve()
     })
+  },
+  // dynamically modify permissions
+  async changeRoles({ commit, dispatch }, role) {
+    const token = role + '-token'
+
+    commit('SET_TOKEN', token)
+    setToken(token)
+
+    const { roles } = await dispatch('getInfo')
+
+    resetRouter()
+    // console.log(roles)
+    // generate accessible routes map based on roles
+    const accessRoutes = await dispatch('permission/generateRoutes', roles, { root: true })
+    // console.log(accessRoutes)
+    // dynamically add accessible routes
+    // router.options.routes = store.getters.permission_routes
+    router.addRoutes(accessRoutes)
+    // reset visited views and cached views
+    dispatch('tagsView/delAllViews', null, { root: true })
   }
 }
 

@@ -3,15 +3,18 @@
     <div style="display: inline">
       <div style="width: 300px;float: left;margin-top: 20px;margin-left: 20px">
         <div style="color: #304156; font-size: 15px; margin-bottom: 10px">搜索姓名：</div>
-        <el-input v-model="inputValue" style="width: 200px" type="text" label="搜索" placeholder="请输入姓名进行搜索" />
+        <el-input v-model="inputValue" style="width: 200px" type="text" label="搜索" placeholder="请输入姓名进行搜索"/>
       </div>
       <div style="width: 300px;float: left;margin-top: 20px;margin-left: 20px">
         <div style="color: #304156; font-size: 15px; margin-bottom: 10px">选择日期：</div>
-        <el-date-picker v-model="dataValue" type="daterange" range-separator="至" start-placeholder="开始日期" end-placeholder="结束日期" value-format="yyyy-MM-dd" />
+        <el-date-picker v-model="dataValue" type="daterange" range-separator="至" start-placeholder="开始日期"
+                        end-placeholder="结束日期" value-format="yyyy-MM-dd"
+        />
       </div>
     </div>
-    <el-table style="width: 100%; margin-left: 12px; padding-top: 15px; height = 400px" 
-    :data="list.slice((page-1)*limit, page*limit)">
+    <el-table style="width: 100%; margin-left: 12px; padding-top: 15px; height = 400px"
+              :data="list.slice((page-1)*limit, page*limit)"
+    >
       <el-table-column
         prop="name"
         label="咨询人"
@@ -37,9 +40,9 @@
         width="180px"
         align="center"
       >
-      <template slot-scope="scope" >
-        <el-rate v-model="scope.row.rate" :allow-half="true"  disabled text-color="#ff9900"></el-rate>
-      </template>
+        <template slot-scope="scope">
+          <el-rate v-model="scope.row.rate" :allow-half="true" disabled text-color="#ff9900"></el-rate>
+        </template>
       </el-table-column>
       <el-table-column
         prop="eva"
@@ -55,15 +58,17 @@
       ></el-table-column>
       <el-table-column prop="operate" label="操作" align="center">
         <template slot-scope="scope">
-          <el-button type = "info" plain icon="el-icon-info" size="mini" @click="(scope.$index, scope.row)"
-            >查看详情</el-button
+          <el-button type="info" plain icon="el-icon-info" size="mini" @click="(scope.$index, scope.row)"
+          >查看详情
+          </el-button
           >
           <el-button
             size="mini"
             type="success" plain
             icon="el-icon-download"
             @click="handleDelete(scope.$index, scope.row)"
-            >导出记录</el-button
+          >导出记录
+          </el-button
           >
         </template>
       </el-table-column>
@@ -87,12 +92,12 @@
 
 <script>
 export default {
-  name: "consultRecord",
-//   methods: {
-//     handleClick(row) {
-//       console.log(row);
-//     },
-//   },
+  name: 'RecordAdmin',
+  //   methods: {
+  //     handleClick(row) {
+  //       console.log(row);
+  //     },
+  //   },
   data() {
     return {
       value1: null,
@@ -101,103 +106,103 @@ export default {
       total: 12,
       list: [
         {
-          name: "张先生",
-          time: "1:02:00",
-          date: "2022-03-12 13:45:06",
+          name: '张先生',
+          time: '1:02:00',
+          date: '2022-03-12 13:45:06',
           rate: 4.5,
-          eva: "体验很好",
-          assit: "无",
+          eva: '体验很好',
+          assit: '无'
         },
         {
-          name: "张先生",
-          time: "1:02:00",
-          date: "2022-03-13 13:45:06",
+          name: '张先生',
+          time: '1:02:00',
+          date: '2022-03-13 13:45:06',
           rate: 4.5,
-          eva: "体验很好",
-          assit: "无",
+          eva: '体验很好',
+          assit: '无'
         },
         {
-          name: "张先生",
-          time: "1:02:00",
-          date: "2022-03-14 13:43:06",
+          name: '张先生',
+          time: '1:02:00',
+          date: '2022-03-14 13:43:06',
           rate: 4.5,
-          eva: "体验很好",
-          assit: "无",
+          eva: '体验很好',
+          assit: '无'
         },
         {
-          name: "张先生",
-          time: "1:02:00",
-          date: "2022-03-14 13:45:06",
+          name: '张先生',
+          time: '1:02:00',
+          date: '2022-03-14 13:45:06',
           rate: 4.5,
-          eva: "体验很好",
-          assit: "无",
+          eva: '体验很好',
+          assit: '无'
         },
         {
-          name: "张先生",
-          time: "1:02:00",
-          date: "2022-03-14 13:45:06",
+          name: '张先生',
+          time: '1:02:00',
+          date: '2022-03-14 13:45:06',
           rate: 4.5,
-          eva: "体验很好",
-          assit: "无",
+          eva: '体验很好',
+          assit: '无'
         },
         {
-          name: "张先生",
-          time: "1:02:00",
-          date: "2022-03-14 13:45:06",
+          name: '张先生',
+          time: '1:02:00',
+          date: '2022-03-14 13:45:06',
           rate: 4.5,
-          eva: "体验很好",
-          assit: "无",
+          eva: '体验很好',
+          assit: '无'
         },
         {
-          name: "张先生",
-          time: "1:02:00",
-          date: "2022-03-14 13:45:06",
+          name: '张先生',
+          time: '1:02:00',
+          date: '2022-03-14 13:45:06',
           rate: 4.5,
-          eva: "体验很好",
-          assit: "无",
+          eva: '体验很好',
+          assit: '无'
         },
         {
-          name: "张先生",
-          time: "1:02:00",
-          date: "2022-03-14 13:45:06",
+          name: '张先生',
+          time: '1:02:00',
+          date: '2022-03-14 13:45:06',
           rate: 4.5,
-          eva: "体验很好",
-          assit: "无",
+          eva: '体验很好',
+          assit: '无'
         },
         {
-          name: "张先生",
-          time: "1:02:00",
-          date: "2022-03-14 13:45:06",
+          name: '张先生',
+          time: '1:02:00',
+          date: '2022-03-14 13:45:06',
           rate: 4.5,
-          eva: "体验很好",
-          assit: "无",
+          eva: '体验很好',
+          assit: '无'
         },
         {
-          name: "张先生",
-          time: "1:02:00",
-          date: "2022-03-14 13:45:06",
+          name: '张先生',
+          time: '1:02:00',
+          date: '2022-03-14 13:45:06',
           rate: 4.5,
-          eva: "体验很好",
-          assit: "无",
+          eva: '体验很好',
+          assit: '无'
         },
         {
-          name: "张先生",
-          time: "1:02:00",
-          date: "2022-03-14 13:45:06",
+          name: '张先生',
+          time: '1:02:00',
+          date: '2022-03-14 13:45:06',
           rate: 4.5,
-          eva: "体验很好",
-          assit: "无",
+          eva: '体验很好',
+          assit: '无'
         },
         {
-          name: "张先生",
-          time: "1:02:00",
-          date: "2022-03-14 13:45:06",
+          name: '张先生',
+          time: '1:02:00',
+          date: '2022-03-14 13:45:06',
           rate: 4.5,
-          eva: "体验很好",
-          assit: "无",
+          eva: '体验很好',
+          assit: '无'
         }
       ]
-    };
+    }
   },
   methods: {
     handleSizeChange(val) {
@@ -239,7 +244,7 @@ export default {
   //       this.getPageList();
   //   }
   // },
-};
+}
 </script>
 
 <style>
