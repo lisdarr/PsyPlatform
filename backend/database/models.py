@@ -13,7 +13,7 @@ class ConDirRecord(models.Model):
     con = models.ForeignKey('Consultant', models.DO_NOTHING, blank=True, null=True)
     dir = models.ForeignKey('Director', models.DO_NOTHING, blank=True, null=True)
     cd_stime = models.DateTimeField(blank=True, null=True)
-    cd_duration = models.TimeField(blank=True, null=True)
+    cd_duration = models.BigIntegerField(blank=True, null=True)
     cd_record = models.CharField(max_length=255, blank=True, null=True)
 
     class Meta:
@@ -36,7 +36,7 @@ class ConToday(models.Model):
     con = models.ForeignKey('Consultant', models.DO_NOTHING, blank=True, null=True)
     con_state = models.CharField(max_length=255, blank=True, null=True)
     con_today_num = models.IntegerField(blank=True, null=True)
-    con_today_dur = models.TimeField(blank=True, null=True)
+    con_today_dur = models.BigIntegerField(blank=True, null=True)
     con_now_num = models.IntegerField(blank=True, null=True)
 
     class Meta:
@@ -59,7 +59,7 @@ class Consultant(models.Model):
     con_icon = models.TextField(blank=True, null=True)
     con_av_score = models.FloatField(blank=True, null=True)
     con_number = models.IntegerField(blank=True, null=True)
-    con_duration = models.TimeField(blank=True, null=True)
+    con_duration = models.BigIntegerField(blank=True, null=True)
     dir = models.ForeignKey('Director', models.DO_NOTHING, blank=True, null=True)
 
     class Meta:
@@ -81,7 +81,7 @@ class DirToday(models.Model):
     dir_today_id = models.AutoField(primary_key=True)
     dir = models.ForeignKey('Director', models.DO_NOTHING, blank=True, null=True)
     dir_today_num = models.IntegerField(blank=True, null=True)
-    dir_today_dur = models.TimeField(blank=True, null=True)
+    dir_today_dur = models.BigIntegerField(blank=True, null=True)
 
     class Meta:
         managed = False
@@ -104,7 +104,7 @@ class Director(models.Model):
     dir_qualnum = models.CharField(max_length=254, blank=True, null=True)
     dir_icon = models.TextField(blank=True, null=True)
     dir_number = models.IntegerField(blank=True, null=True)
-    dir_duration = models.TimeField(blank=True, null=True)
+    dir_duration = models.BigIntegerField(blank=True, null=True)
 
     class Meta:
         managed = False
@@ -131,7 +131,7 @@ class UserConRecord(models.Model):
     con = models.ForeignKey(Consultant, models.DO_NOTHING, blank=True, null=True)
     uc_his_state = models.IntegerField(blank=True, null=True)
     uc_stime = models.DateTimeField(blank=True, null=True)
-    uc_duration = models.TimeField(blank=True, null=True)
+    uc_duration = models.BigIntegerField(blank=True, null=True)
     uc_record = models.CharField(max_length=255, blank=True, null=True)
     u2c_score = models.FloatField(blank=True, null=True)
     c2u_score = models.FloatField(blank=True, null=True)
