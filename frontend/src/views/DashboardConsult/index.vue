@@ -35,10 +35,7 @@
               </div>
               <div style="text-align: center;  padding-top: 5%">
                 <div style="font-size: 20px; color: #304156; font-weight: bold">今日咨询时长</div>
-                <div style="padding-top: 20px; font-size: 60px">{{ consultTodayTimeHour }}:{{
-                    consultTodayTimeMinute
-                  }}:{{ consultTodayTimeSecond }}
-                </div>
+                <div style="padding-top: 20px; font-size: 60px">{{ consultTodayTime }}</div>
               </div>
               <div>
                 <el-divider direction="vertical" style="height: 250px"/>
@@ -110,7 +107,7 @@ import Calendar from '@/components/Calendar'
 
 // 表格-element ui自定义列模板
 export default {
-  name: 'Dashboard',
+  name: 'DashboardConsult',
   components: { Calendar },
   data() {
     return {
@@ -126,9 +123,7 @@ export default {
       value: 3.7,
       consultNum: 12345,
       consultTodayNum: 35,
-      consultTodayTimeHour: 6,
-      consultTodayTimeMinute: 32,
-      consultTodayTimeSecond: 24,
+      consultTodayTime: '6:32:24',
       callNum: 2
     }
   },
@@ -149,7 +144,25 @@ export default {
     },
     jump() {
       this.$router.push({ path: '/RecordConsult' })
+    },
+    init_dashboardConsult() {
+      console.log('我被挂载啦')
+      var that = this
+      this.$axios.get(
+        '/dashboardConsultInfo'
+      ).then((response) => {
+        that.tableData = response.data.tableData
+        that.squareUrl = response.data.squareUrl
+        that.value = response.data.value
+        that.consultNum = response.data.consultNum
+        that.consultTodayNum = response.data.consultTodayNum
+        that.consultTodayTime = response.data.consultTodayTime
+        that.callNum = response.data.callNum
+      })
     }
+  },
+  mounted() {
+    this.init_dashboardConsult()
   }
 }
 </script>

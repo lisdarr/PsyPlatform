@@ -149,7 +149,25 @@ export default {
   methods: {
     jump() {
       this.$router.push({ path: '/RecordDirector' })
+    },
+    init_dashboardDirector() {
+      console.log('我被挂载啦')
+      var that = this
+      this.$axios.get(
+        '/dashboardConsultInfo'
+      ).then((response) => {
+        that.consultList = response.data.consultList
+        that.squareUrl = response.data.squareUrl
+        that.directorName = response.data.directorName
+        that.consultNum = response.data.consultNum
+        that.consultTodayNum = response.data.consultTodayNum
+        that.consultTodayTime = response.data.consultTodayTime
+        that.tableData = response.data.tableData
+      })
     }
+  },
+  mounted() {
+    this.init_dashboardDirector()
   }
 }
 </script>

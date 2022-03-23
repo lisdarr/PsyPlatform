@@ -11,6 +11,9 @@
                         end-placeholder="结束日期" value-format="yyyy-MM-dd"
         />
       </div>
+      <div style="width: 300px;float: left;margin-top: 50px;margin-left: 100px;">
+        <el-button size="small" icon="el-icon-search" @click="search">搜索</el-button>
+      </div>
     </div>
     <el-table :data="tableData.slice((currentPage-1)*pageSize, currentPage*pageSize)"
               style="width: 100%; margin-left: 12px; padding-top: 15px"
@@ -86,6 +89,22 @@ export default {
     },
     handleCurrentChange(val) {
       console.log(`当前页: ${val}`)
+    },
+    search(inputValue, dataValue) {
+      console.log('我在搜索')
+      var that = this
+      this.$axios.post(
+        // 后端接口地址
+        '/search',
+        {
+          inputValue: this.inputValue,
+          dataValue: this.dataValue
+        }
+      ).then((response) => {
+        that.tableData = response.data.tableData
+      }).catch((error) => {
+        console.log(error)
+      })
     }
   }
 }

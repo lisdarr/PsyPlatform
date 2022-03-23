@@ -16,21 +16,21 @@ const tokens = {
 const users = {
   'admin-token': {
     roles: ['admin'],
-    introduction: 'I am a super administrator',
     avatar: 'https://wpimg.wallstcn.com/f778738c-e4f8-4870-b634-56703b4acafe.gif',
     name: 'Super Admin'
   },
   'consult-token': {
     roles: ['consult'],
-    introduction: 'I am an consult',
     avatar: 'https://wpimg.wallstcn.com/f778738c-e4f8-4870-b634-56703b4acafe.gif',
-    name: 'consult'
+    name: 'consult',
+    id: '001'
   },
   'director-token': {
     roles: ['director'],
     introduction: 'I am an director',
     avatar: 'https://wpimg.wallstcn.com/f778738c-e4f8-4870-b634-56703b4acafe.gif',
-    name: 'director'
+    name: 'director',
+    id: '002'
   },
   'adminlim-token': {
     roles: ['adminlim'],
