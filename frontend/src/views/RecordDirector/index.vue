@@ -7,8 +7,13 @@
       </div>
       <div style="width: 300px;float: left;margin-top: 20px;margin-left: 20px">
         <div style="color: #304156; font-size: 15px; margin-bottom: 10px">选择日期：</div>
-        <el-date-picker v-model="dataValue" type="daterange" range-separator="至" start-placeholder="开始日期"
-                        end-placeholder="结束日期" value-format="yyyy-MM-dd"
+        <el-date-picker 
+        v-model="dataValue" 
+        type="daterange" 
+        range-separator="至" 
+        start-placeholder="开始日期"
+                        end-placeholder="结束日期" 
+                        value-format="yyyy-MM-dd"
         />
       </div>
       <div style="width: 300px;float: left;margin-top: 50px;margin-left: 100px;">
@@ -16,7 +21,9 @@
       </div>
     </div>
     <el-table :data="tableData.slice((currentPage-1)*pageSize, currentPage*pageSize)"
-              style="width: 100%; margin-left: 12px; padding-top: 15px"
+              style="width: 100%; 
+              margin-left: 12px;
+               padding-top: 15px"
     >
       <el-table-column prop="name" label="咨询师" width="300"/>
       <el-table-column prop="time" label="咨询时长" width="300"/>
