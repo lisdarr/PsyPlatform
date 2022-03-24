@@ -204,6 +204,7 @@ export default {
         }
       ).then((response) => {
         that.tableData = response.data.tableData
+        that.totalSize = response.data.totalSize
       }).catch((error) => {
         console.log(error)
       })

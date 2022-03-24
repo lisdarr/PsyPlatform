@@ -7,7 +7,8 @@
         v-for="(item, index) in userList"
         :key="index"
         class="userList"
-        @click="startChat"
+        :class=" {active:index===findIndex} "
+        @click="getIndex(index)"
       >
         <div style="float: left;margin-left: 5px;">
           <el-avatar shape="circle" :size="50" :src="item.avatar"/>
@@ -25,23 +26,23 @@
 
     </div>
     <div
-      style="border: #304156; width: 20%;height: 700px; border-style: solid; border-left-style: none; margin-top: 20px; float: left;"
+      style="border: #304156; width: 20%;height: 700px; border-style: solid; border-left-style: none; margin-top: 20px; float: left;background-color: #99a9bf"
     >
-      <!--      <div class="el-icon-phone-outline" style="font-size: 50px; float: left;margin-top: 20px"></div>-->
-      <!--      <div style="margin-top: 40px; margin-left: 70px; font-weight: bold; font-size: 20px">正在咨询中...</div>-->
-      <!--      <div style="margin-top: 60px; margin-left: 5px; font-weight: bold; font-size: 20px">已咨询时间：</div>-->
-      <!--      <div style="margin-top: 30px; margin-left: 15px; font-size: 50px">12:30:20</div>-->
-      <!--      <div style="margin-top: 310px">-->
-      <!--        <el-link>-->
-      <!--          请求督导-->
-      <!--        </el-link>-->
-      <!--      </div>-->
-      <!--      <el-divider></el-divider>-->
-      <!--      <div>-->
-      <!--        <el-link>-->
-      <!--          结束咨询-->
-      <!--        </el-link>-->
-      <!--      </div>-->
+      <div class="el-icon-phone-outline" style="font-size: 50px; float: left;margin-top: 20px"></div>
+      <div style="margin-top: 40px; margin-left: 70px; font-weight: bold; font-size: 20px">正在咨询中...</div>
+      <div style="margin-top: 60px; margin-left: 5px; font-weight: bold; font-size: 20px">已咨询时间：</div>
+      <div style="margin-top: 30px; margin-left: 15px; font-size: 50px">12:30:20</div>
+      <div style="margin-top: 310px">
+        <el-link>
+          请求督导
+        </el-link>
+      </div>
+      <el-divider></el-divider>
+      <div>
+        <el-link>
+          结束咨询
+        </el-link>
+      </div>
     </div>
     <div
       style="border: #304156; width: 60%;height: 700px; border-style: solid; border-left-style: none; margin-top: 20px; float: left;"
@@ -54,7 +55,7 @@
 <script>
 
 export default {
-  name: 'ChatConsult',
+  name: 'Chat',
   data() {
     return {
       userList: [
@@ -68,12 +69,16 @@ export default {
           avatar: 'https://cube.elemecdn.com/9/c2/f0ee8a3c7c9638a54940382568c9dpng.png',
           unread: 3
         }
-      ]
+      ],
+      // 用于判断用户栏指向，对选择对用户栏进行高亮
+      findIndex: 0
     }
   },
   methods: {
-    startChat() {
-      this.$router.push({ path: '/ChatConsult/Chat' })
+    getIndex(index) {
+      this.findIndex = index
+      console.log(this.findIndex)
+      console.log(index)
     },
     init_chat() {
       var that = this
@@ -103,8 +108,9 @@ export default {
   background-color: #99a9bf;
 }
 
-.userList:active {
+.active {
   background-color: #99a9bf;
+  border: #99a9bf;
 }
 
 .el-link {
