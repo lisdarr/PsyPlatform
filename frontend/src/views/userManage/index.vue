@@ -75,7 +75,7 @@
             type="danger"
             plain
             size="mini"
-            @click="scope.$index, scope.row"
+            @click="stopUse"
             >禁用</el-button
           >
         </template>
@@ -101,7 +101,7 @@ export default {
   name: "consultantManage",
   data() {
     return {
-      value1: null,
+      inputvalue: "",
       page: 1,
       limit: 7,
       total: 12,
@@ -247,7 +247,26 @@ export default {
     },
     handleCurrentChange(val) {
       console.log(`当前页: ${val}`)
-    }
+    },
+    stopUse(row){
+      this.$confirm('确定永久禁用该账号吗?', '提示', {
+          confirmButtonText: '确定',
+          cancelButtonText: '取消',
+          type: 'warning'
+        }).then(() => {
+          row.state = "异常";
+          this.$message({
+            type: 'success',
+            message: '已禁用!'
+          });
+        }).catch(() => {
+          this.$message({
+            type: 'info',
+            message: '已取消操作'
+          });          
+        });
+      
+    },
   }
 };
 </script>

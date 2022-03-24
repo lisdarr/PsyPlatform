@@ -207,7 +207,7 @@ export const asyncRoutes = [
       path: 'usermanage',
       name: 'userManage',
       component: () => import('@/views/userManage/index'),
-      meta: { roles: ['adminlim'], title: '用户管理', icon: 'el-icon-s-custom' }
+      meta: { roles: ['adminlim'], title: '访客管理', icon: 'el-icon-s-custom' }
     }]
   },
   { path: '*', redirect: '/404', hidden: true }

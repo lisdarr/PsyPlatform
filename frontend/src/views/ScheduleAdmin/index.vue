@@ -2,44 +2,88 @@
   <div class="calendar_box">
     <el-row style="padding-top: 15px" :gutter="20">
       <el-col :span="18">
-        <!-- <full-calendar
-            ref="fullCalendar"
-            style="height: 100%"
-            :options="calendarOptions"
-          ></full-calendar> -->
-        <FullCalendar :options="calendarOptions" class="eventDeal-wrap"/>
+        <!-- <FullCalendar :options="calendarOptions"/> -->
+        <full-calendar
+          ref="calendar"
+          :options="calendarOptions"
+          :config="config"
+          :events="events"
+          :event-sources="eventSources"
+          @day-click="dayClick"
+        ></full-calendar>
       </el-col>
       <el-col :span="6" class="detail_box">
         <div class="addbtn">
-          <el-button
-            type="primary"
-            @click="addPaiban"
-            size="small"
-          >添加排班
-          </el-button
-          >
+          <el-button type="primary" @click="addPaiban" size="small"
+            >添加排班
+          </el-button>
         </div>
         <el-alert title="排班信息" type="success" :closable="false"></el-alert>
         <el-form :model="form" label-width="100px">
           <el-form-item label="咨询师：">
-            {{ form.consultant }}
+            {{ form.consultantName }}
           </el-form-item>
           <el-form-item label="督导：">
-            {{ form.monitor }}
+            {{ form.monitorName }}
           </el-form-item>
         </el-form>
       </el-col>
     </el-row>
+
+    <!-- 添加或修改 -->
+    <el-dialog title="添加排班" :visible.sync="dialogFormVisible">
+      <el-form :model="form" label-width="100px">
+        <el-form-item label="选择咨询师">
+          <el-select v-model="form.consultant" placeholder="请选择咨询师">
+            <el-option
+              v-for="item in consultantList"
+              :key="item.consultantId"
+              :label="item.consultantName"
+              :value="item.consultantId"
+            >
+            </el-option>
+          </el-select>
+        </el-form-item>
+        <el-form-item label="选择督导">
+          <el-select v-model="form.monitor" placeholder="请选择督导">
+            <el-option
+              v-for="item in monitorList"
+              :key="item.monitorId"
+              :label="item.monitorName"
+              :value="item.monitorId"
+            >
+            </el-option>
+          </el-select>
+        </el-form-item>
+        <el-form-item label="排班时间">
+          <el-date-picker
+            v-model="form.ctime"
+            format="yyyy-MM-dd"
+            value-format="yyyy-MM-dd"
+            type="date"
+            placeholder="选择排班日期"
+          >
+          </el-date-picker>
+        </el-form-item>
+      </el-form>
+      <div slot="footer" class="dialog-footer">
+        <el-button @click="dialogFormVisible = false" size="small"
+          >取 消</el-button
+        >
+        <el-button type="primary" @click="save" size="small">确 定</el-button>
+      </div>
+    </el-dialog>
   </div>
 </template>
 
 <script>
-import FullCalendar from '@fullcalendar/vue'
-import dayGridPlugin from '@fullcalendar/daygrid'
-import interactionPlugin from '@fullcalendar/interaction'
+import FullCalendar from "@fullcalendar/vue";
+import dayGridPlugin from "@fullcalendar/daygrid";
+import interactionPlugin from "@fullcalendar/interaction";
+import axios from "axios";
 
 export default {
-  name: 'ScheduleAdmin',
+  name: "ScheduleAdmin",
   components: { FullCalendar },
 
   data() {
@@ -47,61 +91,99 @@ export default {
       isShowBtn: false,
       dialogFormVisible: false,
       form: {
-        consultant: '',
-        monitor: ''
+        consultantName: "咨询师A",
+        monitorName: "督导A",
+        consultantId: "",
+        monitorId: "",
       },
       formLabelWidth: 120,
       calendarOptions: {
         height: 700,
         plugins: [dayGridPlugin, interactionPlugin],
         headerToolbar: {
-          left: 'prev,next today',
-          center: 'title',
-          right: ''
+          left: "prev,next today",
+          center: "title",
+          right: "",
         },
-        buttonText: { today: '今天' },
+        buttonText: { today: "今天" },
         selectable: true,
+        timeFormat: "H(:mm)", // uppercase H for 24-hour clock
 
-        calendarEvents: [{ title: '部门会议', start: new Date() }],
-        eventColor: '#f08f00',
-        locale: 'zh-cn',
-        weekNumberCalculation: 'ISO',
-        customButtons: {}
-      }
-    }
+        eventSources: [
+          {
+            events: [
+              { title: "咨询师：", start: "2022-03-21", conSum: 6, monSum: 0 },
+              { title: "督导：", start: "2022-03-21", conSum: 0, monSum: 4 },
+              { title: "咨询师：4 ", start: "2022-03-22" },
+              { title: "督导：3", start: "2022-03-22" },
+            ],
+            // events: function (start, end, timezone, callback) {
+            //   if (monSum == 0) {
+            //     title: `${this.title}${this.conSum} `;
+            //   }
+            //   if (conSum == 0) {
+            //     title: `${this.title}${this.monSum} `;
+            //   }
+            // },
+          },
+        ],
+
+        eventColor: "#f08f00",
+        locale: "zh-cn",
+        weekNumberCalculation: "ISO",
+        customButtons: {},
+        consultantList: [
+          // {
+          //   consultantName: "咨询师A",
+          //   consultantId: 1,
+          // },
+          // {
+          //   consultantName: "咨询师B",
+          //   consultantId: 2,
+          // },
+        ],
+        monitorList: [
+          // {
+          //   monitorName:"督导A",
+          //   monitorId:1,
+          // },
+          // {
+          //   monitorName:"督导B",
+          //   monitorId:2,
+          // }
+        ],
+      },
+    };
   },
-  mounted() {
-    this.calendarApi = this.$refs.fullCalendar.getApi()
-    this.title = this.calendarApi.view?.title
-    // 模拟动态获取数据
-    this.getDtata()
-  },
-  watch: {
-    // 切换视图显示不同的事件
-    'calendarApi.view.type'() {
-      this.getDtata()
-    }
-  },
+  mounted() {},
+
   methods: {
-    handleEvents(events) {
-      console.log(events, '事件3')
+    // getTitle(item) {},
+    addPaiban() {
+      this.dialogFormVisible = true;
+      this.form = {
+        consultantName: "咨询师A",
+        monitorName: "督导A",
+        consultantId: "",
+        monitorId: "",
+      };
+      this.isShowBtn = false;
     },
-
     dateToString(now) {
-      var year = now.getFullYear()
-      var month = (now.getMonth() + 1).toString()
-      var day = now.getDate().toString()
+      var year = now.getFullYear();
+      var month = (now.getMonth() + 1).toString();
+      var day = now.getDate().toString();
       if (month.length === 1) {
-        month = '0' + month
+        month = "0" + month;
       }
       if (day.length === 1) {
-        day = '0' + day
+        day = "0" + day;
       }
-      var dateTime = year + '-' + month + '-' + day
-      return dateTime
-    }
-  }
-}
+      var dateTime = year + "-" + month + "-" + day;
+      return dateTime;
+    },
+  },
+};
 </script>
 
 <style scoped>
@@ -130,6 +212,9 @@ export default {
 .detail_box >>> .el-form-item__content {
   text-align: left;
   color: #333;
+}
+.fc-unthemed >>> .fc-content {
+  white-space: pre;
 }
 </style>
 

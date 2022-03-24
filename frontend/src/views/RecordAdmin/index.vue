@@ -82,8 +82,6 @@
         </template>
       </el-table-column>
     </el-table>
-    <!-- @size-change="handleSizeChange"
-            @current-change="handleCurrentChange" -->
     <el-pagination
       style="margin-top: 20px; text-align: center"
       :current-page.sync="page"
@@ -109,7 +107,6 @@ export default {
   //   },
   data() {
     return {
-      value1: null,
       page: 1,
       limit: 7,
       total: 12,
@@ -210,7 +207,9 @@ export default {
           eva: '体验很好',
           assit: '无'
         }
-      ]
+      ],
+      inputValue: '',
+      dataValue: '',
     }
   },
   methods: {
