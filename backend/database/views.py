@@ -1,7 +1,6 @@
 import random
 import time
 
-from django.shortcuts import render
 from .models import *
 from django.contrib.auth.hashers import make_password, check_password
 from django.utils import timezone
@@ -9,6 +8,7 @@ from utils import constants
 
 
 def registUser(user):
+    err = ''
     if user.role == 'visitor':
         err = registInDatabase(Visitor, user)
     elif user.role == 'consultant':
@@ -21,7 +21,7 @@ def registUser(user):
 
 def registInDatabase(model, user):
     password = make_password(user.password)
-    q, err = model(name=user.name, password=password)
+    q, err = model(username=user.username, password=password)
     if err is not None:
         return err
     else:
@@ -29,17 +29,17 @@ def registInDatabase(model, user):
         return err
 
 
-def checkUser(name, password):
+def checkUser(username, password):
     user = ''
-    if Visitor.objects.filter(name=name).count() != 0:
-        user = Visitor.objects.get(name=name)
-
-    if Consultant.objects.filter(name=name).count() != 0:
-        user = Consultant.objects.get(name=name)
-    if Director.objects.filter(name=name).count() != 0:
-        user = Director.objects.get(name=name)
+    if Visitor.objects.filter(name=username).count() != 0:
+        user = Visitor.objects.get(username=username)
+    if Consultant.objects.filter(username=username).count() != 0:
+        user = Consultant.objects.get(username=username)
+    if Director.objects.filter(username=username).count() != 0:
+        user = Director.objects.get(username=username)
     if user == '':
         return 0
+    print(make_password(password))
     if check_password(password, user.password):
         ticket = ''
         for i in range(15):
@@ -72,7 +72,7 @@ def getDashboardConsultant(token):
     time = timezone.localtime(timezone.now()).strftime(("%Y-%m-%d %H:%M:%S"))
     time = time.split(' ')
 
-    data = {'name': user_info.name,
+    data = {'name': user_info.username,
             'time': time[1],
             'date': time[0],
             'rate': user_info.av_score,
@@ -85,54 +85,114 @@ def getDashboardConsultant(token):
     return data, ''
 
 
-def getRecordConsult(token, name, begin_date, end_date):
+def getRecordConsult(username, begin_date, end_date):
     try:
-        user_info = Consultant.objects.get(u_ticket=token)
+        visitors = Visitor.objects.filter(name=username)
     except:
-        return '', 'Consultant err'
-    try:
-        id = Visitor.objects.get(name=name).vis_id
-        num = VisitorConRecord.objects.filter(vis_id=id, stime__range=[begin_date, end_date]).count()
-    except:
-        return '', 'VisitorConRecord err'
-    time = timezone.localtime(timezone.now()).strftime(("%Y-%m-%d %H:%M:%S"))
-    time = time.split(' ')
-    data = {'name': user_info.name,
-            'time': time[1],
-            'date': time[0],
-            'rate': user_info.av_score,
-            'squareUrl': user_info.icon,
-            'consultNum': user_info.totel_num,
-            'totalSize': num
-            }
+        return '', 'No such Visitor'
 
-    return data, ''
+    list = []
+    for visitor in visitors:
+        try:
+            records = VisitorConRecord.objects.filter(vis_id=visitor.vis_id, stime__range=[begin_date, end_date])
+        except:
+            return [], 'No record'
+        for record in records:
+            ele = {
+                'name': username,
+                'time': record.duration,
+                'date': record.stime.strftime(("%Y-%m-%d %H:%M:%S")),
+                'rate': record.v2c_score,
+                'comment': record.v2c_comm
+            }
+            list.append(ele)
+
+    return list, ''
+
 
 def getDashboardDirctor(token):
     try:
         user_info = Director.objects.get(u_ticket=token)
     except:
-        return '', 'Consultant err'
+        return [], 'Director No Data'
 
     try:
-        today_info = ConToday.objects.get(con_id=user_info.con_id)
+        consults = Consultant.objects.filter(dir_id=user_info.dir_id)
     except:
-        return '', 'ConToday err'
+        return [], 'No consultant'
+
+    list =[]
+    for consult in consults:
+        try:
+            today = ConToday.objects.get(con_id=consult.con_id)
+            data = {
+                'name': consult.username,
+                'state': today.state
+            }
+        except:
+            data = {}
+        list.append(data)
+
+    tableData =[]
+    records = ConDirRecord.objects.filter(dir_id=user_info.dir_id)
+    for record in records:
+        consult = Consultant.objects.get(con_id=record.con_id)
+        data = {
+            'name': consult.username,
+            'time': record.duration,
+            'date': record.stime.strftime(("%Y-%m-%d %H:%M:%S")),
+        }
+        tableData.append(data)
+    today_info = DirToday.objects.get(dir_id=user_info.dir_id)
+
+    res = {
+        'consultList': list,
+        'consultNum': today_info.today_num,
+        'directorName': user_info.username,
+        'today_num': today_info.today_num,
+        'today_time': today_info.today_dur,
+        'squarUrl': user_info.icon,
+        'tableData': tableData
+    }
+
+    return res, ''
 
 
-def getRecordAdmin(name, begin_date, end_date):
-    id = Visitor.objects.get(name=name).vis_id
-    records = VisitorConRecord.objects.filter(vis_id=id, stime__range=[begin_date,end_date])
+def getRecordDirctor(username, begin_date, end_date):
+    try:
+        consultants = Consultant.objects.filter(username=username)
+    except:
+        return [], 'No such consultant'
+    list = []
+    for consultant in consultants:
+        try:
+            records = ConDirRecord.objects.filter(con_id=consultant.con_id, stime__range=[begin_date, end_date])
+        except:
+            return [], 'No record'
+        for record in records:
+            ele = {
+                'name': username,
+                'time': record.duration,
+                'date': record.stime.strftime(("%Y-%m-%d %H:%M:%S")),
+            }
+            list.append(ele)
+
+    return list, ''
+
+
+def getRecordAdmin(username, begin_date, end_date):
+    id = Visitor.objects.get(username=username).vis_id
+    records = VisitorConRecord.objects.filter(vis_id=id, stime__range=[begin_date, end_date])
 
     list = []
 
     for record in records:
         ele = {
-            'name': name,
+            'name': username,
             'time': record.duration,
             'date': record.stime.strftime(("%Y-%m-%d %H:%M:%S")),
             'rate': record.v2c_score,
-            'eva': 'No Record',
+            'eva': record.record,
             'assit': 'No Record'
         }
         list.append(ele)
@@ -144,19 +204,19 @@ def getRecordAdmin(name, begin_date, end_date):
     return data
 
 
-def getConsultantManage(name):
-    consults = Consultant.objects.filter(name=name)
-    list =[]
+def getConsultantManage(username):
+    consults = Consultant.objects.filter(username=username)
+    list = []
     for consult in consults:
         mid = ConDirRecord.objects.get(con_id=consult.con_id).dir_id
-        monitor = Director.objects.get(dir_id=mid).name
+        monitor = Director.objects.get(dir_id=mid).username
         sches = ConSchedule.objects.filter(con_id=consult.con_id)
         weekday = ''
         for sche in sches:
             weekday += sche.weekday
 
         data = {
-            'name': name,
+            'name': username,
             'monitor': monitor,
             'sum': consult.totel_num,
             'time': consult.totel_dur,
@@ -167,8 +227,9 @@ def getConsultantManage(name):
 
     return list
 
+
 def getMonitorAdmin(name):
-    directors = Director.objects.filter(name=name)
+    directors = Director.objects.filter(username=name)
     list = []
 
     for director in directors:
@@ -176,8 +237,8 @@ def getMonitorAdmin(name):
         consol = ''
         for consultant in consultants:
             id = consultant.con_id
-            name = Consultant.objects.get(con_id=id).name
-            consol += name
+            username = Consultant.objects.get(con_id=id).username
+            consol += username
         sches = DirSchedule.objects.filter(dir_id=director.dir_id)
         weekday = ''
         for sche in sches:
@@ -186,7 +247,7 @@ def getMonitorAdmin(name):
         time = director.duration
 
         data = {
-            'name': name,
+            'name': username,
             'consultant': consol,
             'sum': sum,
             'time': time,
@@ -197,14 +258,14 @@ def getMonitorAdmin(name):
     return list
 
 
-def getUserAdmin(name):
-    users = Visitor.objects.filter(name=name, type=constants.Visitor)
+def getUserAdmin(username):
+    users = Visitor.objects.filter(name=username, type=constants.Visitor)
     list = []
     for user in users:
         data = {
-            'name': user.name,
+            'name': user.username,
             'gender': 'No Record',
-            'username': user.name,
+            'username': user.username,
             'phonenumber': user.tele,
             'contact': user.emer_name,
             'contactnumber': user.emer_tele,
