@@ -23,9 +23,6 @@ def register(request):
 
 def login(request):
     if request.POST:
-        # loginForm = request.POST['loginForm']
-        # name = loginForm.username
-        # password = loginForm.password
         name = request.POST['username']
         password = request.POST['password']
         ticket = checkUser(name, password)
@@ -152,8 +149,11 @@ def recordDirector(request):
 
         msg = {
             'tableData': data,
-            'totalSize': len(data)
+            'totalSize': len(data),
+            'status': 200,
+            'msg': 'Success'
         }
+
         return HttpResponse(json.dumps(msg, ensure_ascii=False), status=200)
     else:
         return HttpResponse(status=400)
@@ -168,7 +168,14 @@ def recordAdmin(request):
         begin_date = datetime.strptime(begin_date, '%Y-%m-%d')
         end_date = datetime.strptime(end_date, '%Y-%m-%d')
 
-        data = getRecordAdmin(name, begin_date, end_date)
+        data, err = getRecordAdmin(name, begin_date, end_date)
+
+        if err != '':
+            msg = {'status': 500,
+                   'data': '',
+                   'msg': err}
+
+            return HttpResponse(json.dumps(msg, ensure_ascii=False), status=500)
 
         return HttpResponse(json.dumps(data, ensure_ascii=False), status=200)
     else:

@@ -152,7 +152,7 @@ def getDashboardDirctor(token):
         'today_num': today_info.today_num,
         'today_time': today_info.today_dur,
         'squarUrl': user_info.icon,
-        'tableData': tableData
+        'tableData': tableData,
     }
 
     return res, ''
@@ -181,31 +181,40 @@ def getRecordDirctor(username, begin_date, end_date):
 
 
 def getRecordAdmin(username, begin_date, end_date):
-    id = Visitor.objects.get(username=username).vis_id
-    records = VisitorConRecord.objects.filter(vis_id=id, stime__range=[begin_date, end_date])
+    try:
+        visitors = Visitor.objects.filter(username=username)
+    except:
+        return '', 'Visitor: No data'
 
     list = []
-
-    for record in records:
-        ele = {
-            'name': username,
-            'time': record.duration,
-            'date': record.stime.strftime(("%Y-%m-%d %H:%M:%S")),
-            'rate': record.v2c_score,
-            'eva': record.record,
-            'assit': 'No Record'
-        }
-        list.append(ele)
+    for visitor in visitors:
+        try:
+            records = VisitorConRecord.objects.filter(vis_id=visitor.vis_id, stime__range=[begin_date, end_date])
+        except:
+            return '', 'VisitorConRecord: No data'
+        for record in records:
+            ele = {
+                'name': username,
+                'time': record.duration,
+                'date': record.stime.strftime(("%Y-%m-%d %H:%M:%S")),
+                'rate': record.v2c_score,
+                'eva': record.record,
+                'assit': 'No Record'
+            }
+            list.append(ele)
 
     data = {
         'list': list,
-        'total': records.count()
+        'total': len(list)
     }
-    return data
+    return data, ''
 
 
 def getConsultantManage(username):
-    consults = Consultant.objects.filter(username=username)
+    try:
+        consults = Consultant.objects.filter(username=username)
+    except:
+        return '', 'Consultant: No Data'
     list = []
     for consult in consults:
         mid = ConDirRecord.objects.get(con_id=consult.con_id).dir_id
@@ -225,7 +234,7 @@ def getConsultantManage(username):
         }
         list.append(data)
 
-    return list
+    return list, ''
 
 
 def getMonitorAdmin(name):
