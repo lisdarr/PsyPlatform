@@ -191,7 +191,9 @@ def consultantAdmin(request):
 
         msg = {
             'list': data,
-            'total': len(data)
+            'total': len(data),
+            'msg': 'Success',
+            'status': 200
         }
 
         return HttpResponse(json.dumps(msg, ensure_ascii=False), status=200)
@@ -208,7 +210,9 @@ def monitorAdmin(request):
 
         msg = {
             'list': data,
-            'total': len(data)
+            'total': len(data),
+            'msg': 'Success',
+            'status': 200
         }
 
         return HttpResponse(json.dumps(msg, ensure_ascii=False), status=200)
@@ -225,7 +229,9 @@ def userAdmin(request):
 
         msg = {
             'list': data,
-            'total': len(data)
+            'total': len(data),
+            'msg': 'Success',
+            'status': 200
         }
 
         return HttpResponse(json.dumps(msg, ensure_ascii=False), status=200)
