@@ -66,7 +66,8 @@ STATICFILES_DIRS = [
 CORS_ALLOW_CREDENTIALS = True
 CORS_ORIGIN_ALLOW_ALL = True
 CORS_ORIGIN_WHITELIST = (
-    '*'
+    'https://0.0.0.0',
+    'http://0.0.0.0'
 )
 
 CORS_ALLOW_METHODS = (
