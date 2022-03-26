@@ -32,7 +32,7 @@ def registInDatabase(model, user):
 def checkUser(username, password):
     user = ''
     if Visitor.objects.filter(name=username).count() != 0:
-        user = Visitor.objects.get(username=username)
+        user = Visitor.objects.get(name=username)
     if Consultant.objects.filter(username=username).count() != 0:
         user = Consultant.objects.get(username=username)
     if Director.objects.filter(username=username).count() != 0:
