@@ -260,15 +260,15 @@ def loginInfo(request):
             }
             return HttpResponse(json.dumps(msg, ensure_ascii=False), status=500)
 
-        msg = {
-            'name': data['name'],
-            'avator': data['avator'],
-            'role': data['role'],
-            'id': data['id'],
-            'msg': 'Success!'
-        }
-
-        return HttpResponse(json.dumps(msg, ensure_ascii=False), status=200)
+        else:
+            msg = {
+                'name': data['name'],
+                'avator': data['avator'],
+                'role': data['role'],
+                'id': data['id'],
+                'msg': 'Success!'
+            }
+            return HttpResponse(json.dumps(msg, ensure_ascii=False), status=200)
     else:
         msg = {
             'name': '',
