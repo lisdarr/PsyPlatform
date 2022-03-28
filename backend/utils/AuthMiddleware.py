@@ -7,7 +7,7 @@ class AuthMiddleware(MiddlewareMixin):
     def process_request(self, request):
         if request.path == '/login/' or request.path == '/user/regist/':
             return None
-        ticket = request.COOKIES.get('ticket')
+        ticket = request.COOKIES.get('token')
         if not ticket:
             return HttpResponseRedirect('/login/')
 

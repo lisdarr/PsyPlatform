@@ -12,5 +12,6 @@ urlpatterns = [
     path('admin/record/', recordAdmin),
     path('admin/consultant', consultantAdmin),
     path('admin/monitor', monitorAdmin),
-    path('admin/user', userAdmin)
+    path('admin/user', userAdmin),
+    path('info/', loginInfo)
 ]

@@ -285,3 +285,50 @@ def getUserAdmin(username):
         list.append(data)
 
     return list
+
+
+def getLoginInfo(token):
+    user = ''
+    role = ''
+    id = ''
+    name = ''
+    if Visitor.objects.filter(u_ticket=token).count() != 0:
+        user = Visitor.objects.get(u_ticket=token)
+        if user.type == 'admin':
+            role = 'Admin'
+        else:
+            role = 'Visitor'
+        id = user.vis_id
+        name = user.name
+    if Consultant.objects.filter(u_ticket=token).count() != 0:
+        user = Consultant.objects.get(u_ticket=token)
+        role = 'Consultant'
+        id = user.con_id
+        name = user.username
+    if Director.objects.filter(u_ticket=token).count() != 0:
+        user = Director.objects.get(u_ticket=token)
+        role = 'Director'
+        id = user.dir_id
+        name = user.username
+
+    if user == '':
+        err = 'User is not registered'
+        data = {
+            'name': '',
+            'avator': '',
+            'role': '',
+            'id': ''
+        }
+        return data, err
+
+    avator = user.icon
+
+    data = {
+        'name': name,
+        'avator': avator,
+        'role': role,
+        'id': id
+    }
+
+    return data, ''
+

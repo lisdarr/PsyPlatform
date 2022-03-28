@@ -1,5 +1,5 @@
 import json
-from django.views.decorators.http import require_http_methods
+
 from django.shortcuts import render
 from django.http import HttpResponse, HttpResponseRedirect
 from database.views import *
@@ -20,14 +20,13 @@ def register(request):
 
     return HttpResponseRedirect('/user/login/', msg, status=200)
 
+
 def login(request):
-    if request.method=='POST':
+    if request.method == 'POST':
         name = request.POST['username']
-        print(name)
         password = request.POST['password']
-        print(password)
-        ticket = checkUser(name, password)
-        if ticket == 0:
+        token = checkUser(name, password)
+        if token == 0:
             msg = {
                 'msg': "用户不存在",
                 'name': name,
@@ -35,7 +34,7 @@ def login(request):
                 'status': 400
             }
             return HttpResponse(json.dumps(msg, ensure_ascii=False), status=400)
-        elif ticket == -1:
+        elif token == -1:
             msg = {
                 'msg': "密码错误",
                 'name': name,
@@ -47,25 +46,24 @@ def login(request):
             'msg': "登录成功",
             'name': name,
             'password': password,
-            'token': ticket,
+            'token': token,
             'status': 200
         }
         response = HttpResponse(json.dumps(msg), status=200)
-        response.set_cookie('token', ticket, max_age=900000)
-        print(response)
+        response.set_cookie('token', token, max_age=900000)
         return response
 
 
 def logout(request):
     if request.method == 'GET':
         response = HttpResponseRedirect('/user/login/')
-        response.delete_cookie('ticket')
+        response.delete_cookie('token')
         return response
 
 
 def dashboardConsultant(request):
     if request.method == 'GET':
-        token = request.COOKIES.get('ticket')
+        token = request.COOKIES.get('token')
 
         data, err = getDashboardConsultant(token)
 
@@ -123,7 +121,7 @@ def recordConsultant(request):
 
 def dashboardDirector(request):
     if request.method == 'GET':
-        token = request.COOKIES.get('ticket')
+        token = request.COOKIES.get('token')
 
         data, err = getDashboardDirctor(token)
 
@@ -245,3 +243,38 @@ def userAdmin(request):
         return HttpResponse(json.dumps(msg, ensure_ascii=False), status=200)
     else:
         return HttpResponse(status=400)
+
+
+def loginInfo(request):
+    if request.method == 'GET':
+        token = request.COOKIES.get('token')
+        data, err = getLoginInfo(token)
+
+        if err != '':
+            msg = {
+                'name': '',
+                'avator': '',
+                'role': '',
+                'id': '',
+                'msg': err
+            }
+            return HttpResponse(json.dumps(msg, ensure_ascii=False), status=500)
+
+        msg = {
+            'name': data['name'],
+            'avator': data['avator'],
+            'role': data['role'],
+            'id': data['id'],
+            'msg': 'Success!'
+        }
+
+        return HttpResponse(json.dumps(msg, ensure_ascii=False), status=200)
+    else:
+        msg = {
+            'name': '',
+            'avator': '',
+            'role': '',
+            'id': '',
+            'msg': 'Request Method error!'
+        }
+        return HttpResponse(json.dumps(msg, ensure_ascii=False), status=400)
