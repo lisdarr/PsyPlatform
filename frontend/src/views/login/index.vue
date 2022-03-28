@@ -49,10 +49,10 @@
       >登录
       </el-button>
 
-      <div class="tips">
-        <span style="margin-right:20px;">username: admin</span>
-        <span> password: any</span>
-      </div>
+      <!--      <div class="tips">-->
+      <!--        <span style="margin-right:20px;">username: admin</span>-->
+      <!--        <span> password: any</span>-->
+      <!--      </div>-->
 
     </el-form>
   </div>
@@ -121,6 +121,7 @@ export default {
           this.loading = true
           // 派发一个action：user/login，带着用户名与密码的载荷
           this.$store.dispatch('user/login', this.loginForm).then(() => {
+            console.log('登录成功了')
             // 登录成功，进行路由跳转
             this.$router.push({ path: this.redirect || '/' })
             // loading效果结束

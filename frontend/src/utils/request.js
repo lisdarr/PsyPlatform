@@ -1,25 +1,34 @@
 import axios from 'axios'
-import { MessageBox, Message } from 'element-ui'
+import { Message, MessageBox } from 'element-ui'
 import store from '@/store'
 import { getToken } from '@/utils/auth'
-
+import qs from 'qs'
 // create an axios instance
 const service = axios.create({
-  baseURL: process.env.VUE_APP_BASE_API, // url = base url + request url
-  // withCredentials: true, // send cookies when cross-domain requests
-  timeout: 5000 // request timeout
+  baseURL: 'http://127.0.0.1:8000/', // url = base url + request url
+  withCredentials: true, // send cookies when cross-domain requests
+  timeout: 5000, // request timeout
+  headers: {
+    'Content-Type': 'application/x-www-form-urlencoded'
+  }
 })
 // 请求拦截器
 // request interceptor
 service.interceptors.request.use(
   config => {
     // do something before request is sent
-
+    if (config.method === 'post') {
+      config.data = qs.stringify(config.data)
+    }
+    if (config.method === 'get') {
+      config.url = config.url + '?' + qs.stringify(config.data)
+    }
     if (store.getters.token) {
       // let each request carry token
       // ['X-Token'] is a custom headers key
       // please modify it according to the actual situation
       config.headers['token'] = getToken()
+      // console.log(getToken())
     }
     return config
   },
@@ -35,7 +44,7 @@ service.interceptors.response.use(
   /**
    * If you want to get http information such as headers or status
    * Please return  response => response
-  */
+   */
 
   /**
    * Determine the request status by custom code
@@ -44,10 +53,10 @@ service.interceptors.response.use(
    */
   response => {
     const res = response.data
-
+    // console.log(res.status)
     // if the custom code is not 20000, it is judged as an error.
     // 服务器响应失败后干什么
-    if (res.code !== 20000 && res.code !== 200) {
+    if (res.status !== 20000 && res.status !== 200) {
       Message({
         message: res.message || 'Error',
         type: 'error',
@@ -55,7 +64,7 @@ service.interceptors.response.use(
       })
 
       // 50008: Illegal token; 50012: Other clients logged in; 50014: Token expired;
-      if (res.code === 50008 || res.code === 50012 || res.code === 50014) {
+      if (res.status === 50008 || res.status === 50012 || res.status === 50014) {
         // to re-login
         MessageBox.confirm('You have been logged out, you can cancel to stay on this page, or log in again', 'Confirm logout', {
           confirmButtonText: 'Re-Login',
@@ -70,6 +79,7 @@ service.interceptors.response.use(
       return Promise.reject(new Error(res.message || 'Error'))
     } else {
       // 服务器响应成功后干什么
+      // console.log('服务器响应成功')
       return res
     }
   },

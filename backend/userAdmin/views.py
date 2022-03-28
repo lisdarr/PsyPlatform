@@ -1,5 +1,5 @@
 import json
-
+from django.views.decorators.http import require_http_methods
 from django.shortcuts import render
 from django.http import HttpResponse, HttpResponseRedirect
 from database.views import *
@@ -20,11 +20,12 @@ def register(request):
 
     return HttpResponseRedirect('/user/login/', msg, status=200)
 
-
 def login(request):
-    if request.POST:
+    if request.method=='POST':
         name = request.POST['username']
+        print(name)
         password = request.POST['password']
+        print(password)
         ticket = checkUser(name, password)
         if ticket == 0:
             msg = {
@@ -42,9 +43,16 @@ def login(request):
                 'status': 400
             }
             return HttpResponse(json.dumps(msg, ensure_ascii=False), status=400)
-
-        response = HttpResponse(status=200)
-        response.set_cookie('ticket', ticket, max_age=900000)
+        msg = {
+            'msg': "登录成功",
+            'name': name,
+            'password': password,
+            'token': ticket,
+            'status': 200
+        }
+        response = HttpResponse(json.dumps(msg), status=200)
+        response.set_cookie('token', ticket, max_age=900000)
+        print(response)
         return response
 
 

@@ -90,7 +90,7 @@ export const asyncRoutes = [
   },
 
   {
-    path: '/',
+    path: '/ChatConsult',
     component: Layout,
     meta: { roles: ['consult'] },
     children: [
@@ -98,15 +98,15 @@ export const asyncRoutes = [
         path: '/ChatConsult',
         component: () => import('@/views/ChatConsult/index'),
         name: 'ChatConsult',
-        meta: { roles: ['consult'], title: '会话', icon: 'el-icon-chat-dot-square' }
-      },
-      {
-        path: '/ChatConsult/Chat',
-        component: () => import('@/views/ChatConsult/Chat'),
-        hidden: true,
-        name: 'Chat',
-        meta: { roles: ['consult'], title: '聊天' }
+        meta: { roles: ['consult'], title: '会话列表', icon: 'el-icon-chat-dot-square' }
       }
+      // {
+      //   path: '/ChatConsult/:id',
+      //   component: () => import('@/views/ChatConsult/Chat'),
+      //   // hidden: true,
+      //   name: 'Chat',
+      //   meta: { roles: ['consult'], title: '聊天' }
+      // }
     ]
   },
   // 督导动态路由

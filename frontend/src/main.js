@@ -14,6 +14,7 @@ import '@/permission' // permission control
 // Vue.use(ElementUI)
 import GoEasy from 'goeasy'
 import VueResource from 'vue-resource'
+import IMService from '@/views/ChatConsult/imservice'
 /**
  * If you don't want to use mock-server
  * you want to use MockJs for mock api
@@ -27,18 +28,23 @@ if (process.env.NODE_ENV === 'production') {
   mockXHR()
 }
 var axios = require('axios')
-axios.defaults.baseURL = 'http://127.0.0.1:8000/api'
+axios.defaults.baseURL = 'http://127.0.0.1:8000/'
+axios.defaults.headers.post['Content-Type'] = 'application/x-www-form-urlencoded'
 Vue.prototype.$axios = axios
 // set ElementUI lang to EN
 Vue.use(ElementUI, { locale })
 
 Vue.use(VueResource)
 
-Vue.prototype.goeasy = GoEasy.getInstance({
-  host: 'hangzhou.goeasy.io',
-  appkey: 'BC-51b5a52577df4ba8ae017cd70fb83835',
+const goEasy = GoEasy.getInstance({
+  host: 'hangzhou.goeasy.io', // 应用所在的区域地址: [hangzhou.goeasy.io, 新加坡暂不支持IM，敬请期待]
+  appkey: 'BC-51b5a52577df4ba8ae017cd70fb83835', // common key
   modules: ['im']
 })
+
+Vue.prototype.GoEasy = GoEasy
+Vue.prototype.goEasy = goEasy
+Vue.prototype.service = new IMService(goEasy, GoEasy)
 
 Vue.config.productionTip = false
 

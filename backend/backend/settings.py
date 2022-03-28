@@ -25,7 +25,7 @@ SECRET_KEY = 'django-insecure-3@3hh#md7y$&(8_o^m$o-ne^=^bo7fg+3l^c2m)dy9kkl88#&0
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = [r'*']
 
 
 # Application definition
@@ -45,13 +45,12 @@ INSTALLED_APPS = [
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
+    'corsheaders.middleware.CorsMiddleware',
     'django.middleware.common.CommonMiddleware',
     # 'django.middleware.csrf.CsrfViewMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
-    'corsheaders.middleware.CorsMiddleware',
-    'django.middleware.common.CommonMiddleware',
     # 'utils.AuthMiddleware.AuthMiddleware',
 ]
 
@@ -65,10 +64,14 @@ STATICFILES_DIRS = [
 #跨域增加忽略
 CORS_ALLOW_CREDENTIALS = True
 CORS_ORIGIN_ALLOW_ALL = True
-CORS_ORIGIN_WHITELIST = (
-    'https://0.0.0.0',
-    'http://0.0.0.0'
-)
+CORS_ORIGIN_REGEX_WHITELIST = [
+    r"*",
+]
+CSRF_TRUSTED_ORIGINS = ['http://localhost:9528/*']
+# CORS_ORIGIN_WHITELIST = (
+#     'https://0.0.0.0',
+#     'http://0.0.0.0'
+# )
 
 CORS_ALLOW_METHODS = (
     'DELETE',
@@ -153,7 +156,7 @@ AUTH_PASSWORD_VALIDATORS = [
 
 LANGUAGE_CODE = 'en-us'
 
-TIME_ZONE = 'UTC'
+TIME_ZONE = 'Asia/Shanghai'
 
 USE_I18N = True
 

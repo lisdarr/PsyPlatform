@@ -16,7 +16,7 @@
         <!--        <el-menu-item>-->
         <!--          <i class="el-icon-chat-dot-square"></i>-->
         <!--          &lt;!&ndash;          <span>会话列表</span>&ndash;&gt;-->
-        <!--          <template slot="title">会话列表</template>-->
+        <!--          <template>会话列表</template>-->
         <!--        </el-menu-item>-->
 
       </el-menu>

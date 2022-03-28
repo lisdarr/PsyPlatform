@@ -17,7 +17,8 @@ const users = {
   'admin-token': {
     roles: ['admin'],
     avatar: 'https://wpimg.wallstcn.com/f778738c-e4f8-4870-b634-56703b4acafe.gif',
-    name: 'Super Admin'
+    name: 'Super Admin',
+    id: '000'
   },
   'consult-token': {
     roles: ['consult'],
@@ -36,7 +37,8 @@ const users = {
     roles: ['adminlim'],
     introduction: 'I am a system admin',
     avatar: 'https://wpimg.wallstcn.com/f778738c-e4f8-4870-b634-56703b4acafe.gif',
-    name: 'adminlim'
+    name: 'adminlim',
+    id: '003'
   }
 }
 

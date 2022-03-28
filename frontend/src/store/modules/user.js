@@ -7,7 +7,8 @@ const getDefaultState = () => {
     token: getToken(),
     name: '',
     avatar: '',
-    roles: []
+    roles: [],
+    id: ''
   }
 }
 
@@ -28,20 +29,28 @@ const mutations = {
   },
   SET_ROLES: (state, roles) => {
     state.roles = roles
+  },
+  SET_ID: (state, id) => {
+    state.id = id
   }
 }
 
 const actions = {
   // user login
   login({ commit }, userInfo) {
-    const { username, password } = userInfo
+    // const { username, password } = userInfo
+    // const param = new URLSearchParams()
+    // param.append('username', username.trim())
+    // param.append('password', password)
+    // console.log(username)
     return new Promise((resolve, reject) => {
-      login({ username: username.trim(), password: password }).then(response => {
-        const { data } = response
+      login(userInfo).then(response => {
+        const data = response
         commit('SET_TOKEN', data.token)
         setToken(data.token)
         resolve()
       }).catch(error => {
+        // console.error(error.response.data)
         reject(error)
       })
     })
@@ -58,16 +67,6 @@ const actions = {
   //   } else {
   //     return Promise.reject(new Error('false'))
   //   }
-  // return new Promise((resolve, reject) => {
-  //   login({ username: username.trim(), password: password }).then(response => {
-  //     const { data } = response
-  //     commit('SET_TOKEN', data.token)
-  //     setToken(data.token)
-  //     resolve()
-  //   }).catch(error => {
-  //     reject(error)
-  //   })
-  // })
 
   // get user info
   getInfo({ commit, state }) {
@@ -77,13 +76,14 @@ const actions = {
         if (!data) {
           return reject('Verification failed, please Login again.')
         }
-        const { roles, name, avatar } = data
+        const { roles, name, avatar, id } = data
         if (!roles || roles.length <= 0) {
           reject('getInfo: roles must be a non-null array!')
         }
         commit('SET_NAME', name)
         commit('SET_AVATAR', avatar)
         commit('SET_ROLES', roles)
+        commit('SET_ID', id)
         resolve(data)
       }).catch(error => {
         reject(error)
