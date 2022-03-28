@@ -66,46 +66,46 @@ export const asyncRoutes = [
     path: '/',
     component: Layout,
     // redirect: '/dashboard',
-    meta: { roles: ['consult'] },
+    meta: { roles: ['Consultant'] },
     children: [{
       path: 'DashboardConsult',
       name: 'DashboardConsult',
       component: () => import('@/views/DashboardConsult/index'),
       // title设置sidebar标题
-      meta: { roles: ['consult'], title: '首页', icon: 'el-icon-s-home' }
+      meta: { roles: ['Consultant'], title: '首页', icon: 'el-icon-s-home' }
     }]
   },
 
   {
     path: '/',
     component: Layout,
-    meta: { roles: ['consult'] },
+    meta: { roles: ['Consultant'] },
     children: [{
       path: 'RecordConsult',
       component: () => import('@/views/RecordConsult/index'),
       name: 'RecordConsult',
       // title设置sidebar标题
-      meta: { roles: ['consult'], title: '咨询记录', icon: 'el-icon-document' }
+      meta: { roles: ['Consultant'], title: '咨询记录', icon: 'el-icon-document' }
     }]
   },
 
   {
     path: '/ChatConsult',
     component: Layout,
-    meta: { roles: ['consult'] },
+    meta: { roles: ['Consultant'] },
     children: [
       {
         path: '/ChatConsult',
         component: () => import('@/views/ChatConsult/index'),
         name: 'ChatConsult',
-        meta: { roles: ['consult'], title: '会话列表', icon: 'el-icon-chat-dot-square' }
+        meta: { roles: ['Consultant'], title: '会话列表', icon: 'el-icon-chat-dot-square' }
       }
       // {
       //   path: '/ChatConsult/:id',
       //   component: () => import('@/views/ChatConsult/Chat'),
       //   // hidden: true,
       //   name: 'Chat',
-      //   meta: { roles: ['consult'], title: '聊天' }
+      //   meta: { roles: ['Consultant'], title: '聊天' }
       // }
     ]
   },
@@ -113,110 +113,110 @@ export const asyncRoutes = [
   {
     path: '/',
     component: Layout,
-    meta: { roles: ['director'] },
+    meta: { roles: ['Director'] },
     children: [{
       path: 'DashboardDirector',
       component: () => import('@/views/DashboardDirector/index'),
       name: 'DashboardDirector',
-      meta: { roles: ['director'], title: '首页', icon: 'el-icon-s-home' }
+      meta: { roles: ['Director'], title: '首页', icon: 'el-icon-s-home' }
     }]
   },
   {
     path: '/',
     component: Layout,
-    meta: { roles: ['director'] },
+    meta: { roles: ['Director'] },
     children: [{
       path: 'RecordDirector',
       component: () => import('@/views/RecordDirector/index'),
       name: 'RecordDirector',
       // title设置sidebar标题
-      meta: { roles: ['director'], title: '咨询记录', icon: 'el-icon-document' }
+      meta: { roles: ['Director'], title: '咨询记录', icon: 'el-icon-document' }
     }]
   },
 
   {
     path: '/',
     component: Layout,
-    meta: { roles: ['director'] },
+    meta: { roles: ['Director'] },
     children: [{
       path: 'ChatDirector',
       component: () => import('@/views/ChatDirector/index'),
       name: 'ChatDirector',
-      meta: { roles: ['director'], title: '会话', icon: 'el-icon-chat-dot-square' }
+      meta: { roles: ['Director'], title: '会话', icon: 'el-icon-chat-dot-square' }
     }]
   },
   // 管理员动态路由
   {
     path: '/',
     component: Layout,
-    meta: { roles: ['adminlim'] },
+    meta: { roles: ['Admin'] },
     children: [{
       path: 'DashboardAdmin',
       component: () => import('@/views/DashboardAdmin/index'),
       name: 'DashboardAdmin',
-      meta: { roles: ['adminlim'], title: '首页', icon: 'el-icon-s-home' }
+      meta: { roles: ['Admin'], title: '首页', icon: 'el-icon-s-home' }
     }]
   },
   {
     path: '/',
     name: 'RecordAdmin',
     component: Layout,
-    meta: { roles: ['adminlim'] },
+    meta: { roles: ['Admin'] },
     children: [{
       path: 'RecordAdmin',
       name: 'RecordAdmin',
       component: () => import('@/views/RecordAdmin/index'),
-      meta: { roles: ['adminlim'], title: '咨询记录', icon: 'el-icon-document' }
+      meta: { roles: ['Admin'], title: '咨询记录', icon: 'el-icon-document' }
     }]
   },
   {
     path: '/',
     name: 'ScheduleAdmin',
-    meta: { roles: ['adminlim'] },
+    meta: { roles: ['Admin'] },
     component: Layout,
     children: [{
       path: 'ScheduleAdmin',
       name: 'ScheduleAdmin',
       component: () => import('@/views/ScheduleAdmin/index'),
-      meta: { roles: ['adminlim'], title: '排班表', icon: 'el-icon-date' }
+      meta: { roles: ['Admin'], title: '排班表', icon: 'el-icon-date' }
     }]
   },
 
   {
     path: '/',
     name: 'consultantManage',
-    meta: { roles: ['adminlim'] },
+    meta: { roles: ['Admin'] },
     component: Layout,
     children: [{
       path: 'consultantmanage',
       name: 'consultantManage',
       component: () => import('@/views/consultantManage/index'),
-      meta: { roles: ['adminlim'], title: '咨询师管理', icon: 'el-icon-service' }
+      meta: { roles: ['Admin'], title: '咨询师管理', icon: 'el-icon-service' }
     }]
   },
 
   {
     path: '/',
     name: 'monitorManage',
-    meta: { roles: ['adminlim'] },
+    meta: { roles: ['Admin'] },
     component: Layout,
     children: [{
       path: 'monitormanage',
       name: 'monitorManage',
       component: () => import('@/views/monitorManage/index'),
-      meta: { roles: ['adminlim'], title: '督导管理', icon: 'el-icon-s-platform' }
+      meta: { roles: ['Admin'], title: '督导管理', icon: 'el-icon-s-platform' }
     }]
   },
   {
     path: '/',
     name: 'userManage',
     component: Layout,
-    meta: { roles: ['adminlim'] },
+    meta: { roles: ['Admin'] },
     children: [{
       path: 'usermanage',
       name: 'userManage',
       component: () => import('@/views/userManage/index'),
-      meta: { roles: ['adminlim'], title: '访客管理', icon: 'el-icon-s-custom' }
+      meta: { roles: ['Admin'], title: '访客管理', icon: 'el-icon-s-custom' }
     }]
   },
   { path: '*', redirect: '/404', hidden: true }

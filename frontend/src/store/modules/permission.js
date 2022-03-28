@@ -21,7 +21,6 @@ function hasPermission(roles, route) {
  */
 export function filterAsyncRoutes(routes, roles) {
   const res = []
-
   routes.forEach(route => {
     const tmp = { ...route }
     if (hasPermission(roles, tmp)) {
@@ -31,7 +30,6 @@ export function filterAsyncRoutes(routes, roles) {
       res.push(tmp)
     }
   })
-
   return res
 }
 
@@ -52,7 +50,6 @@ const actions = {
   generateRoutes({ commit }, roles) {
     return new Promise(resolve => {
       let accessedRoutes = []
-      // console.log(roles)
       // 路由是否有admin,有直接全部显示
       if (roles.includes('admin')) {
         // console.log('if')
@@ -60,13 +57,10 @@ const actions = {
         // console.log(accessedRoutes)
       } else {
         // 过滤路由
-        console.log(roles)
         accessedRoutes = filterAsyncRoutes(asyncRoutes, roles)
-        console.log(accessedRoutes)
         // accessedRoutes这个就是当前角色可见的动态路由
       }
       commit('SET_ROUTES', accessedRoutes)
-      // console.log(accessedRoutes)
       resolve(accessedRoutes)
     })
   }

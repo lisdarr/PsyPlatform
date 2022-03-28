@@ -27,6 +27,7 @@ router.beforeEach(async(to, from, next) => {
       NProgress.done()
     } else {
       const hasRoles = store.getters.roles && store.getters.roles.length > 0
+      console.log(hasRoles)
       // const hasGetUserInfo = store.getters.name
       if (hasRoles) {
         next()
@@ -35,12 +36,12 @@ router.beforeEach(async(to, from, next) => {
           // get user info
           // note: roles must be a object array! such as: ['admin'] or ,['developer','editor']
           // 获取用户角色
-          console.log('正在获取用户信息')
-          const { roles } = await store.dispatch('user/getInfo')
+          // console.log('正在获取用户信息')
+          const roles = await store.dispatch('user/getInfo')
           // console.log(roles)
-          // generate accessible routes map based on roles
+          // generate accessible routes map based on role
           // 筛选用户可以看见的路由
-          const accessRoutes = await store.dispatch('permission/generateRoutes', roles)
+          const accessRoutes = await store.dispatch('permission/generateRoutes', roles.role)
           // dynamically add accessible routes
           // 更新加载路由
           router.options.routes = constantRoutes.concat(accessRoutes)
@@ -52,7 +53,10 @@ router.beforeEach(async(to, from, next) => {
         } catch (error) {
           // remove token and go to login page to re-login
           await store.dispatch('user/resetToken')
-          Message.error(error || 'Has Error')
+          Message.error({
+            message: error || 'Has Error'
+          })
+          // Message.error(error || 'Has Error')
           next(`/login?redirect=${to.path}`)
           NProgress.done()
         }

@@ -72,11 +72,14 @@ const actions = {
   getInfo({ commit, state }) {
     return new Promise((resolve, reject) => {
       getInfo(state.token).then(response => {
-        const { data } = response
+        const data = response
         if (!data) {
           return reject('Verification failed, please Login again.')
         }
-        const { roles, name, avatar, id } = data
+        const name = data.name
+        const roles = data.role
+        const avatar = data.avatar
+        const id = data.id
         if (!roles || roles.length <= 0) {
           reject('getInfo: roles must be a non-null array!')
         }

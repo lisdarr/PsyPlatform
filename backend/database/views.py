@@ -289,25 +289,25 @@ def getUserAdmin(username):
 
 def getLoginInfo(token):
     user = ''
-    role = ''
+    role = []
     id = ''
     name = ''
     if Visitor.objects.filter(u_ticket=token).count() != 0:
         user = Visitor.objects.get(u_ticket=token)
         if user.type == 'admin':
-            role = 'Admin'
+            role.append('Admin')
         else:
-            role = 'Visitor'
+            role.append('Visitor')
         id = user.vis_id
         name = user.name
     if Consultant.objects.filter(u_ticket=token).count() != 0:
         user = Consultant.objects.get(u_ticket=token)
-        role = 'Consultant'
+        role.append('Consultant')
         id = user.con_id
         name = user.username
     if Director.objects.filter(u_ticket=token).count() != 0:
         user = Director.objects.get(u_ticket=token)
-        role = 'Director'
+        role.append('Director')
         id = user.dir_id
         name = user.username
 
@@ -316,7 +316,7 @@ def getLoginInfo(token):
         data = {
             'name': '',
             'avator': '',
-            'role': '',
+            'role': [],
             'id': ''
         }
         return data, err

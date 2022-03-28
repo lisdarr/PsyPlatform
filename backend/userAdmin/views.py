@@ -248,8 +248,8 @@ def userAdmin(request):
 def loginInfo(request):
     if request.method == 'GET':
         token = request.COOKIES.get('token')
+        print(token)
         data, err = getLoginInfo(token)
-
         if err != '':
             msg = {
                 'name': '',
@@ -266,7 +266,8 @@ def loginInfo(request):
                 'avator': data['avator'],
                 'role': data['role'],
                 'id': data['id'],
-                'msg': 'Success!'
+                'msg': 'Success!',
+                'status': 200
             }
             return HttpResponse(json.dumps(msg, ensure_ascii=False), status=200)
     else:
@@ -278,3 +279,13 @@ def loginInfo(request):
             'msg': 'Request Method error!'
         }
         return HttpResponse(json.dumps(msg, ensure_ascii=False), status=400)
+
+def logout(request):
+    if request.method == 'POST':
+        msg = {
+            'msg': 'Success!',
+            'status': 200
+        }
+        return HttpResponse(json.dumps(msg, ensure_ascii=False), status=200)
+    else:
+        return HttpResponse(status=400)

@@ -13,5 +13,6 @@ urlpatterns = [
     path('admin/consultant', consultantAdmin),
     path('admin/monitor', monitorAdmin),
     path('admin/user', userAdmin),
-    path('info/', loginInfo)
+    path('info/', loginInfo),
+    path('logout/', logout)
 ]
