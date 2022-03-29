@@ -19,7 +19,7 @@
           </el-button>
         </div>
         <el-alert title="排班信息" type="success" :closable="false"></el-alert>
-        <el-form :model="form" label-width="100px">
+        <el-form :model="form" label-width="80px" >
           <el-form-item label="咨询师：">
             {{ form.consultantName }}
           </el-form-item>
@@ -32,9 +32,9 @@
 
     <!-- 添加或修改 -->
     <el-dialog title="添加排班" :visible.sync="dialogFormVisible">
-      <el-form :model="form" label-width="100px">
+      <el-form label-width="100px">
         <el-form-item label="选择咨询师">
-          <el-select v-model="form.consultant" placeholder="请选择咨询师">
+          <el-select v-model="form.consultantName" placeholder="请选择咨询师">
             <el-option
               v-for="item in consultantList"
               :key="item.consultantId"
@@ -45,7 +45,7 @@
           </el-select>
         </el-form-item>
         <el-form-item label="选择督导">
-          <el-select v-model="form.monitor" placeholder="请选择督导">
+          <el-select v-model="form.monitorId" placeholder="请选择督导">
             <el-option
               v-for="item in monitorList"
               :key="item.monitorId"
@@ -91,8 +91,8 @@ export default {
       isShowBtn: false,
       dialogFormVisible: false,
       form: {
-        consultantName: "咨询师A",
-        monitorName: "督导A",
+        consultantName: "",
+        monitorName: "",
         consultantId: "",
         monitorId: "",
       },
@@ -108,12 +108,12 @@ export default {
         buttonText: { today: "今天" },
         selectable: true,
         timeFormat: "H(:mm)", // uppercase H for 24-hour clock
-
+        dateClick: this.handleDateClick,
         eventSources: [
           {
             events: [
-              { title: "咨询师：", start: "2022-03-21", conSum: 6, monSum: 0 },
-              { title: "督导：", start: "2022-03-21", conSum: 0, monSum: 4 },
+              { title: "咨询师：5", start: "2022-03-21",},
+              { title: "督导：2", start: "2022-03-21",},
               { title: "咨询师：4 ", start: "2022-03-22" },
               { title: "督导：3", start: "2022-03-22" },
             ],
@@ -133,24 +133,24 @@ export default {
         weekNumberCalculation: "ISO",
         customButtons: {},
         consultantList: [
-          // {
-          //   consultantName: "咨询师A",
-          //   consultantId: 1,
-          // },
-          // {
-          //   consultantName: "咨询师B",
-          //   consultantId: 2,
-          // },
+          {
+            consultantName: "咨询师A",
+            consultantId: 1,
+          },
+          {
+            consultantName: "咨询师B",
+            consultantId: 2,
+          },
         ],
         monitorList: [
-          // {
-          //   monitorName:"督导A",
-          //   monitorId:1,
-          // },
-          // {
-          //   monitorName:"督导B",
-          //   monitorId:2,
-          // }
+          {
+            monitorName:"督导A",
+            monitorId:1,
+          },
+          {
+            monitorName:"督导B",
+            monitorId:2,
+          }
         ],
       },
     };
@@ -158,16 +158,18 @@ export default {
   mounted() {},
 
   methods: {
-    // getTitle(item) {},
     addPaiban() {
       this.dialogFormVisible = true;
       this.form = {
-        consultantName: "咨询师A",
-        monitorName: "督导A",
+        consultantName: "",
+        monitorName: "",
         consultantId: "",
         monitorId: "",
       };
       this.isShowBtn = false;
+    },
+    handleDateClick(event){
+      console.log("day", event);
     },
     dateToString(now) {
       var year = now.getFullYear();
