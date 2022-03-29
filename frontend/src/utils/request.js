@@ -28,7 +28,6 @@ service.interceptors.request.use(
       // ['X-Token'] is a custom headers key
       // please modify it according to the actual situation
       config.headers['token'] = getToken()
-      // console.log(getToken())
     }
     return config
   },
@@ -53,7 +52,6 @@ service.interceptors.response.use(
    */
   response => {
     const res = response.data
-    // console.log(res.status)
     // if the custom code is not 20000, it is judged as an error.
     // 服务器响应失败后干什么
     if (res.status !== 20000 && res.status !== 200) {
@@ -79,7 +77,7 @@ service.interceptors.response.use(
       return Promise.reject(new Error(res.message || 'Error'))
     } else {
       // 服务器响应成功后干什么
-      // console.log('服务器响应成功')
+      // console.log(res)
       return res
     }
   },

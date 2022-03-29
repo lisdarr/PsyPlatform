@@ -10,7 +10,7 @@
                 <el-avatar shape="square" :size="200" :src="squareUrl"/>
               </div>
               <div style="margin-left: 220px">
-                <div style="margin-bottom: 30%; font-size: 20px; font-weight: bold">咨询师</div>
+                <div style="margin-bottom: 30%; font-size: 20px; font-weight: bold">{{ name }}</div>
                 <div style="font-size: 20px; margin-bottom: 10%">我的综合评价</div>
                 <div>
                   <el-rate v-model="value" disabled show-score text-color="#ff9900" score-template="{value}"/>
@@ -51,7 +51,7 @@
       <!--        值班日历部分 -->
       <el-col :span="9" style="height: 520px;">
         <el-card class="box-card" style="width: auto; height: 520px">
-          <Calendar v-model="value"/>
+          <Calendar :calendarData="calendarData"/>
         </el-card>
       </el-col>
     </el-row>
@@ -85,8 +85,8 @@
               <el-button size="mini" type="success">导出记录</el-button>
             </el-table-column>
           </el-table>
-
         </el-card>
+        <div>{{ tableData.time }}</div>
       </el-col>
     </el-row>
   </div>
@@ -95,6 +95,8 @@
 <script>
 import { mapGetters } from 'vuex'
 import Calendar from '@/components/Calendar'
+import { getToken } from '@/utils/auth'
+import { dashboardConsultant } from '@/api/consultant'
 
 // export default {
 //   name: 'Dashboard',
@@ -111,25 +113,30 @@ export default {
   components: { Calendar },
   data() {
     return {
-      tableData: [{
-        name: '王小虎',
-        time: '00:12:54',
-        date: '2016-05-02',
-        rate: 3.7,
-        comment: '很好的咨询师！'
-      }],
+      tableData: [],
       // value: new Date()
       squareUrl: 'https://cube.elemecdn.com/9/c2/f0ee8a3c7c9638a54940382568c9dpng.png',
       value: 3.7,
       consultNum: 12345,
       consultTodayNum: 35,
       consultTodayTime: '6:32:24',
-      callNum: 2
+      callNum: 2,
+      calendarData: [
+        {
+          month: '04',
+          day: '15'
+        },
+        {
+          month: '06',
+          day: '14'
+        }
+      ]
     }
   },
   computed: {
     ...mapGetters([
-      'name'
+      'name',
+      'token'
     ])
   },
   methods: {
@@ -146,18 +153,20 @@ export default {
       this.$router.push({ path: '/RecordConsult' })
     },
     init_dashboardConsult() {
-      console.log('我被挂载啦')
       var that = this
-      this.$axios.get(
-        '/dashboardConsultInfo'
-      ).then((response) => {
-        that.tableData = response.data.tableData
-        that.squareUrl = response.data.squareUrl
-        that.value = response.data.value
-        that.consultNum = response.data.consultNum
-        that.consultTodayNum = response.data.consultTodayNum
-        that.consultTodayTime = response.data.consultTodayTime
-        that.callNum = response.data.callNum
+      const token = getToken()
+      dashboardConsultant(token).then(response => {
+        console.log('12344455')
+        const data = response
+        that.tableData = Array(data.tableData)
+        that.squareUrl = data.squareUrl
+        that.value = data.value
+        that.consultNum = data.consultNum
+        that.consultTodayNum = data.consultTodayNum
+        that.consultTodayTime = data.consultTodayTime
+        that.callNum = data.callNum
+      }).catch(error => {
+        console.log(error)
       })
     }
   },

@@ -64,7 +64,6 @@ def logout(request):
 def dashboardConsultant(request):
     if request.method == 'GET':
         token = request.COOKIES.get('token')
-
         data, err = getDashboardConsultant(token)
 
         if err != '':
@@ -85,8 +84,9 @@ def dashboardConsultant(request):
                'consultNum': data['consultNum'],
                'consultTodayNum': data['consultTodayNum'],
                'consultTodayTime': data['consultTodayTime'],
-               'callNum': data['callNum']}
-
+               'callNum': data['callNum'],
+               'status': 200}
+        print(msg)
         return HttpResponse(json.dumps(msg, ensure_ascii=False), status=200)
 
     else:
@@ -111,7 +111,8 @@ def recordConsultant(request):
 
         msg = {
             'tableData': data,
-            'totalSize': len(data)
+            'totalSize': len(data),
+            'status': 200
         }
 
         return HttpResponse(json.dumps(msg, ensure_ascii=False), status=200)

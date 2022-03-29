@@ -1,14 +1,12 @@
 <template>
-  <el-calendar v-model="value">
+  <el-calendar>
     <template slot="dateCell" slot-scope="{date, data}">
       <div>
         <div class="calendar-day">{{ data.day.split('-').slice(2).join('-') }}</div>
         <div v-for="(item, index) in calendarData" :key="index">
-          <div v-if="(item.months).indexOf(data.day.split('-').slice(1)[0])!==-1">
-            <div v-if="(item.days).indexOf(data.day.split('-').slice(2).join('-'))!==-1">
-              <el-tooltip class="item" effect="dark" placement="right">
-                <div class="is-selected" style="text-align: center; font-weight: bold;">值班</div>
-              </el-tooltip>
+          <div v-if="(item.month).indexOf(data.day.split('-').slice(1)[0])!==-1">
+            <div v-if="(item.day).indexOf(data.day.split('-').slice(2).join('-'))!==-1">
+              <div class="is-selected" style="text-align: center; font-weight: bold;">值班</div>
             </div>
             <div v-else/>
           </div>
@@ -22,16 +20,11 @@
 <script>
 export default {
   name: 'Calendar',
+  props: {
+    calendarData: []
+  },
   data() {
-    return {
-      calendarData: [
-        {
-          months: ['03'],
-          days: ['15']
-        }
-      ],
-      value: new Date()
-    }
+    return {}
   }
 }
 </script>

@@ -153,6 +153,7 @@ def getDashboardDirctor(token):
         'today_time': today_info.today_dur,
         'squarUrl': user_info.icon,
         'tableData': tableData,
+        'status': 200
     }
 
     return res, ''

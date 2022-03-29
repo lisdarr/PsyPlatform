@@ -2,18 +2,20 @@
   <div class="sidebar-logo-container" :class="{'collapse':collapse}">
     <transition name="sidebarLogoFade">
       <div v-if="collapse" key="collapse" class="sidebar-logo-link">
-        <img v-if="logo" :src="logo" class="sidebar-logo">
-        <h1 v-else class="sidebar-title">欢迎，{{ title }}！ </h1>
+        <img v-if="avatar" :src="avatar" class="sidebar-logo">
+        <h1 v-else class="sidebar-title">欢迎，{{ name }}！ </h1>
       </div>
       <div v-else key="expand" class="sidebar-logo-link">
-        <img v-if="logo" :src="logo" class="sidebar-logo">
-        <h1 class="sidebar-title">欢迎，{{ title }}！ </h1>
+        <img v-if="avatar" :src="avatar" class="sidebar-logo">
+        <h1 class="sidebar-title">欢迎，{{ name }}!</h1>
       </div>
     </transition>
   </div>
 </template>
 
 <script>
+import { mapGetters } from 'vuex'
+
 export default {
   name: 'SidebarLogo',
   props: {
@@ -22,12 +24,13 @@ export default {
       required: true
     }
   },
-  data() {
-    return {
-      title: '咨询师',
-      logo: 'https://cube.elemecdn.com/9/c2/f0ee8a3c7c9638a54940382568c9dpng.png'
-    }
+  computed: {
+    ...mapGetters([
+      'name',
+      'avatar'
+    ])
   }
+
 }
 </script>
 

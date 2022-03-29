@@ -50,13 +50,13 @@
                 <el-row type="flex" :gutter="4">
                   <el-col :span="8" v-for="(item,index) in consultList" :key="item.id">
                     <el-card :key="index" style="margin-bottom: 4px">
-                      <div style="float: left; font-size: 5px">
+                      <div style="float: left; font-size: 15px">
                         {{ item.name }}
                       </div>
-                      <div v-if="item.state === 'true'" style="float: right;">
+                      <div v-if="item.state === 1" style="float: right;">
                         <i class="el-icon-user-solid" style="color: lightgreen"></i>
                       </div>
-                      <div v-if="item.state === 'false'" style="float: right;">
+                      <div v-if="item.state !== 1" style="float: right;">
                         <i class="el-icon-user-solid" style="color: gray"></i>
                       </div>
                     </el-card>
@@ -75,7 +75,7 @@
       <!--    右侧排班表-->
       <div style="width: 35%; float: left; height: 450px; margin: 2% 1%">
         <el-card>
-          <Calendar v-model="value"/>
+          <Calendar :calendarData="calendarData"/>
         </el-card>
       </div>
     </div>
@@ -110,30 +110,15 @@
 
 <script>
 import Calendar from '@/components/Calendar'
+import { dashboardDirector } from '@/api/director'
+import { getToken } from '@/utils/auth'
 
 export default {
   name: 'DashboardDirector',
   components: { Calendar },
   data() {
     return {
-      consultList: [
-        {
-          name: '1号咨询师',
-          state: 'true'
-        },
-        {
-          name: '2号咨询师',
-          state: 'false'
-        },
-        {
-          name: '3号咨询师',
-          state: 'false'
-        },
-        {
-          name: '4号咨询师',
-          state: 'false'
-        }
-      ],
+      consultList: [],
       consultNum: 5,
       directorName: '督导',
       consultTodayNum: 15,
@@ -143,7 +128,17 @@ export default {
         name: '王小虎',
         time: '00:12:54',
         date: '2016-05-02'
-      }]
+      }],
+      calendarData: [
+        {
+          month: '04',
+          day: '15'
+        },
+        {
+          month: '06',
+          day: '14'
+        }
+      ]
     }
   },
   methods: {
@@ -151,18 +146,15 @@ export default {
       this.$router.push({ path: '/RecordDirector' })
     },
     init_dashboardDirector() {
-      console.log('我被挂载啦')
       var that = this
-      this.$axios.get(
-        '/dashboardConsultInfo'
-      ).then((response) => {
-        that.consultList = response.data.consultList
-        that.squareUrl = response.data.squareUrl
-        that.directorName = response.data.directorName
-        that.consultNum = response.data.consultNum
-        that.consultTodayNum = response.data.consultTodayNum
-        that.consultTodayTime = response.data.consultTodayTime
-        that.tableData = response.data.tableData
+      dashboardDirector(getToken()).then((response) => {
+        that.consultList = response.consultList
+        that.squareUrl = response.squareUrl
+        that.directorName = response.directorName
+        that.consultNum = response.consultNum
+        that.consultTodayNum = response.today_num
+        that.consultTodayTime = response.today_time
+        that.tableData = response.tableData
       })
     }
   },

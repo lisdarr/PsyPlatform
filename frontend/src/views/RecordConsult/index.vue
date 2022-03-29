@@ -46,6 +46,8 @@
 </template>
 
 <script>
+import { recordConsultant } from '@/api/consultant'
+
 export default {
   name: 'RecordConsult',
   data() {
@@ -195,16 +197,13 @@ export default {
     search() {
       console.log('我在搜索')
       var that = this
-      this.$axios.post(
-        // 后端接口地址
-        '/search',
-        {
-          inputValue: this.inputValue,
-          dataValue: this.dataValue
-        }
-      ).then((response) => {
-        that.tableData = response.data.tableData
-        that.totalSize = response.data.totalSize
+      recordConsultant({
+        name: this.inputValue,
+        begin_date: this.dataValue[0],
+        end_date: this.dataValue[1]
+      }).then((response) => {
+        that.tableData = response.tableData
+        that.totalSize = response.totalSize
       }).catch((error) => {
         console.log(error)
       })
