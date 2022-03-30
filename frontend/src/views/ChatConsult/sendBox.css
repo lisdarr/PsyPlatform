@@ -22,11 +22,6 @@
   margin: 2px;
 }
 
-.el-button {
-  background: #bfcbd9;
-  border-color: #bfcbd9;
-}
-
 .send-box .send-box-top .send-button-icon .emoji-icon {
   background: url("/public/IM/icon/emoji.png") no-repeat center;
   background-size: cover;
