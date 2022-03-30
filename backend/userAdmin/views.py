@@ -14,11 +14,10 @@ def register(request):
         if err is not None:
             return HttpResponse(err, status=400)
         msg = 'Register success'
+        return HttpResponseRedirect('/user/login/', msg, status=200)
     else:
         err = 'No Post request'
         return HttpResponse(err, status=400)
-
-    return HttpResponseRedirect('/user/login/', msg, status=200)
 
 
 def login(request):
@@ -311,3 +310,52 @@ def loginInfo(request):
             'status': 400
         }
         return HttpResponse(json.dumps(msg, ensure_ascii=False), status=400)
+
+
+def dashboardAdmin(request):
+    if request.method == 'GET':
+        token = request.COOKIES.get('token')
+        data, err = getDashboardAdmin(token)
+
+        if err != '':
+            msg = {
+                'status': 500,
+                'msg': err
+            }
+            return HttpResponse(json.dumps(msg, ensure_ascii=False), status=500)
+
+        msg = {
+            'status': 200,
+            'msg': 'Success!',
+            'consultList': data['consultList'],
+            'monitorList': data['monitorList'],
+            'consultNum': data['consultNum'],
+            'chatNum': data['chatNum'],
+            'consultTodayNum': data['consultTodayNum'],
+            'consultTodayTime': data['consultTodayTime'],
+            'myChartData': data['myChartData'],
+            'weekChartData': data['weekChartData'],
+            'sumList': data['sumList'],
+            'rateList': data['rateList']
+        }
+
+        return HttpResponse(json.dumps(msg, ensure_ascii=False), status=200)
+
+    else:
+        msg = {
+            'status': 400,
+            'msg': 'Request Method error!',
+        }
+        return HttpResponse(json.dumps(msg, ensure_ascii=False), status=400)
+
+
+# def consultantAdd(request):
+#     if request.method == 'POST':
+#         token = request.COOKIES.get('token')
+#         form = request.POST.get('form')
+#
+#
+# def consultantEdit(request):
+#     if request.method == 'POST':
+#         token = request.COOKIES.get('token')
+#         form = request.POST.get('editform')

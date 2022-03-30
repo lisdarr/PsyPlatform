@@ -4,7 +4,8 @@ import time
 from .models import *
 from django.contrib.auth.hashers import make_password, check_password
 from django.utils import timezone
-from utils import constants
+from utils import constants, convert
+from django.db.models.aggregates import Sum, Count, Avg, Variance, StdDev, Max, Min
 
 
 def registUser(user):
@@ -137,7 +138,7 @@ def getDashboardDirctor(token):
     except:
         return '', 'DirSchedule err'
 
-    list =[]
+    list = []
     for consult in consults:
         try:
             today = ConToday.objects.get(con_id=consult.con_id)
@@ -149,7 +150,7 @@ def getDashboardDirctor(token):
         except:
             data = {}
 
-    tableData =[]
+    tableData = []
     records = ConDirRecord.objects.filter(dir_id=user_info.dir_id)
     for record in records:
         consult = Consultant.objects.get(con_id=record.con_id)
@@ -353,3 +354,133 @@ def getLoginInfo(token):
 
     return data, ''
 
+
+def getDashboardAdmin(token):
+    try:
+        admin = Visitor.objects.filter(u_ticket=token)
+    except:
+        return '', 'User is not admin'
+
+    if admin.count() == 0:
+        return '', 'User is not admin'
+
+    try:
+        consultants = Consultant.objects.all()
+    except:
+        return '', 'Consultant err'
+
+    consultantList = []
+    for consultant in consultants:
+        try:
+            state = ConToday.objects.get(con_id=consultant.con_id).state
+        except:
+            state = 0
+        data = {
+            'name': consultant.username,
+            'state': state
+        }
+        consultantList.append(data)
+
+    try:
+        dirctors = Director.objects.all()
+    except:
+        return '', 'Director err'
+
+    directorList = []
+    for dirctor in dirctors:
+        try:
+            state = DirToday.objects.get(dir_id=dirctor.dir_id).state
+        except:
+            state = 'NULL'
+
+        data = {
+            'name': dirctor.username,
+            'state': state
+        }
+
+        directorList.append(data)
+
+    consultNum = ConToday.objects.filter(state=1).count()
+    chatNum = DirToday.objects.filter(state=1).count()
+    consultTodayNum = ConToday.objects.aggregate(nums=Sum('today_num'))['nums']
+    consultTodayTime = ConToday.objects.all().aggregate(duration=Sum('today_dur'))['duration']
+
+    firstDay = convert.get_past_week()
+    weekchartDatas = VisitorConRecord.objects.filter(stime__gte=firstDay)
+
+    chartMap = {}
+    weekChartData = []
+    for chart in weekchartDatas:
+        date = str(chart.stime.strftime('%m-%d'))
+        num = chartMap.get(date, 0)
+        chartMap[date] = num + 1
+    days = convert.get_last_week()
+    for day in days:
+        date = str(day.strftime('%m-%d'))
+        num = chartMap.get(date, 0)
+        chartMap[date] = num
+
+    for key, value in chartMap.items():
+        list = [key, value]
+        weekChartData.append(list)
+
+    firstHour = convert.get_last_day()
+    hourChartDatas = VisitorConRecord.objects.filter(stime__gte=firstHour)
+    myChartData = []
+    map = {}
+    for data in hourChartDatas:
+        hour = str(data.stime.strftime('%H'))
+        num = map.get(hour, 0)
+        map[hour] = num + 1
+
+    hours = convert.get_last_hour()
+    for h in hours:
+        hour = str(h.strftime('%H'))
+        num = map.get(hour, 0)
+        map[hour] = num
+
+    for key, value in map.items():
+        key = key + ':00'
+        list = [key, value]
+        myChartData.append(list)
+
+    consultants = Consultant.objects.all().order_by('totel_num')[:4]
+    sumList = []
+
+    for consult in consultants:
+        data = {
+            'photo': consult.icon,
+            'name': consult.username,
+            'consultNum': consult.totel_num
+        }
+        sumList.append(data)
+
+    rateList = []
+    consultants = Consultant.objects.all().order_by('av_score')[:4]
+
+    for consult in consultants:
+        data = {
+            'photo': consult.icon,
+            'name': consult.username,
+            'consultNum': consult.av_score
+        }
+
+        rateList.append(data)
+
+    res = {
+        'consultList': consultantList,
+        'monitorList': directorList,
+        'consultNum': consultNum,
+        'chatNum': chatNum,
+        'consultTodayNum': consultTodayNum,
+        'consultTodayTime': consultTodayTime,
+        'myChartData': myChartData,
+        'weekChartData': weekChartData,
+        'sumList': sumList,
+        'rateList': rateList,
+    }
+
+    return res, ''
+
+
+# def addConsultant(form):
