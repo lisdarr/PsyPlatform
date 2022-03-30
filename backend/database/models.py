@@ -148,6 +148,7 @@ class DirToday(models.Model):
     dir_id = models.IntegerField(blank=True, null=True)
     today_num = models.IntegerField(blank=True, null=True)
     today_dur = models.BigIntegerField(blank=True, null=True)
+    state = models.IntegerField(blank=True, null=True)
 
     class Meta:
         managed = False
