@@ -1,0 +1,96 @@
+.send-box {
+  display: flex;
+  flex-direction: column;
+  /*position: fixed;*/
+  font-size: 20rem;
+  width: 100%;
+  height: 20%;
+}
+
+.send-box .send-box-top {
+  width: 100%;
+  height: 30%;
+  background: #bfcbd9;
+}
+
+.send-box .send-box-top .send-button-icon {
+  float: left;
+  height: 90%;
+  width: 30px;
+  padding: 2px;
+  font-size: 25px;
+  margin: 2px;
+}
+
+.el-button {
+  background: #bfcbd9;
+  border-color: #bfcbd9;
+}
+
+.send-box .send-box-top .send-button-icon .emoji-icon {
+  background: url("/public/IM/icon/emoji.png") no-repeat center;
+  background-size: cover;
+}
+
+.emoji-icon:before {
+  content: "替";
+  font-size: 25px;
+  visibility: hidden;
+}
+
+.send-box-bottom {
+  height: 70%;
+  width: 100%;
+  box-sizing: border-box;
+  word-break: break-all;
+  background: #ffffff;
+}
+
+.send-box-bottom .emoji-container {
+  display: flex;
+  justify-content: space-around;
+  width: 100%;
+  height: 100%;
+
+}
+
+.send-box-bottom .emoji-container img {
+  width: 0.5rem;
+  height: 0.5rem;
+}
+
+.send-box-bottom .more-container {
+  display: flex;
+  width: 100%;
+  height: 100%;
+}
+
+.send-box-bottom .more-container .more-item {
+  display: flex;
+  flex-direction: column;
+  width: 0.75rem;
+  height: 0.75rem;
+  margin-right: 0.1rem;
+  align-items: center;
+  position: relative;
+}
+
+.send-box-bottom .more-container .more-item img {
+  height: 0.5rem;
+  width: 0.5rem;
+}
+
+.send-box-bottom .more-container .more-item span {
+  font-size: 0.1rem;
+  text-align: center;
+  line-height: 0.25rem;
+}
+
+.send-box-bottom .more-container .more-item .img-input {
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  top: 0;
+  left: 0;
+  opacity: 0;
+}
