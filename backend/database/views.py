@@ -80,7 +80,9 @@ def getDashboardConsultant(token):
     time = time.split(' ')
     calendar = []
     for sch in conschedule:
-        calendar.append(sch.weekday)
+        list = convert.get_date(sch.weekday)
+        for i in list:
+            calendar.append(i)
 
     data = {'name': user_info.username,
             'time': time[1],
@@ -164,7 +166,9 @@ def getDashboardDirctor(token):
 
     calendarData = []
     for sch in dirSchedule:
-        calendarData.append(sch.weekday)
+        list = convert.get_date(sch.weekday)
+        for i in list:
+            calendarData.append(i)
 
     res = {
         'consultList': list,
