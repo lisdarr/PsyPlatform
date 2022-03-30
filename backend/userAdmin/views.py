@@ -55,15 +55,22 @@ def login(request):
 
 
 def logout(request):
-    if request.method == 'GET':
-        response = HttpResponseRedirect('/user/login/')
+    if request.method == 'POST':
+        msg = {
+            'msg': 'Success!',
+            'status': 200
+        }
+        response = HttpResponse(json.dumps(msg, ensure_ascii=False), status=200)
         response.delete_cookie('token')
         return response
+    else:
+        return HttpResponse(status=400)
 
 
 def dashboardConsultant(request):
     if request.method == 'GET':
         token = request.COOKIES.get('token')
+
         data, err = getDashboardConsultant(token)
 
         if err != '':
@@ -85,8 +92,10 @@ def dashboardConsultant(request):
                'consultTodayNum': data['consultTodayNum'],
                'consultTodayTime': data['consultTodayTime'],
                'callNum': data['callNum'],
-               'status': 200}
-        print(msg)
+               'calendarData': data['calendar'],
+               'status': 200,
+               }
+
         return HttpResponse(json.dumps(msg, ensure_ascii=False), status=200)
 
     else:
@@ -133,7 +142,20 @@ def dashboardDirector(request):
 
             return HttpResponse(json.dumps(msg, ensure_ascii=False), status=500)
 
-        return HttpResponse(json.dumps(data, ensure_ascii=False), status=200)
+        msg = {
+            'status': 200,
+            'msg': 'Success!',
+            'consultList': data['consultList'],
+            'consultNum': data['consultNum'],
+            'directorName': data['directorName'],
+            'today_num': data['today_num'],
+            'today_time': data['today_time'],
+            'squarUrl': data['squarUrl'],
+            'tableData': data['tableData'],
+            'calendarData': data['calendarData'],
+        }
+
+        return HttpResponse(json.dumps(msg, ensure_ascii=False), status=200)
     else:
         return HttpResponse(status=400)
 
@@ -183,8 +205,16 @@ def recordAdmin(request):
                    'msg': err}
 
             return HttpResponse(json.dumps(msg, ensure_ascii=False), status=500)
-
-        return HttpResponse(json.dumps(data, ensure_ascii=False), status=200)
+        msg = {
+            'name': data['name'],
+            'time': data['time'],
+            'date': data['date'],
+            'rate': data['rate'],
+            'eva': data['eva'],
+            'assit': data['assit'],
+            'status': 200,
+        }
+        return HttpResponse(json.dumps(msg, ensure_ascii=False), status=200)
     else:
         return HttpResponse(status=400)
 
@@ -249,8 +279,8 @@ def userAdmin(request):
 def loginInfo(request):
     if request.method == 'GET':
         token = request.COOKIES.get('token')
-        print(token)
         data, err = getLoginInfo(token)
+
         if err != '':
             msg = {
                 'name': '',
@@ -277,16 +307,7 @@ def loginInfo(request):
             'avator': '',
             'role': '',
             'id': '',
-            'msg': 'Request Method error!'
+            'msg': 'Request Method error!',
+            'status': 400
         }
         return HttpResponse(json.dumps(msg, ensure_ascii=False), status=400)
-
-def logout(request):
-    if request.method == 'POST':
-        msg = {
-            'msg': 'Success!',
-            'status': 200
-        }
-        return HttpResponse(json.dumps(msg, ensure_ascii=False), status=200)
-    else:
-        return HttpResponse(status=400)

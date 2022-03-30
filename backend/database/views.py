@@ -69,8 +69,17 @@ def getDashboardConsultant(token):
     except:
         return '', 'ConToday err'
 
+    try:
+        conschedule = ConSchedule.objects.filter(con_id=user_info.con_id)
+
+    except:
+        return '', 'ConSchedule err'
+
     time = timezone.localtime(timezone.now()).strftime(("%Y-%m-%d %H:%M:%S"))
     time = time.split(' ')
+    calendar = []
+    for sch in conschedule:
+        calendar.append(sch.weekday)
 
     data = {'name': user_info.username,
             'time': time[1],
@@ -80,7 +89,9 @@ def getDashboardConsultant(token):
             'consultNum': user_info.totel_num,
             'consultTodayNum': today_info.today_num,
             'consultTodayTime': today_info.today_dur,
-            'callNum': today_info.now_num}
+            'callNum': today_info.now_num,
+            'calendar': calendar,
+            }
 
     return data, ''
 
@@ -114,12 +125,17 @@ def getDashboardDirctor(token):
     try:
         user_info = Director.objects.get(u_ticket=token)
     except:
-        return [], 'Director No Data'
+        return '', 'Director No Data'
 
     try:
         consults = Consultant.objects.filter(dir_id=user_info.dir_id)
     except:
-        return [], 'No consultant'
+        return '', 'No consultant'
+
+    try:
+        dirSchedule = DirSchedule.objects.filter(dir_id=user_info.dir_id)
+    except:
+        return '', 'DirSchedule err'
 
     list =[]
     for consult in consults:
@@ -129,9 +145,9 @@ def getDashboardDirctor(token):
                 'name': consult.username,
                 'state': today.state
             }
+            list.append(data)
         except:
             data = {}
-        list.append(data)
 
     tableData =[]
     records = ConDirRecord.objects.filter(dir_id=user_info.dir_id)
@@ -145,6 +161,10 @@ def getDashboardDirctor(token):
         tableData.append(data)
     today_info = DirToday.objects.get(dir_id=user_info.dir_id)
 
+    calendarData = []
+    for sch in dirSchedule:
+        calendarData.append(sch.weekday)
+
     res = {
         'consultList': list,
         'consultNum': today_info.today_num,
@@ -153,7 +173,7 @@ def getDashboardDirctor(token):
         'today_time': today_info.today_dur,
         'squarUrl': user_info.icon,
         'tableData': tableData,
-        'status': 200
+        'calendarData': calendarData,
     }
 
     return res, ''
