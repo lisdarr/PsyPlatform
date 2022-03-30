@@ -316,7 +316,7 @@ def getLoginInfo(token):
     name = ''
     if Visitor.objects.filter(u_ticket=token).count() != 0:
         user = Visitor.objects.get(u_ticket=token)
-        if user.type == 'admin':
+        if user.type == constants.Admin:
             role.append('Admin')
         else:
             role.append('Visitor')
