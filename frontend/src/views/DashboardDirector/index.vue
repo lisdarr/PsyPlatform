@@ -154,6 +154,7 @@ export default {
         that.consultTodayNum = response.today_num
         that.consultTodayTime = response.today_time
         that.tableData = response.tableData
+        that.calendarData = response.calendarData
       })
     }
   },

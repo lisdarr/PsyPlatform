@@ -39,3 +39,37 @@ def get_last_hour():
         hour_list.append(today)
 
     return hour_list
+
+day_dict = {
+    'Mon': 1,
+    'Tue': 2,
+    'Wed': 3,
+    'Thu': 4,
+    'Fri': 5,
+    'Sat': 6,
+    'Sun': 7
+}
+
+
+def get_date(day):
+    print(day)
+    m = datetime.datetime.now().month
+    y = datetime.datetime.now().year
+    ndays = (datetime.date(y, m + 1, 1) - datetime.date(y, m, 1)).days
+    day_one = datetime.date(y, m, 1)
+    last_day = datetime.date(y, m, ndays)
+    delta = last_day - day_one
+    data_list = []
+    for i in range(delta.days + 1):
+        p = (day_one + datetime.timedelta(days=i)).strftime('%Y-%m-%d')
+        pp = datetime.datetime.strptime(str(p), '%Y-%m-%d')
+        one = pp.isoweekday()
+        if one == day_dict[day]:
+            month = pp.strftime('%m')
+            d = pp.strftime('%d')
+            data = {
+                'month': month,
+                'day': d
+            }
+            data_list.append(data)
+    return data_list

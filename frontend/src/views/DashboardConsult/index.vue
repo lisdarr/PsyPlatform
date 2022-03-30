@@ -121,16 +121,7 @@ export default {
       consultTodayNum: 35,
       consultTodayTime: '6:32:24',
       callNum: 2,
-      calendarData: [
-        {
-          month: '04',
-          day: '15'
-        },
-        {
-          month: '06',
-          day: '14'
-        }
-      ]
+      calendarData: []
     }
   },
   computed: {
@@ -164,6 +155,7 @@ export default {
         that.consultTodayNum = data.consultTodayNum
         that.consultTodayTime = data.consultTodayTime
         that.callNum = data.callNum
+        that.calendarData = data.calendarData
       }).catch(error => {
         console.log(error)
       })
