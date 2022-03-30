@@ -371,6 +371,7 @@ export default {
       ],
       isShowBtn: false,
       dialogFormVisible: false,
+      dialogVisible: false,
       form: {
         name: "",
         gender: "",
@@ -378,20 +379,19 @@ export default {
         idNumber: "",
         phone: "",
         email: "",
-        monitorId: "",
         userName: "",
         pwd: "",
         company: "",
         rank: "",
-        qual: "",
+        qual:"",
         qualId: "",
         certId: "",
-      },
-      dialogVisible: false,
+      },   
       editform:{
         name:"",
         schedule:[],
       },
+      qualList:[],
     };
   },
   methods: {

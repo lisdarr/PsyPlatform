@@ -154,8 +154,7 @@ export default {
     },
     init_dashboardConsult() {
       var that = this
-      const token = getToken()
-      dashboardConsultant(token).then(response => {
+      dashboardConsultant(getToken()).then(response => {
         console.log('12344455')
         const data = response
         that.tableData = Array(data.tableData)

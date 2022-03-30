@@ -264,8 +264,7 @@ export default {
             type: 'info',
             message: '已取消操作'
           });          
-        });
-      
+        });  
     },
   }
 };
