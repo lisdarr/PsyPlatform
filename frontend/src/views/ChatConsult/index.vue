@@ -34,13 +34,13 @@
       <div style="margin-top: 60px; margin-left: 5px; font-weight: bold; font-size: 20px">已咨询时间：</div>
       <div style="margin-top: 30px; font-size: 50px; margin-left: 70px">{{ consultTime }}</div>
       <div style="margin-top: 310px; margin-left: 20px">
-        <el-link @click="toDir">
+        <el-link @click="toDir" style="font-size: 35px;padding-left: 30px">
           请求督导
         </el-link>
       </div>
       <el-divider/>
       <div style="margin-left: 20px">
-        <el-link>
+        <el-link style="font-size: 35px;padding-left: 30px">
           结束咨询
         </el-link>
       </div>
