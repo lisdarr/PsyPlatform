@@ -9,7 +9,12 @@
 <scroll-view class="scroll-container" enable-flex="true" scroll-y>
     <view class="sub-container">
         <view class="consultant-card" wx:for="{{4}}" wx:key="item">
+            <view class="consultant-avatar">
+            <open-data type="userAvatarUrl"></open-data>
+            </view>
+            <view class="consultant-name">
             咨询师{{item}}
+            </view>
         </view>
   </view>
 </scroll-view>
