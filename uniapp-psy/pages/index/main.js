@@ -46,8 +46,8 @@ Page({
   //   // console.log(e.detail.encryptedData)
   // }
   handleSwitch: function(){
-    wx.switchTab({
-      url: '/pages/counselor/main',
+    wx.navigateTo({
+      url: '/pages/informed_consent/main',
       success: (result) => {},
       fail: () => {},
       complete: () => {}

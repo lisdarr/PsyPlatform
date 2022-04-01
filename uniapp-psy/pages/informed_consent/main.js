@@ -1,20 +1,21 @@
-// pages/counselor/main.js
+// pages/informed_consent/main.js
 Page({
 
     /**
      * 页面的初始数据
      */
     data: {
-      
+        seconds : 3,
+        timer : null
     },
 
     /**
      * 生命周期函数--监听页面加载
      */
-    onLoad: function () {
-      
+    onLoad: function (options) {
+
     },
-    
+
     /**
      * 生命周期函数--监听页面初次渲染完成
      */
@@ -26,7 +27,15 @@ Page({
      * 生命周期函数--监听页面显示
      */
     onShow: function () {
+        var _this2 = this;
+        this.seconds = 3;
 
+        this.timer = setInterval(function () {
+            _this2.seconds -= 1;
+                if (_this2.seconds === 0) {
+                clearInterval(_this2.timer);
+                }
+        }, 1000);
     },
 
     /**
@@ -62,7 +71,12 @@ Page({
      */
     onShareAppMessage: function () {
 
+    },
+
+    closeThis(e){
+        wx.redirectTo({
+            url: '/pages/counselor/main',
+        })
     }
 
-    
 })

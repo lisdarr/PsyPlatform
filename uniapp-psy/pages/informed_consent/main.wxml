@@ -1,0 +1,15 @@
+<!--pages/informed_consent/main.wxml-->
+
+<view class = "bg">
+    <image src="/static/images/note_back.png" class="bg-img"></image>
+</view>
+
+<view class="title">知情同意书</view>
+
+<scroll-view class="content" enable-flex="true" scroll-y>
+    知情同意书内容
+</scroll-view>
+
+<button hover-class="clicked" class="agree-button" bindtap="closeThis">
+    我同意 <block wx:if="{{seconds}}">( {{seconds}}S )</block>
+</button>

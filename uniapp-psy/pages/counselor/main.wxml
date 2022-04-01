@@ -1,4 +1,17 @@
 <!--pages/counselor/main.wxml-->
-<text>pages/counselor/main.wxml</text>
-<view class="white1" wx:if="{{isTiptrue}}">知情同意书</view>
-<button bindtap="closeThis">我知道了</button>
+
+<view class = "bg">
+    <image src="/static/images/note_back.png" class="bg-img"></image>
+</view>
+
+<view class="title">选择在线咨询师</view>
+
+<scroll-view class="scroll-container" enable-flex="true" scroll-y>
+    <view class="sub-container">
+        <view class="consultant-card" wx:for="{{4}}" wx:key="item">
+            咨询师{{item}}
+        </view>
+  </view>
+</scroll-view>
+
+
