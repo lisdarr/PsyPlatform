@@ -30,6 +30,9 @@
           value-format="yyyy-MM-dd"
         />
       </div>
+      <div style="width: 300px;float: left;margin-top: 50px;margin-left: 100px;">
+        <el-button size="small" icon="el-icon-search" @click="search">搜索</el-button>
+      </div>
     </div>
     <el-table
       style="width: 100%; margin-left: 12px; padding-top: 15px; height: 400px"
@@ -118,7 +121,6 @@
 </template>
 
 <script>
-import {getToken} from '@/utils/auth';
 import {recordAdmin} from '@/api/admin';
 
 export default {
@@ -218,10 +220,10 @@ export default {
           assit: '无'
         },
         {
-          name: '张先生',
+          name: '刘女士',
           time: '1:02:00',
-          date: '2022-03-14 13:45:06',
-          rate: 4.5,
+          date: '2022-04-01 13:45:06',
+          rate: 4.7,
           eva: '体验很好',
           assit: '无'
         }
@@ -236,20 +238,23 @@ export default {
     },
     handleCurrentChange(val) {
       console.log(`当前页: ${val}`)
-    }
-  },
+    },
     search()
     {
       console.log('搜索')
       var that = this
       recordAdmin({
         name: this.inputValue,
-        begin_date : this.dataValue[0],
-        end_date: this.dataValue[1],
+        begin_date: this.dataValue[0],
+        end_date: this.dataValue[1]
       }).then((response) => {
-        that.totalSize = response.totalSize
+        that.list = response.list
+        that.total = response.total
+      }).catch((error) => {
+        console.log(error)
       })
     }
+  }
 }
 </script>
 

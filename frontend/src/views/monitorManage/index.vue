@@ -2,7 +2,7 @@
   <div>
     <div style="display: inline">
       <div
-        style="width: 300px; float: left; margin-top: 20px; margin-left: 20px"
+        style="width: 200px; float: left; margin-top: 20px; margin-left: 20px"
       >
         <div style="color: #304156; font-size: 15px; margin-bottom: 10px">
           搜索姓名：
@@ -14,6 +14,9 @@
           label="搜索"
           placeholder="请输入姓名进行搜索"
         />
+      </div>
+      <div style="width: 30px;float: left;margin-top: 50px;margin-left: 10px;">
+        <el-button size="small" icon="el-icon-search" @click="search">搜索</el-button>
       </div>
       <div class="addbtn">
         <el-button type="primary" @click="addMonitor" size="small"
@@ -137,18 +140,6 @@
           ></el-input>
         </el-form-item>
       </el-form>
-      <el-form :model="form" label-width="100px" size="small">
-        <el-form-item label="绑定督导">
-          <el-select v-model="form.monitor" placeholder="请选择一个督导">
-            <el-option
-              v-for="item in monitorList"
-              :key="item.monitorId"
-              :label="item.monitorName"
-              :value="item.monitorId"
-            ></el-option>
-          </el-select>
-        </el-form-item>
-      </el-form>
       <el-form :model="form" inline="true" label-width="100px" size="small">
         <el-form-item label="用户名">
           <el-input
@@ -262,15 +253,17 @@
 </template>
 
 <script>
+import {monitorAdmin} from '@/api/admin'
+
 export default {
-  name: "consultantManage",
+  name: "monitorManage",
   data() {
     return {
       flag: "false",
       page: 1,
       limit: 7,
       total: 12,
-      inputvalue: "",
+      inputValue: "",
       list: [
         {
           name: "督导1",
@@ -383,7 +376,7 @@ export default {
         pwd: "",
         company: "",
         rank: "",
-        qual:"",
+        qual:"", //资质的名字
         qualId: "",
         certId: "",
       },   
@@ -400,6 +393,18 @@ export default {
     },
     handleCurrentChange(val) {
       console.log(`当前页: ${val}`);
+    },
+    search(){
+      console.log('搜索')
+      var that = this
+      monitorAdmin({
+        name: this.inputValue,
+      }).then((response) => {
+        that.list = response.list
+        that.total = response.total
+      }).catch((error) => {
+        console.log(error)
+      })
     },
     addMonitor() {
       this.dialogFormVisible = true;

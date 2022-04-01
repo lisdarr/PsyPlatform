@@ -19,7 +19,7 @@
           </el-button>
         </div>
         <el-alert title="排班信息" type="success" :closable="false"></el-alert>
-        <el-form :model="form" label-width="80px" >
+        <el-form :model="form" label-width="80px">
           <el-form-item label="咨询师：">
             {{ form.consultantName }}
           </el-form-item>
@@ -34,9 +34,9 @@
     <el-dialog title="添加排班" :visible.sync="dialogFormVisible">
       <el-form label-width="100px">
         <el-form-item label="选择咨询师">
-          <el-select v-model="form.consultantName" placeholder="请选择咨询师">
+          <el-select v-model="addForm.consultantId" placeholder="请选择咨询师">
             <el-option
-              v-for="item in consultantList"
+              v-for="(item, index) in consultantList"
               :key="item.consultantId"
               :label="item.consultantName"
               :value="item.consultantId"
@@ -45,7 +45,7 @@
           </el-select>
         </el-form-item>
         <el-form-item label="选择督导">
-          <el-select v-model="form.monitorId" placeholder="请选择督导">
+          <el-select v-model="addForm.monitorId" placeholder="请选择督导">
             <el-option
               v-for="item in monitorList"
               :key="item.monitorId"
@@ -68,8 +68,7 @@
       </el-form>
       <div slot="footer" class="dialog-footer">
         <el-button @click="dialogFormVisible = false" size="small"
-          >取 消</el-button
-        >
+          >取 消</el-button>
         <el-button type="primary" @click="save" size="small">确 定</el-button>
       </div>
     </el-dialog>
@@ -88,13 +87,16 @@ export default {
 
   data() {
     return {
-      isShowBtn: false,
       dialogFormVisible: false,
       form: {
-        consultantName: "",
+        consultantName: '',
         monitorName: "",
+      },
+      // 添加排班的表单
+      addForm: {
         consultantId: "",
         monitorId: "",
+        dateValue: "",
       },
       formLabelWidth: 120,
       calendarOptions: {
@@ -109,50 +111,37 @@ export default {
         selectable: true,
         timeFormat: "H(:mm)", // uppercase H for 24-hour clock
         dateClick: this.handleDateClick,
-        eventSources: [
-          {
-            events: [
-              { title: "咨询师：5", start: "2022-03-21",},
-              { title: "督导：2", start: "2022-03-21",},
-              { title: "咨询师：4 ", start: "2022-03-22" },
-              { title: "督导：3", start: "2022-03-22" },
-            ],
-            // events: function (start, end, timezone, callback) {
-            //   if (monSum == 0) {
-            //     title: `${this.title}${this.conSum} `;
-            //   }
-            //   if (conSum == 0) {
-            //     title: `${this.title}${this.monSum} `;
-            //   }
-            // },
-          },
+        events: [
+          { title: "咨询师：5", start: "2022-03-21" },
+          { title: "督导：2", start: "2022-03-21" },
+          { title: "咨询师：4 ", start: "2022-03-22" },
+          { title: "督导：3", start: "2022-03-22" },
         ],
-
         eventColor: "#f08f00",
         locale: "zh-cn",
         weekNumberCalculation: "ISO",
         customButtons: {},
-        consultantList: [
-          {
-            consultantName: "咨询师A",
-            consultantId: 1,
-          },
-          {
-            consultantName: "咨询师B",
-            consultantId: 2,
-          },
-        ],
-        monitorList: [
-          {
-            monitorName:"督导A",
-            monitorId:1,
-          },
-          {
-            monitorName:"督导B",
-            monitorId:2,
-          }
-        ],
       },
+      consultantList: [
+        {
+          consultantName: "咨询师A",
+          consultantId: "1",
+        },
+        {
+          consultantName: "咨询师B",
+          consultantId: "2",
+        },
+      ],
+      monitorList: [
+        {
+          monitorName: "督导A",
+          monitorId: 1,
+        },
+        {
+          monitorName: "督导B",
+          monitorId: 2,
+        },
+      ],
     };
   },
   mounted() {},
@@ -163,13 +152,18 @@ export default {
       this.form = {
         consultantName: "",
         monitorName: "",
-        consultantId: "",
-        monitorId: "",
+        // consultantId: "",
+        // monitorId: "",
       };
-      this.isShowBtn = false;
     },
-    handleDateClick(event){
-      console.log("day", event);
+    save(){
+      console.log('保存')
+      //send三个值，request new title
+    },
+    handleDateClick(info) {
+      console.log("点击日期");
+      this.form.consultantName = form.consultantName;
+      this.form.monitorName = form.monitorName;
     },
     dateToString(now) {
       var year = now.getFullYear();

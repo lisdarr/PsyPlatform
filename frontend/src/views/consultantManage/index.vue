@@ -2,7 +2,7 @@
   <div>
     <div style="display: inline">
       <div
-        style="width: 300px; float: left; margin-top: 20px; margin-left: 20px"
+        style="width: 200px; float: left; margin-top: 20px; margin-left: 20px"
       >
         <div style="color: #304156; font-size: 15px; margin-bottom: 10px">
           搜索姓名：
@@ -14,6 +14,9 @@
           label="搜索"
           placeholder="请输入姓名进行搜索"
         />
+      </div>
+      <div style="width: 30px;float: left;margin-top: 50px;margin-left: 10px;">
+        <el-button size="small" icon="el-icon-search" @click="search">搜索</el-button>
       </div>
       <div class="addbtn">
         <el-button type="primary" @click="addConsultant" size="small"
@@ -153,7 +156,7 @@
       </el-form>
       <el-form :model="form" label-width="90px" size="small">
         <el-form-item label="绑定督导">
-          <el-select v-model="form.monitor" placeholder="请选择一个督导">
+          <el-select v-model="form.monitorId" placeholder="请选择一个督导">
             <el-option
               v-for="item in monitorList"
               :key="item.monitorId"
@@ -254,6 +257,8 @@
 </template>
 
 <script>
+import {consultantAdmin} from '@/api/admin'
+
 export default {
   name: "consultantManage",
   data() {
@@ -263,6 +268,7 @@ export default {
       limit: 7,
       total: 12,
       inputValue: "",
+      dataValue: '',
       list: [
         {
           name: "咨询师A",
@@ -394,6 +400,17 @@ export default {
         monitor: "",
         schedule: [],
       },
+      // 选择督导框
+      monitorList: [
+          {
+            monitorName:"督导A",
+            monitorId:1,
+          },
+          {
+            monitorName:"督导B",
+            monitorId:2,
+          }
+        ],
     };
   },
 
@@ -405,7 +422,28 @@ export default {
     handleCurrentChange(val) {
       console.log(`当前页: ${val}`);
     },
+    search(){
+      console.log('搜索')
+      var that = this
+      consultantAdmin({
+        name: this.inputValue,
+      }).then((response) => {
+        that.list = response.list
+        that.total = response.total
+      }).catch((error) => {
+        console.log(error)
+      })
+    },
     addConsultant() {
+      // console.log('添加')
+      // var that = this
+      // consultantAdmin({
+      //   
+      // }).then((response) => {
+      //   
+      // }).catch((error) => {
+      //   console.log(error)
+      // }),
       this.dialogFormVisible = true;
       this.form = {
         name: "",

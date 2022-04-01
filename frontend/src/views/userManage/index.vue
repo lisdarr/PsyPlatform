@@ -1,6 +1,6 @@
 <template>
   <div>
-    <div style="width: 300px; float: left; margin-top: 20px; margin-left: 20px">
+    <div style="width: 200px; float: left; margin-top: 20px; margin-left: 20px">
       <div style="color: #304156; font-size: 15px; margin-bottom: 10px">
         搜索姓名：
       </div>
@@ -12,6 +12,9 @@
         placeholder="请输入姓名进行搜索"
       />
     </div>
+    <div style="width: 30px;float: left;margin-top: 50px;margin-left: 10px;">
+        <el-button size="small" icon="el-icon-search" @click="search">搜索</el-button>
+      </div>
     <el-table
       style="width: 100%; margin-left: 12px; padding-top: 15px; height = 400px"
     :data="list.slice((page-1)*limit, page*limit)">
@@ -97,11 +100,13 @@
 </template>
 
 <script>
+import {userAdmin} from '@/api/admin'
+
 export default {
-  name: "consultantManage",
+  name: "userManage",
   data() {
     return {
-      inputvalue: "",
+      inputValue: "",
       page: 1,
       limit: 7,
       total: 12,
@@ -247,6 +252,18 @@ export default {
     },
     handleCurrentChange(val) {
       console.log(`当前页: ${val}`)
+    },
+    search(){
+      console.log('搜索')
+      var that = this
+      userAdmin({
+        name: this.inputValue,
+      }).then((response) => {
+        that.list = response.list
+        that.total = response.total
+      }).catch((error) => {
+        console.log(error)
+      })
     },
     stopUse(row){
       this.$confirm('确定永久禁用该账号吗?', '提示', {
