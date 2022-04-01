@@ -204,13 +204,19 @@ def recordAdmin(request):
                    'msg': err}
 
             return HttpResponse(json.dumps(msg, ensure_ascii=False), status=500)
-        msg = {
+
+        list ={
             'name': data['name'],
             'time': data['time'],
             'date': data['date'],
             'rate': data['rate'],
             'eva': data['eva'],
             'assit': data['assit'],
+        }
+
+        msg = {
+            'list': list,
+            'total': data['total'],
             'status': 200,
         }
         return HttpResponse(json.dumps(msg, ensure_ascii=False), status=200)
