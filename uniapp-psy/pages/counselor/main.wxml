@@ -1,0 +1,4 @@
+<!--pages/counselor/main.wxml-->
+<text>pages/counselor/main.wxml</text>
+<view class="white1" wx:if="{{isTiptrue}}">知情同意书</view>
+<button bindtap="closeThis">我知道了</button>

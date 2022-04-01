@@ -1,0 +1,17 @@
+{
+  "navigationBarTitleText": "心理咨询",
+  "disableSwipeBack": true,
+  "backgroundColor": "#E4EBF1",
+  "disableScroll": true,
+  "usingComponents": {
+    "mp-dialog": "/miniprogram_npm/weui-miniprogram/dialog/dialog",
+    "mp-form": "/miniprogram_npm/weui-miniprogram/form/form",
+    "mp-tabbar": "/miniprogram_npm/weui-miniprogram/tabbar/tabbar",
+    "i-input":"/static/dist/input/index",
+    "i-card":"/static/dist/card/index",
+    "i-button":"/static/dist/button/index",
+    "i-rate":"/static/dist/rate/index",
+    "i-model":"/static/dist/modal/index",
+    "van-loading":"/static/vant/loading/index"
+  }
+}

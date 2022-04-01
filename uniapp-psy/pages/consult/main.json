@@ -1,0 +1,16 @@
+{
+  "navigationBarTitleText": "在线咨询",
+  "disableSwipeBack": true,
+  "backgroundColor": "#E4EBF1",
+  "enablePullDownRefresh": true,
+  "usingComponents": {
+    "i-input": "/static/dist/input/index",
+    "i-avatar": "/static/dist/avatar/index",
+    "i-row": "/static/dist/row/index",
+    "i-col": "/static/dist/col/index",
+    "van-icon": "/static/vant/icon/index",
+    "i-icon": "/static/dist/icon/index",
+    "i-rate": "/static/dist/rate/index",
+    "i-modal": "/static/dist/modal/index"
+  }
+}

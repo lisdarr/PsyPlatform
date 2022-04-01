@@ -1,0 +1,169 @@
+page {
+    overflow-y: auto !important;
+    background-color: #e4ebf1;
+  }
+  .button-disabled {
+    color: #c4c4c4 !important;
+    background-color: transparent !important;
+  }
+  .input-focus {
+    transition: all 0.2s ease-in-out;
+    border-bottom: 2rpx solid #006fff !important;
+  }
+  .mask.dataA {
+    position: fixed;
+    top: 0;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    z-index: 1000;
+    transition: all 0.2s ease-in-out;
+    background-color: rgba(23,38,57,0.74);
+  }
+  .maskShow.dataA {
+    position: fixed;
+    top: 0;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    overflow: auto;
+    height: 100%;
+    z-index: 1000;
+    outline: 0;
+    transform: translateZ(2rpx);
+    opacity: 1;
+    transition: all 0.2s ease-in-out;
+  }
+  .maskShow .content.dataA {
+    z-index: 1000;
+    background-color: #fff;
+    width: 75%;
+    transition: all 0.2s ease-in-out;
+  }
+  .maskShow .content .message.dataA {
+    padding: 100rpx 0;
+    text-align: center;
+    font-size: 40rpx;
+    color: #3c536e;
+  }
+  .maskShow .btns.dataA {
+    display: flex;
+    font-size: 32rpx;
+    border: 1rpx solid #e0eaf5;
+    box-sizing: border-box;
+  }
+  .maskShow .btns ._span.dataA {
+    text-align: center;
+    padding: 32rpx 0;
+    width: 50%;
+  }
+  .maskShow .btns .cancel.dataA {
+    color: #b2c1d2;
+  }
+  .maskShow .btns .confirm.dataA {
+    border-left: 1rpx solid #e0eaf5;
+    box-sizing: border-box;
+    color: #ec2864;
+  }
+  .cunstom-rate.i-icon-collection_fill {
+    color: #FFBE3D !important;
+  }
+  .counselorCard.dataB {
+    width: calc(100% - 40rpx);
+    background-color: #fff;
+    color: #7e8d9e;
+    font-size: 32rpx;
+    padding-left: 40rpx;
+  }
+  .counselorCard .card-title.dataB {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 20rpx 40rpx 20rpx 0;
+    border-bottom: 1rpx solid #e0eaf5;
+  }
+  .counselorCard .card-title .conversationType.dataB {
+    background-color: #72d4b9;
+    display: inline-block;
+    height: 100%;
+    color: #fff;
+    padding: 10rpx 20rpx;
+  }
+  .counselorCard .card-title .waitingState.dataB {
+    background-color: #ec2864 !important;
+  }
+  .counselorCard .card-title>._span.dataB:last-child {
+    color: #b2c1d2;
+    font-size: 45rpx;
+  }
+  .counselorCard .card-content.dataB {
+    position: relative;
+    background-color: #fff;
+    padding-top: 36rpx;
+    padding-bottom: 36rpx;
+    display: flex;
+  }
+  .counselorCard .card-content .left.dataB {
+    display: flex;
+    align-items: center;
+    flex-direction: column;
+    position: relative;
+  }
+  .counselorCard .card-content .left .avatar.dataB {
+    height: 160rpx;
+    width: 160rpx;
+    border-radius: 50%;
+    display: block;
+    overflow: hidden;
+  }
+  .counselorCard .card-content .left ._i.dataB {
+    position: absolute;
+    display: inline-block;
+    width: 20rpx;
+    height: 20rpx;
+    background-color: #16a800;
+    border-radius: 50%;
+    right: 3rpx;
+    bottom: 10rpx;
+  }
+  .counselorCard .card-content .left ._span.dataB {
+    color: #3c536e;
+  }
+  .counselorCard .card-content .right.dataB {
+    padding-left: 60rpx;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+  }
+  .counselorCard .card-content .right > ._div.dataB {
+    font-size: 28rpx;
+    display: flex;
+    flex-direction: column;
+  }
+  .counselorCard .card-content .right > ._div:first-child ._span.dataB:last-child {
+    font-size: 32rpx;
+  }
+  .avatar-container.dataB {
+    padding: 24rpx;
+    box-sizing: border-box;
+  }
+  .avatar-container .avatar.dataB {
+    border-radius: 8rpx;
+    height: 96rpx;
+    width: 96rpx;
+  }
+  .remain.dataB {
+    position: absolute;
+    right: 40rpx;
+    top: 20rpx;
+  }
+  .remain .info.dataB {
+    color: #fff;
+    font-size: 24rpx;
+    background-color: #fb5250;
+    border-radius: 60rpx;
+    padding: 4rpx 14rpx 6rpx;
+  }

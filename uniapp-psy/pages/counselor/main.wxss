@@ -1,0 +1,7 @@
+/* pages/counselor/main.wxss */
+
+.white1 {
+    height:100rpx;
+    width:100rpx;
+    background:red;
+    }

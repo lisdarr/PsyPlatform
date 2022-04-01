@@ -1,0 +1,9 @@
+{
+  "navigationBarTitleText": "在线咨询",
+  "backgroundColor": "#E4EBF1",
+  "enablePullDownRefresh": true,
+  "usingComponents": {
+    "i-rate": "/static/dist/rate/index",
+    "i-button": "/static/dist/button/index"
+  }
+}
