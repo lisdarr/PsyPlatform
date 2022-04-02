@@ -15,8 +15,12 @@
           placeholder="请输入姓名进行搜索"
         />
       </div>
-      <div style="width: 30px;float: left;margin-top: 50px;margin-left: 10px;">
-        <el-button size="small" icon="el-icon-search" @click="search">搜索</el-button>
+      <div
+        style="width: 30px; float: left; margin-top: 50px; margin-left: 10px"
+      >
+        <el-button size="small" icon="el-icon-search" @click="search"
+          >搜索</el-button
+        >
       </div>
       <div class="addbtn">
         <el-button type="primary" @click="addMonitor" size="small"
@@ -72,7 +76,7 @@
             plain
             icon="el-icon-edit"
             size="small"
-            @click="editMonitor"
+            @click="editMonitor(scope.row.name)"
             >修改</el-button
           >
         </template>
@@ -183,11 +187,11 @@
       </el-form>
       <el-form :model="form" inline="true" label-width="100px" size="small">
         <el-form-item label="督导资质">
-          <el-select v-model="form.qual" placeholder="请选择督导资质">
+          <el-select v-model="form.qualId" placeholder="请选择督导资质">
             <el-option
               v-for="item in qualList"
               :key="item.qualId"
-              :label="item.qual"
+              :label="item.qualName"
               :value="item.qualId"
             >
             </el-option>
@@ -195,7 +199,7 @@
         </el-form-item>
         <el-form-item label="资质编号">
           <el-input
-            v-model="form.email"
+            v-model="form.certId"
             placeholder="请输入资质编号"
             autocomplete="false"
           ></el-input>
@@ -205,37 +209,39 @@
         <el-button @click="dialogFormVisible = false" size="small"
           >取 消</el-button
         >
-        <el-button type="primary" @click="save" size="small">确 定</el-button>
+        <el-button type="primary" @click="saveAdd" size="small"
+          >确 定</el-button
+        >
       </div>
     </el-dialog>
 
     <!-- 修改督导信息 -->
-    <el-dialog title="修改咨询师信息" :visible.sync="dialogVisible">
+    <el-dialog title="修改督导信息" :visible.sync="dialogVisible">
       <el-form :model="editform" label-width="90px" size="small">
         <el-form-item label="姓名">
           <el-input v-model="editform.name"></el-input>
         </el-form-item>
         <el-form-item label="周值班安排">
           <el-checkbox-group v-model="editform.schedule">
-            <el-checkbox label="周一" name="schedule"
+            <el-checkbox label="周一"
               ><el-tag type="success">周一</el-tag></el-checkbox
             >
-            <el-checkbox label="周二" name="schedule"
+            <el-checkbox label="周二"
               ><el-tag type="success">周二</el-tag></el-checkbox
             >
-            <el-checkbox label="周三" name="schedule"
+            <el-checkbox label="周三"
               ><el-tag type="success">周三</el-tag></el-checkbox
             >
-            <el-checkbox label="周四" name="schedule"
+            <el-checkbox label="周四"
               ><el-tag type="success">周四</el-tag></el-checkbox
             >
-            <el-checkbox label="周五" name="schedule"
+            <el-checkbox label="周五"
               ><el-tag type="success">周五</el-tag></el-checkbox
             >
-            <el-checkbox label="周六" name="schedule"
+            <el-checkbox label="周六"
               ><el-tag type="success">周六</el-tag></el-checkbox
             >
-            <el-checkbox label="周日" name="schedule"
+            <el-checkbox label="周日"
               ><el-tag type="success">周日</el-tag></el-checkbox
             >
           </el-checkbox-group>
@@ -244,7 +250,7 @@
 
       <div slot="footer">
         <el-button @click="dialogVisible = false" size="small">取 消</el-button>
-        <el-button type="primary" @click="dialogVisible = false" size="small"
+        <el-button type="primary" @click="saveFlag = true" size="small"
           >确 定</el-button
         >
       </div>
@@ -253,13 +259,14 @@
 </template>
 
 <script>
-import {monitorAdmin} from '@/api/admin'
+import { monitorAdmin } from "@/api/admin";
 
 export default {
   name: "monitorManage",
   data() {
     return {
       flag: "false",
+      saveFlag: false,
       page: 1,
       limit: 7,
       total: 12,
@@ -376,16 +383,23 @@ export default {
         pwd: "",
         company: "",
         rank: "",
-        qual:"", //资质的名字
         qualId: "",
         certId: "",
-      },   
-      editform:{
-        name:"",
-        schedule:[],
       },
-      qualList:[],
+      editform: {
+        name: "",
+        schedule: [],
+      },
+      qualList: [
+        {
+          qualName: "qef",
+          qualId: "1",
+        },
+      ],
     };
+  },
+  mounted() {
+    // this.init_List();
   },
   methods: {
     handleSizeChange(val) {
@@ -394,17 +408,30 @@ export default {
     handleCurrentChange(val) {
       console.log(`当前页: ${val}`);
     },
-    search(){
-      console.log('搜索')
-      var that = this
+    // init_List(){
+    //   monitorAdmin(getToken())
+    //     .then((response) => {
+    //       that.list = response.list;
+    //       that.total = response.total;
+    //       that.qualList = response.qualList;
+    //     })
+    //     .catch((error) => {
+    //       console.log(error);
+    //     });
+    // },
+    search() {
+      console.log("搜索");
+      var that = this;
       monitorAdmin({
         name: this.inputValue,
-      }).then((response) => {
-        that.list = response.list
-        that.total = response.total
-      }).catch((error) => {
-        console.log(error)
       })
+        .then((response) => {
+          that.list = response.list;
+          that.total = response.total;
+        })
+        .catch((error) => {
+          console.log(error);
+        });
     },
     addMonitor() {
       this.dialogFormVisible = true;
@@ -421,19 +448,45 @@ export default {
         company: "",
         rank: "",
         qual: "",
-        qualID: "",
+        qualId: "",
         certId: "",
       };
       this.isShowBtn = false;
     },
-    editMonitor(row) {
+    editMonitor(name) {
       this.dialogVisible = true;
-      this.editform = { ...row };
-      this.editform = {
-        name: "",
-        schedule: [],
-      };
-      this.isShowBtn = false;
+      if ((this.saveFlag = true)) {
+        console.log("保存修改");
+        this.dialogVisible = false;
+        this.saveFlag = false;
+        // var that = this;
+        // consultantManage({
+        //   editform: this.editform,
+        //   name: name,
+        // })
+        //   .then(() => {
+        //     that.$message.success("修改成功！");
+        //     that.init_List();
+        //   })
+        //   .catch((error) => {
+        //     console.log(error);
+        //   });
+      }
+    },
+    saveAdd() {
+      console.log("保存添加");
+      this.dialogFormVisible = false;
+      // var that = this;
+      // monitorManage({
+      //   form: this.form,
+      // })
+      //   .then(() => {
+      //     that.$message.success("添加成功！");
+      //     that.init_List();
+      //   })
+      //   .catch((error) => {
+      //     console.log(error);
+      //   });
     },
   },
 };
