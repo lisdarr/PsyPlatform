@@ -5,7 +5,36 @@ Page({
      * 页面的初始数据
      */
     data: {
-      
+        Consultants:[
+            {
+                gender:"女",
+                userName:"cy",
+                isConsulted:"咨询过",
+                rate:"3",
+                status:"空闲",
+            },
+            {
+                gender:"女",
+                userName:"cy",
+                isConsulted:"咨询过",
+                rate:"3",
+                status:"空闲",
+            },
+            {
+                gender:"女",
+                userName:"cy",
+                isConsulted:"咨询过",
+                rate:"3",
+                status:"空闲",
+            },
+            {
+                gender:"女",
+                userName:"cy",
+                isConsulted:"咨询过",
+                rate:"3",
+                status:"空闲",
+            }
+        ],
     },
 
     /**
@@ -40,7 +69,10 @@ Page({
      * 生命周期函数--监听页面卸载
      */
     onUnload: function () {
-
+        wx.reLaunch({
+            url: '/pages/index/main'
+          })
+      
     },
 
     /**
@@ -62,7 +94,13 @@ Page({
      */
     onShareAppMessage: function () {
 
+    },
+    toConsult: function(){
+        wx.navigateTo({
+          url: '/pages/chat/main',
+        });
     }
+
 
     
 })

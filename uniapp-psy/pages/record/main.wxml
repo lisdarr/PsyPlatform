@@ -1,2 +1,49 @@
 <!--pages/record/main.wxml-->
-<text>pages/record/main.wxml</text>
+
+<view class="record-container">
+    <scroll-view class="scroll-container" scroll-y="true" style="height: 100vh;" lower-threshold="{{200}}" >
+        <view wx:if="{{historyConversation.length}}">
+            <view class="backColor"></view>
+            <view  class="recordContent" wx:for="{{historyConversation}}" wx:key="item">
+                <view class="counselorCard">
+
+                    <view class="card-title">
+                    <label class=" title-data">{{ item.startTime }}</label>
+                    <i-icon type="enter" size="30" color="#B2C1D2" class=" "></i-icon>
+                    </view>
+
+                    <view class="card-content">
+                        <view class="left">
+                            <image class="avatar" src="{{item.counselor.gender === '男' ? '/static/images/male.png' : '/static/images/femal.png'}}" ></image>
+                            <view class="title-data">{{item.counselor.name}}</view>
+                            <view class="{{[ item.status === 'WAITING' ? 'r-point' : 'g-point']}}"></view>
+                        </view>
+                        <view class="right" wx:if="{{type !== 'current'}}">
+                            <view class="right-data">
+                                <view class="sub-right-data">咨询用时</view>
+                                <view class="sub-right-data">{{ item.duration }}</view>
+                            </view>
+                            <view class="right-data">
+                                <view class="sub-right-data">我的评价</view>
+                                <i-rate i-class="cunstom-rate" count="5" disabled value="{{item.evaluate}}" size="35" class=cunstom-rate"></i-rate>
+                            </view>
+                        </view>
+                        <view class="right" wx:else>
+                            <view class="right-data">
+                                <label class="sub-right-data">咨询用时</label>
+                                <label class="sub-right-data">正在咨询中</label></view>
+                            <view class="right-data">
+                                <label class="sub-right-data">我的评价</label>
+                                <i-rate i-class="cunstom-rate" count="5" disabled value="{{0}}" size="35" class="dataB">
+                                </i-rate>
+                            </view>
+                        </view>
+                    </view>
+                </view>
+            </view>
+            <view class="vanLoading">没有更多了</view>
+        </view>
+        <view wx:else class="noMessage">暂无咨询记录</view>
+    </scroll-view>
+</view>
+

@@ -1,0 +1,165 @@
+
+.record-container {
+  min-height: 100vh;
+  box-sizing: border-box;
+}
+
+.scroll-container{
+  position: absolute; 
+  width: 750rpx;
+  height: 60vh;
+  background:#ddd;
+}
+
+.backColor{
+  height: 20rpx;
+  background-color: #e4ebf1;
+}
+
+.counselorCard{
+  width: calc(100% - 40rpx);
+  background-color: #fff;
+  color: #7e8d9e;
+  font-size: 32rpx;
+  padding-left: 40rpx;
+}
+
+.recordContent {
+  margin-bottom: 20rpx;
+}
+
+.card-title {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 20rpx 40rpx 20rpx 0;
+  border-bottom: 1rpx solid #e0eaf5;
+}
+
+.conversationType{
+  background-color: #72d4b9;
+  display: inline-block;
+  height: 100%;
+  color: #fff;
+  padding: 10rpx 20rpx;
+}
+
+ .waitingState {
+  background-color: #ec2864 !important;
+}
+
+.title-data{
+  color: #b2c1d2;
+  font-size: 40rpx;
+}
+
+
+
+.card-content{
+  position: relative;
+  background-color: #fff;
+  padding-top: 36rpx;
+  padding-bottom: 36rpx;
+  display: flex;
+}
+
+.left{
+  display: flex;
+  align-items: center;
+  flex-direction: column;
+  position: relative;
+}
+
+.avatar{
+  height: 140rpx;
+  width: 140rpx;
+  border-radius: 50%;
+  display: block;
+  overflow: hidden;
+}
+
+.g-point {
+  position: absolute;
+  display: inline-block;
+  width: 20rpx;
+  height: 20rpx;
+  background-color: #16a800;
+  border-radius: 50%;
+  right: 3rpx;
+  bottom: 35rpx;
+}
+.r-point {
+  position: absolute;
+  display: inline-block;
+  width: 20rpx;
+  height: 20rpx;
+  background-color: #ec0505;
+  border-radius: 50%;
+  right: 3rpx;
+  bottom: 35rpx;
+}
+
+.name{
+  color: #3c536e;
+}
+
+.rigth{
+  padding-left: 60rpx;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+}
+
+.rigth-data{
+  padding-left: 60rpx;
+  font-size: 28rpx;
+  display: flex;
+  flex-direction: column;
+}
+
+.sub-right-data{
+  padding-left: 60rpx;
+  font-size: 32rpx;
+}
+
+.cunstom-rate{
+  padding-left: 60rpx;
+  color: #FFBE3D !important;
+}
+
+.remain{
+  position: absolute;
+  right: 40rpx;
+  top: 20rpx;
+}
+
+.info{
+  color: #fff;
+  font-size: 24rpx;
+  background-color: #fb5250;
+  border-radius: 60rpx;
+  padding: 4rpx 14rpx 6rpx;
+}
+
+.noMessage {
+  background-color: inherit;
+  display: flex;
+  width: 100%;
+  height: 100vh;
+  align-items: center;
+  justify-content: center;
+  color: #7e8d9e;
+}
+.backColor {
+  height: 20rpx;
+  background-color: #e4ebf1;
+}
+
+.vanLoading {
+  display: flex;
+  justify-content: center;
+  min-height: 100rpx;
+  align-items: center;
+  font-size: 30rpx;
+  color: #969799;
+}

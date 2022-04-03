@@ -41,4 +41,9 @@
     height: 100rpx;
     line-height: 100rpx;
     box-shadow: 0rpx 1rpx 10rpx #9b9a9a;
+    text-align: center;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
 }

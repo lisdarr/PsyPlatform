@@ -10,6 +10,6 @@
     知情同意书内容
 </scroll-view>
 
-<button hover-class="clicked" class="agree-button" bindtap="closeThis">
+<button  class="agree-button" bindtap="closeThis">
     我同意 <block wx:if="{{seconds}}">( {{seconds}}S )</block>
 </button>

@@ -1,0 +1,6 @@
+{
+  "usingComponents": {
+    "i-card": "/static/dist/card/index",
+    "i-rate": "/static/dist/rate/index"
+  }
+}

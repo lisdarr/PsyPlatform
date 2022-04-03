@@ -8,15 +8,25 @@
 
 <scroll-view class="scroll-container" enable-flex="true" scroll-y>
     <view class="sub-container">
-        <view class="consultant-card" wx:for="{{4}}" wx:key="item">
-            <view class="consultant-avatar">
-            <open-data type="userAvatarUrl"></open-data>
+        <view bindtap="toConsult" class="consultant-card" wx:for="{{Consultants}}" wx:key="item">
+            <image src="{{item.gender === '女' ? '/static/images/femal.png' : '/static/images/male.png'}}" alt class=".consultant-avatar"></image>
+            <view class="info">
+                <view class="firstRow">
+                    <view class="consultant-name">{{item.userName}}
+                    <view wx:if="{{item.isConsulted === '咨询过'}}" class="isConsulted">咨询过</view>
+                    </view>
+                </view>
+                <view class="evalute">综合评价</view>
+                <i-rate count="{{5}}" disabled value="{{item.rate}}" size="{{35}}" class="cunstom-rate"></i-rate>
             </view>
-            <view class="consultant-name">
-            咨询师{{item}}
+            <view class="state" wx:if="{{item.status}}">
+                <view class="free" wx:if="{{item.status === '空闲'}}"> 空闲 </view>
+                <view class="busy" wx:else>
+                {{item.status}}
+                </view>
             </view>
         </view>
-  </view>
+    </view>
 </scroll-view>
 
 

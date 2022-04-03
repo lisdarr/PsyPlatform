@@ -1,11 +1,12 @@
 {
   "pages":[
     "pages/saveInfo/main",
-    "pages/index/main",
     "pages/record/main",
-    "pages/consult/main",
-    "pages/informed_consent/main",
-    "pages/counselor/main"
+    "pages/counselor/main",
+    "pages/index/main",
+    "pages/chat/main",
+    "pages/informed_consent/main"
+    
   ],
   "window":{
     "backgroundColor": "#E4EBF1",
@@ -28,7 +29,7 @@
       },
       {
         "text": "在线咨询",
-        "pagePath": "pages/consult/main",
+        "pagePath": "pages/informed_consent/main",
         "iconPath": "/static/images/consult.png",
         "selectedIconPath": "/static/images/consult_active.png"
       },

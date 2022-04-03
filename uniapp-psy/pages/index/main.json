@@ -12,6 +12,7 @@
     "i-button":"/static/dist/button/index",
     "i-rate":"/static/dist/rate/index",
     "i-model":"/static/dist/modal/index",
-    "van-loading":"/static/vant/loading/index"
+    "van-loading":"/static/vant/loading/index",
+    "i-icon":"/static/dist/icon"
   }
 }

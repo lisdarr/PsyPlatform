@@ -15,9 +15,10 @@
 }
 
 .title{
-    height:100rpx;
-    width:700rpx;
-    background: none;
+    color: #1e2e40;
+    height: 140rpx;
+    line-height: 140rpx;
+    font-size: 40rpx;
     text-align: center;
 }
 
@@ -36,33 +37,90 @@
 }
 
 .consultant-card{
-    margin: 20rpx auto 0 auto;
-    width: 700rpx;
-    height: 250rpx;
-    background:white;
-    font-size: 80rpx;
-    line-height: 300rpx;
-    text-align: center;
+    background-color: #fff;
+    padding: 30rpx 0;
+    display: flex;
+    color: #3c536e;
+    position: relative;
+    margin-bottom: 20rpx;
+    align-items: center;
 }
 
 .consultant-avatar {
-    height: 120rpx;
-    width: 120rpx;
-    top: 20rpx;
-    left: 20rpx;
+    height: 160rpx;
+    width: 160rpx;
     border-radius: 50%;
-    display: block;
-    overflow: hidden;
+    margin: 0 40rpx;
+}
+
+.info{
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    align-items: flex-start;
+}
+
+.firstRow{
+    font-size: 32rpx;
+    font-weight: 200;
+    min-height: 45rpx;
+    display: flex;
+    align-items: flex-start;
+    flex-direction: column;
 }
 
 .consultant-name {
-    position: relative;
-    width: 300rpx;  
-    height: 50rpx;  
-    left: 120rpx;  
-    top: 0rpx;  
-    font-size: 40rpx;  
-    line-height: 40rpx;
-    color: #3c536e;
+    font-size: 30rpx;
+    font-weight: 100;
+    color: #27282b;
   }
 
+  .isConsulted{
+    background-color: #b2c1d2;
+    font-size: 24rpx;
+    text-align: center;
+    padding-right: 16rpx;
+    padding-left: 16rpx;
+    color: #fff;
+    display: inline-block;
+    height: 45rpx;
+    line-height: 45rpx;
+    margin-top: 10rpx;
+    margin-bottom: 10rpx;
+  }
+
+  .evalute{
+    font-size: 28rpx;
+    color: #7e8d9e;
+  }
+
+  .cunstom-rate{
+    color: #FFBE3D !important;
+  }
+
+  .state{
+    color: #fff;
+    display: inline-block;
+    font-size: 32rpx;
+
+    padding-right: 25rpx;
+    padding-left: 25rpx;
+    height: 45rpx;
+    line-height: 45rpx;
+    margin-top: 10rpx;
+    margin-bottom: 10rpx;
+
+    /* padding: 12rpx 34rpx; */
+    position: absolute;
+    right: 26rpx;
+    top: 0; 
+   
+  }
+
+  .free{
+    background-color: #72d4b9;
+  }
+
+  .busy{
+    background-color: #ec2864;
+  }

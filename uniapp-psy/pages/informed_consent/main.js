@@ -74,9 +74,8 @@ Page({
     },
 
     closeThis(e){
-        wx.redirectTo({
-            url: '/pages/counselor/main',
+        wx.navigateTo({
+          url: '/pages/counselor/main',
         })
     }
-
 })

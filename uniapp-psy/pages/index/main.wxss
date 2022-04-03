@@ -1,4 +1,5 @@
 /**index.wxss**/
+ @import "/pages/record/main.wxss";
 
 .userinfo-card{
     display: flex;
@@ -83,20 +84,14 @@
     height: 60vh;
     background:#ddd;
 }
-.sub-container{
-    position: absolute; 
-    left: 0;
-    top: 0;
-    width: 100%;
-    padding-bottom: 40rpx;
-}
-.content{
-    margin: 20rpx auto 0 auto;
-    width: 710rpx;
-    height: 300rpx;
-    background: #fff;
-    border-radius: 16rpx;
-    font-size: 80rpx;
-    line-height: 300rpx;
-    text-align: center;
+
+
+.Loading{
+    display: flex;
+    justify-content: center;
+    min-height: 100rpx;
+    align-items: center;
+    font-size: 30rpx;
+    color: #969799;
+    padding-bottom: 450rpx;
 }

@@ -1,5 +1,14 @@
 {
+  "navigationBarTitleText": "咨询记录",
+  "navigationBarBackgroundColor": "#ffffff",
+  "backgroundColor": "#EFF2F5",
+  "enablePullDownRefresh": false,
   "usingComponents": {
-    "i-input":"/static/dist/input/index"
+    "i-rate": "/static/dist/rate/index",
+    "i-icon": "/static/dist/icon/index",
+    "i-avatar": "/static/dist/avatar/index",
+    "van-index-bar": "/static/vant/index-bar/index",
+    "van-loading": "/static/vant/loading/index",
+    "van-index-anchor": "/static/vant/index-anchor/index"
   }
 }

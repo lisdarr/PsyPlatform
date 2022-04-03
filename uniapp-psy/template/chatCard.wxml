@@ -1,25 +1,25 @@
 <template name="Chat">
-  <view class="_div dataB counselorCard">
-    <view class="_div dataB card-title"><label class="_span dataB">{{ item.startTime }}</label><label wx:if="{{type && type === 'current'}}" class="_span dataB {{['conversationType', item.status === 'WAITING' ? 'waitingState' : '']}}">{{item.status === 'WAITING' ? '等待中' : '进行中'}}</label>
-      <i-icon type="enter" size="30" color="#B2C1D2" class="_i-icon dataB"></i-icon>
+  <view class="counselorCard">
+    <view class="card-title"><label class="dataB">{{ item.startTime }}</label><label wx:if="{{type && type === 'current'}}" class="dataB {{['conversationType', item.status === 'WAITING' ? 'waitingState' : '']}}">{{item.status === 'WAITING' ? '等待中' : '进行中'}}</label>
+      <i-icon type="enter" size="30" color="#B2C1D2" class="dataB"></i-icon>
     </view>
-    <view class="_div dataB card-content">
-      <view class="_div dataB left">
-        <image class="_img dataB avatar" src="{{item.counselor.gender === '男' ? '/static/images/male.png' : '/static/images/femal.png'}}" alt></image> <label class="_span dataB">{{item.counselor.name}}</label>
+    <view class="card-content">
+      <view class="left">
+        <image class="avatar" src="{{item.counselor.gender === '男' ? '/static/images/male.png' : '/static/images/femal.png'}}" ></image> <label class="dataB">{{item.counselor.name}}</label>
       </view>
-      <view class="_div dataB right" wx:if="{{type !== 'current'}}">
-        <view class="_div dataB"><label class="_span dataB">咨询用时</label> <label class="_span dataB">{{ item.duration }}</label></view>
-        <view class="_div dataB"><label class="_span dataB">我的评价</label>
+      <view class="right" wx:if="{{type !== 'current'}}">
+        <view class="dataB"><label class="_span dataB">咨询用时</label> <label class="dataB">{{ item.duration }}</label></view>
+        <view class="dataB"><label class=" dataB">我的评价</label>
           <i-rate i-class="cunstom-rate" count="5" disabled value="{{item.evaluate}}" size="35" class="_i-rate dataB"></i-rate>
         </view>
       </view>
-      <view class="_div dataB right" wx:else>
-        <view class="_div dataB"><label class="_span dataB">咨询用时</label> <label class="_span dataB">正在咨询中</label></view>
-        <view class="_div dataB"><label class="_span dataB">我的评价</label>
-          <i-rate i-class="cunstom-rate" count="5" disabled value="{{0}}" size="35" class="_i-rate dataB"></i-rate>
+      <view class="right" wx:else>
+        <view class="dataB"><label class="dataB">咨询用时</label> <label class="dataB">正在咨询中</label></view>
+        <view class="dataB"><label class="dataB">我的评价</label>
+          <i-rate i-class="cunstom-rate" count="5" disabled value="{{0}}" size="35" class="dataB"></i-rate>
         </view>
       </view>
-      <view class="_div dataB remain" wx:if="{{item.unreadCount > 0}}"><label wx:if="{{item.unreadCount > 99}}" class="_span dataB info">99+</label><label wx:else class="_span dataB info">{{item.unreadCount}}</label></view>
+      <view class=" remain" wx:if="{{item.unreadCount > 0}}"><label wx:if="{{item.unreadCount > 99}}" class="info">99+</label><label wx:else class="info">{{item.unreadCount}}</label></view>
     </view>
   </view>
 </template>
