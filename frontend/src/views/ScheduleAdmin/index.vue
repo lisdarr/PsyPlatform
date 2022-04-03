@@ -2,15 +2,7 @@
   <div class="calendar_box">
     <el-row style="padding-top: 15px" :gutter="20">
       <el-col :span="18">
-        <!-- <FullCalendar :options="calendarOptions"/> -->
-        <full-calendar
-          ref="calendar"
-          :options="calendarOptions"
-          :config="config"
-          :events="events"
-          :event-sources="eventSources"
-          @day-click="dayClick"
-        ></full-calendar>
+        <FullCalendar :options="calendarOptions" />
       </el-col>
       <el-col :span="6" class="detail_box">
         <div class="addbtn">
@@ -57,7 +49,7 @@
         </el-form-item>
         <el-form-item label="排班时间">
           <el-date-picker
-            v-model="form.ctime"
+            v-model="addForm.dateValue"
             format="yyyy-MM-dd"
             value-format="yyyy-MM-dd"
             type="date"
@@ -68,7 +60,8 @@
       </el-form>
       <div slot="footer" class="dialog-footer">
         <el-button @click="dialogFormVisible = false" size="small"
-          >取 消</el-button>
+          >取 消</el-button
+        >
         <el-button type="primary" @click="save" size="small">确 定</el-button>
       </div>
     </el-dialog>
@@ -80,6 +73,7 @@ import FullCalendar from "@fullcalendar/vue";
 import dayGridPlugin from "@fullcalendar/daygrid";
 import interactionPlugin from "@fullcalendar/interaction";
 import axios from "axios";
+import { getToken } from "@/utils/auth";
 
 export default {
   name: "ScheduleAdmin",
@@ -89,7 +83,7 @@ export default {
     return {
       dialogFormVisible: false,
       form: {
-        consultantName: '',
+        consultantName: "",
         monitorName: "",
       },
       // 添加排班的表单
@@ -109,7 +103,6 @@ export default {
         },
         buttonText: { today: "今天" },
         selectable: true,
-        timeFormat: "H(:mm)", // uppercase H for 24-hour clock
         dateClick: this.handleDateClick,
         events: [
           { title: "咨询师：5", start: "2022-03-21" },
@@ -144,26 +137,61 @@ export default {
       ],
     };
   },
-  mounted() {},
+  mounted() {
+    this.init_Schedule();
+  },
 
   methods: {
+    init_Schedule() {
+      // var that = this
+      // scheduleAdmin(getToken())
+      // .then((response) =>{
+      //   that.events = response.events;
+      //   that.consultantList = response.consultantList;
+      //   that.monitorList = response.monitorList;
+      // })
+      // .catch((error) =>{
+      //   console.log(error)
+      // })
+    },
     addPaiban() {
       this.dialogFormVisible = true;
-      this.form = {
+      this.addform = {
         consultantName: "",
         monitorName: "",
-        // consultantId: "",
-        // monitorId: "",
+        dateValue: "",
       };
     },
-    save(){
-      console.log('保存')
+    save() {
+      console.log("保存");
+      this.dialogFormVisible = false;
+      // var that = this;
+      // scheduleAdmin({
+      //   addForm: this.addForm,
+      // })
+      //   .then((response) => {
+      //     that.$message.success("保存成功！");
+      //     that.events = response.events;
+      //     that.init_Schedule();
+      //   })
+      //   .catch((error) => {
+      //     console.log(error);
+      //   });
       //send三个值，request new title
     },
     handleDateClick(info) {
       console.log("点击日期");
-      this.form.consultantName = form.consultantName;
-      this.form.monitorName = form.monitorName;
+      console.log(info.dateStr);
+      // var that = this;
+      // scheduleAdmin({
+      //   dateStr: this.info.dateStr,
+      // })
+      //   .then((response) => {
+      //     that.form = response.form;
+      //   })
+      //   .catch((error) => {
+      //     console.log(error);
+      //   });
     },
     dateToString(now) {
       var year = now.getFullYear();

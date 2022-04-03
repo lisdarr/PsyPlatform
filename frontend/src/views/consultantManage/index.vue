@@ -1,6 +1,6 @@
 <template>
   <div>
-    <div style="display: inline">
+    <div inline = "true">
       <div
         style="width: 200px; float: left; margin-top: 20px; margin-left: 20px"
       >
@@ -211,7 +211,7 @@
         <el-button @click="dialogFormVisible = false" size="small"
           >取 消</el-button
         >
-        <el-button type="primary" @click="save" size="small">确 定</el-button>
+        <el-button type="primary" @click="saveAdd" size="small">确 定</el-button>
       </div>
     </el-dialog>
 
@@ -235,8 +235,8 @@
       <el-form :model="editform" label-width="90px" size="small">
         <el-form-item label="周值班安排">
           <el-checkbox-group v-model="editform.schedule">
-            <el-checkbox label="周一" name="schedule"><el-tag type="success">周一</el-tag></el-checkbox>
-            <el-checkbox label="周二" name="schedule"><el-tag type="success">周二</el-tag></el-checkbox>
+            <el-checkbox label="周一"><el-tag type="success">周一</el-tag></el-checkbox>
+            <el-checkbox label="周二"><el-tag type="success">周二</el-tag></el-checkbox>
             <el-checkbox label="周三" name="schedule"><el-tag type="success">周三</el-tag></el-checkbox>
             <el-checkbox label="周四" name="schedule"><el-tag type="success">周四</el-tag></el-checkbox>
             <el-checkbox label="周五" name="schedule"><el-tag type="success">周五</el-tag></el-checkbox>
@@ -248,7 +248,7 @@
 
       <div slot="footer">
         <el-button @click="dialogVisible = false" size="small">取 消</el-button>
-        <el-button type="primary" @click="dialogVisible = false" size="small"
+        <el-button type="primary" @click="saveFlag = true" size="small"
           >确 定</el-button
         >
       </div>
@@ -264,6 +264,7 @@ export default {
   data() {
     return {
       flag: "false",
+      saveFlag: false,
       page: 1,
       limit: 7,
       total: 12,
@@ -414,7 +415,9 @@ export default {
     };
   },
 
-  mounted() {},
+  mounted() {
+    // this.init_List();
+  },
   methods: {
     handleSizeChange(val) {
       console.log(`每页 ${val} 条`);
@@ -422,6 +425,16 @@ export default {
     handleCurrentChange(val) {
       console.log(`当前页: ${val}`);
     },
+    // init_List(){
+    //   consultantAdmin(getToken())
+    //     .then((response) => {
+    //       that.list = response.list;
+    //       that.total = response.total;
+    //     })
+    //     .catch((error) => {
+    //       console.log(error);
+    //     });
+    // },
     search(){
       console.log('搜索')
       var that = this
@@ -435,15 +448,6 @@ export default {
       })
     },
     addConsultant() {
-      // console.log('添加')
-      // var that = this
-      // consultantAdmin({
-      //   
-      // }).then((response) => {
-      //   
-      // }).catch((error) => {
-      //   console.log(error)
-      // }),
       this.dialogFormVisible = true;
       this.form = {
         name: "",
@@ -460,15 +464,40 @@ export default {
       };
       this.isShowBtn = false;
     },
-    editConsultant(row) {
+    editConsultant(name) {
       this.dialogVisible = true;
-      this.editform = { ...row };
-      this.editform = {
-        name: "",
-        monitor: "",
-        schedule: [],
-      };
-      this.isShowBtn = false;
+      if ((this.saveFlag = true)) {
+        console.log("保存修改");
+        this.dialogVisible = false;
+        this.saveFlag = false;
+      // var that = this;
+      // consultantManage({
+      //   editform: this.editform,
+      //   name: name
+      // })
+      //   .then(() => {
+      //     that.$message.success("修改成功！");
+      //     that.init_List();
+      //   })
+      //   .catch((error) => {
+      //     console.log(error);
+      //   });
+      }
+    },
+    saveAdd(){
+      console.log("保存添加");
+      this.dialogFormVisible = false;
+      // var that = this;
+      // consultantManage({
+      //   form: this.form,
+      // })
+      //   .then(() => {
+      //     that.$message.success("添加成功！");
+      //     that.init_List();
+      //   })
+      //   .catch((error) => {
+      //     console.log(error);
+      //   });
     },
   },
 };
