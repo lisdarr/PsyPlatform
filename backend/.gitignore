@@ -4,3 +4,4 @@ database/__pycache__/
 userAdmin/__pycache__/
 userAdmin/migrations/__pycache__/
 utils/__pycache__/
+database/migrations/

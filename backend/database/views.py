@@ -100,18 +100,23 @@ def getDashboardConsultant(token):
 
 
 def getRecordConsult(username, begin_date, end_date):
-    try:
-        visitors = Visitor.objects.filter(name=username)
-    except:
-        return '', 'No such Visitor'
+    if username == '':
+        visitors = Visitor.objects.all()
+    else:
+        try:
+            visitors = Visitor.objects.filter(name=username)
+        except Visitor.DoesNotExist:
+            return '', 'No such Visitor'
 
     list = []
     for visitor in visitors:
         try:
             records = VisitorConRecord.objects.filter(vis_id=visitor.vis_id, stime__range=[begin_date, end_date])
-        except:
-            return [], 'No record'
+        except VisitorConRecord.DoesNotExist:
+            continue
         for record in records:
+            if username == '':
+                username = Visitor.objects.get(vis_id=record.vis_id).name
             ele = {
                 'name': username,
                 'time': record.duration,
@@ -185,17 +190,22 @@ def getDashboardDirctor(token):
 
 
 def getRecordDirctor(username, begin_date, end_date):
-    try:
-        consultants = Consultant.objects.filter(username=username)
-    except:
-        return [], 'No such consultant'
+    if username == '':
+        consultants = Consultant.objects.all()
+    else:
+        try:
+            consultants = Consultant.objects.filter(username=username)
+        except Consultant.DoesNotExist:
+            return [], 'No such consultant'
     list = []
     for consultant in consultants:
         try:
             records = ConDirRecord.objects.filter(con_id=consultant.con_id, stime__range=[begin_date, end_date])
-        except:
-            return [], 'No record'
+        except ConDirRecord.DoesNotExist:
+            continue
         for record in records:
+            if username == '':
+                username = Consultant.objects.get(con_id=record.con_id).username
             ele = {
                 'name': username,
                 'time': record.duration,

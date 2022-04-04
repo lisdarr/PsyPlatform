@@ -103,24 +103,27 @@ def dashboardConsultant(request):
 
 def recordConsultant(request):
     if request.method == 'GET':
-        name = request.GET.get('name')
-        begin_date = request.GET.get('begin_date')
-        end_date = request.GET.get('end_date')
-        begin_date = datetime.strptime(begin_date, '%Y-%m-%d')
-        end_date = datetime.strptime(end_date, '%Y-%m-%d')
+        name = request.GET.get('name', '')
+        begin_date = request.GET.get('begin_date', '')
+        end_date = request.GET.get('end_date', '')
+        if begin_date == '':
+            begin_date =  datetime.strptime('2018-01-01', '%Y-%m-%d')
+        else:
+            begin_date = datetime.strptime(begin_date, '%Y-%m-%d')
+        if end_date == '':
+            end_date = datetime.now()
+        else:
+            end_date = datetime.strptime(end_date, '%Y-%m-%d')
         data, err = getRecordConsult(name, begin_date, end_date)
 
-        if err != '':
-            msg = {'status': 500,
-                   'data': '',
-                   'msg': err}
-
-            return HttpResponse(json.dumps(msg, ensure_ascii=False), status=500)
+        if err == '':
+            err = 'Success'
 
         msg = {
             'tableData': data,
             'totalSize': len(data),
-            'status': 200
+            'status': 200,
+            'msg': err
         }
 
         return HttpResponse(json.dumps(msg, ensure_ascii=False), status=200)
@@ -161,25 +164,27 @@ def dashboardDirector(request):
 
 def recordDirector(request):
     if request.method == 'GET':
-        name = request.GET.get('name')
-        begin_date = request.GET.get('begin_date')
-        end_date = request.GET.get('end_date')
-        begin_date = datetime.strptime(begin_date, '%Y-%m-%d')
-        end_date = datetime.strptime(end_date, '%Y-%m-%d')
+        name = request.GET.get('name', '')
+        begin_date = request.GET.get('begin_date', '')
+        end_date = request.GET.get('end_date', '')
+        if begin_date == '':
+            begin_date = datetime.strptime('2018-01-01', '%Y-%m-%d')
+        else:
+            begin_date = datetime.strptime(begin_date, '%Y-%m-%d')
+        if end_date == '':
+            end_date = datetime.now()
+        else:
+            end_date = datetime.strptime(end_date, '%Y-%m-%d')
         data, err = getRecordDirctor(name, begin_date, end_date)
 
-        if err != '':
-            msg = {'status': 500,
-                   'data': '',
-                   'msg': err}
-
-            return HttpResponse(json.dumps(msg, ensure_ascii=False), status=500)
+        if err == '':
+            err = 'Success'
 
         msg = {
             'tableData': data,
             'totalSize': len(data),
             'status': 200,
-            'msg': 'Success'
+            'msg': err
         }
 
         return HttpResponse(json.dumps(msg, ensure_ascii=False), status=200)
