@@ -35,7 +35,7 @@
             "disablePlugins": [],
             "outputPath": ""
         },
-        "useIsolateContext": true,
+        "useIsolateContext": false,
         "userConfirmedBundleSwitch": false,
         "packNpmManually": false,
         "packNpmRelationList": [],
@@ -48,8 +48,8 @@
     },
     "compileType": "miniprogram",
     "libVersion": "2.23.2",
-    "appid": "wx9a2bfa94a3d8b737",
-    "projectname": "psy",
+    "appid": "wxf40baa13a7e927f7",
+    "projectname": "uniapp-psy",
     "debugOptions": {
         "hidedInDevtools": []
     },

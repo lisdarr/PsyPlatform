@@ -1,10 +1,18 @@
 // pages/counselor/main.js
+import IMService from "../../static/lib/imservice";
+import restapi from "../../static/lib/restapi";
+
 Page({
 
     /**
      * 页面的初始数据
      */
     data: {
+        // currentUser: {
+        //         uuid:'123',
+        //         name:'cymm',
+        //         avatar: "/static/images/Avatar-1.png"
+        // },
         Consultants:[
             {
                 gender:"女",
@@ -54,9 +62,40 @@ Page({
     /**
      * 生命周期函数--监听页面显示
      */
-    onShow: function () {
-
-    },
+    // onShow () {
+    //     let that = this
+    //     let currentUser = that.currentUser
+    //     console.log(currentUser)
+	// 	if(!currentUser){
+	// 		wx.redirectTo({
+	// 			url : '../index/main'
+	// 		});
+	// 		return;
+	// 	}
+	// 	if (wx.goEasy.getConnectionStatus() === 'disconnected') {
+	// 		app.globalData.service = new IMService(wx.goEasy,wx.GoEasy);
+	// 		app.globalData.service.connect(currentUser);
+	// 	}
+	// 	wx.showLoading({title: '加载中',mask: true});
+	// 	//监听会话列表变化
+	// 	let self = this;
+	// 	wx.goEasy.im.on(wx.GoEasy.IM_EVENT.CONVERSATIONS_UPDATED, (conversations) => {
+	// 		// 设置tabBar未读消息总数以及conversation
+	// 		self.renderConversations(conversations);
+	// 	});
+	// 	//加载会话列表
+	// 	wx.goEasy.im.latestConversations({
+	// 		onSuccess: function (res) {
+	// 			let content = res.content;
+	// 			self.renderConversations(content);
+	// 			wx.hideLoading();
+	// 		},
+	// 		onFailed: function (error) {
+	// 			wx.hideLoading();
+	// 			console.log(e);
+	// 		}
+	// 	});
+	// },
 
     /**
      * 生命周期函数--监听页面隐藏
