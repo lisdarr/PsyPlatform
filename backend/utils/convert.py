@@ -40,6 +40,7 @@ def get_last_hour():
 
     return hour_list
 
+
 day_dict = {
     'Mon': 1,
     'Tue': 2,
@@ -52,7 +53,6 @@ day_dict = {
 
 
 def get_date(day):
-    print(day)
     m = datetime.datetime.now().month
     y = datetime.datetime.now().year
     ndays = (datetime.date(y, m + 1, 1) - datetime.date(y, m, 1)).days
@@ -73,3 +73,21 @@ def get_date(day):
             }
             data_list.append(data)
     return data_list
+
+
+def getWeekDay(date):
+    weekday = date.isoweekday()
+    week_dict = {v: k for k, v in day_dict.items()}
+    return week_dict.get(weekday)
+
+
+def getThisWeekDict():
+    today = datetime.datetime.now()
+    dict = {}
+    monday = today - datetime.timedelta(today.weekday())
+    week_dict = {v: k for k, v in day_dict.items()}
+    for i in range(0, 7):
+        day = monday + datetime.timedelta(days=i)
+        dict[week_dict.get(i + 1)] = day.strftime("%Y-%m-%d")
+
+    return dict
