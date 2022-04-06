@@ -88,6 +88,7 @@ export default {
     },
     submitMessage() {
       if (this.content.trim().length !== 0) {
+        // console.log(this.content)
         const textMessage = this.goEasy.im.createTextMessage({
           text: this.content,
           to: {
@@ -113,6 +114,7 @@ export default {
         this.history = this.service.getGroupMessages(toId)
       }
       this.history.push(message)
+      // console.log(this.history)
       this.goEasy.im.sendMessage({
         message: message,
         onSuccess: function(message) {

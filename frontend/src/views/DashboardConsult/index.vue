@@ -115,12 +115,12 @@ export default {
     return {
       tableData: [],
       // value: new Date()
-      squareUrl: 'https://cube.elemecdn.com/9/c2/f0ee8a3c7c9638a54940382568c9dpng.png',
-      value: 3.7,
-      consultNum: 12345,
-      consultTodayNum: 35,
-      consultTodayTime: '6:32:24',
-      callNum: 2,
+      squareUrl: null,
+      value: null,
+      consultNum: null,
+      consultTodayNum: null,
+      consultTodayTime: null,
+      callNum: null,
       calendarData: []
     }
   },

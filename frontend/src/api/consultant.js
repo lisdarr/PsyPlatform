@@ -2,7 +2,7 @@ import request from '@/utils/request'
 
 export function dashboardConsultant(token) {
   return request({
-    url: '/user/dashboard/consultant/',
+    url: '/consultant/dashboard/',
     method: 'GET',
     params: { token }
   })
@@ -10,7 +10,7 @@ export function dashboardConsultant(token) {
 
 export function recordConsultant(data) {
   return request({
-    url: '/user/record/consultant',
+    url: '/consultant/record',
     method: 'GET',
     params: data
   })

@@ -15,7 +15,7 @@
           <el-avatar shape="circle" :size="50" :src="conversation.avatar"/>
         </div>
         <div style="float: left; color: white;margin-top:18px;margin-left: 5px">
-          {{ conversation.name }}
+          {{ conversation.data.name }}
         </div>
         <div
           v-if="conversation.unread"
@@ -34,7 +34,7 @@
       <div style="margin-top: 60px; margin-left: 5px; font-weight: bold; font-size: 20px">已咨询时间：</div>
       <div style="margin-top: 30px; font-size: 50px; margin-left: 70px">{{ consultTime }}</div>
       <div style="margin-top: 310px; margin-left: 20px">
-        <el-link @click="toDir" style="font-size: 35px;padding-left: 30px">
+        <el-link style="font-size: 35px;padding-left: 30px">
           请求督导
         </el-link>
       </div>
@@ -49,7 +49,7 @@
       style="border: #304156; width: 60%;height: 700px; border-style: solid; border-left-style: none; margin-top: 20px; float: left;"
     >
       <div class="message-container">
-        <div class="scroll-view" ref="scrollView">
+        <div ref="scrollView" class="scroll-view">
           <div v-for="(message, index) in messages" :key="index">
             <div
               v-if="index === 0 || messages[index].timestamp - messages[index-1].timestamp > 5 * 60 * 1000"
@@ -93,63 +93,35 @@ export default {
     return {
       // 记录了咨询师现有全部会话
       conversations: [
-        {
-          name: '张先生',
-          userId: '001',
-          avatar: 'https://cube.elemecdn.com/9/c2/f0ee8a3c7c9638a54940382568c9dpng.png',
-          unread: 1,
-          type: 'private'
-        },
-        {
-          name: '李女士',
-          userId: '002',
-          avatar: 'https://cube.elemecdn.com/9/c2/f0ee8a3c7c9638a54940382568c9dpng.png',
-          unread: 3,
-          type: 'private'
-        }
+        // {
+        //   name: 'cymm',
+        //   userId: '123',
+        //   avatar: 'https://cube.elemecdn.com/9/c2/f0ee8a3c7c9638a54940382568c9dpng.png',
+        //   // unread: 3,
+        //   type: 'private'
+        // }
       ],
-      consultTime: '12:30',
+      consultTime: '00:00',
       // 用于判断用户栏指向，对选择对用户栏进行高亮
       findIndex: 0,
       // 通讯需要的数据
       // 聊天记录:当前用户在该聊天窗口发生的全部聊天记录
-      messages: [
-        {
-          // 该条消息的id
-          messageId: 'b0203bf0af5b11ec886bc306fa6c2977',
-          // 发送该消息的用户id，之后用于判断消息置于左侧还是右侧
-          senderId: '3bb179af-bcc5-4fe0-9dac-c05688484649',
-          // 该条消息时间戳
-          timestamp: 1648556887398,
-          // 该条消息的类型
-          type: 'text',
-          payload: {
-            text: '你好哇！！！'
-          }
-        },
-        {
-          messageId: 'febebdf0af5f11ecaaef5b30370e2287',
-          senderId: 'fdee46b0-4b01-4590-bdba-6586d7617f95',
-          // 如果是当前用户发送的消息，则没有这个字段
-          receiverId: '3bb179af-bcc5-4fe0-9dac-c05688484649',
-          timestamp: 1648558737286,
-          type: 'text',
-          payload: {
-            text: '一切都会好的！！！'
-          }
-        }
-      ],
+      messages: [],
       // 聊天对象信息
       friend: {
-        avatar: '/IM/user/Avatar-3.png',
-        name: 'Tracy',
-        uuid: 'fdee46b0-4b01-4590-bdba-6586d7617f95'
+        // avatar: '/IM/user/Avatar-3.png',
+        // name: 'cymm',
+        // // uuid: 'fdee46b0-4b01-4590-bdba-6586d7617f95'/
+        // uuid: '123'
+        avatar: 'https://cube.elemecdn.com/9/c2/f0ee8a3c7c9638a54940382568c9dpng.png',
+        name: 'Mattie',
+        uuid: '08c0a6ec-a42b-47b2-bb1e-15e0f5f9a19a'
       },
       // 当前用户信息
       currentUser: {
-        avatar: '/IM/user/Avatar-2.png',
-        name: 'Wallace',
-        uuid: '3bb179af-bcc5-4fe0-9dac-c05688484649'
+        avatar: 'https://cube.elemecdn.com/9/c2/f0ee8a3c7c9638a54940382568c9dpng.png',
+        name: 'Tracy',
+        uuid: 'fdee46b0-4b01-4590-bdba-6586d7617f95'
       },
       // 控制图片，show：为true时放大查看
       image: {
@@ -160,8 +132,33 @@ export default {
       type: 'private'
     }
   },
-  mounted() {
-    this.init_chat()
+  beforeMount() {
+    const user = this.currentUser
+    // 建立会话连接，user包含用户名+头像+用户id
+    if (this.goEasy.getConnectionStatus() === 'disconnected') {
+      this.service.connect(user)
+    }
+    this.goEasy.im.on(this.GoEasy.IM_EVENT.CONVERSATIONS_UPDATED, (conversations) => {
+      console.log(conversations)
+      this.conversations = conversations.conversations || []
+      this.unreadTotal = conversations.unreadTotal
+    })
+    // 得到对话人的id
+    const friendId = this.$route.query.id
+    this.type = this.GoEasy.IM_SCENE.PRIVATE
+    // 对话人的基本信息，包括name, avatar, uuid;
+    // 之后随不同id取不同用户信息
+    // this.friend = this.service.findFriendById(friendId)
+    // 和该对话人的全部聊天记录
+    this.messages = this.service.getPrivateMessages(friendId)
+    console.log(this.messages)
+    // var test = {'messages': this.messages}
+    // console.log(test)
+    this.scrollToBottom()
+    this.initialPrivateListeners()
+    if (this.messages.length !== 0) {
+      this.markMessageAsRead(friendId)
+    }
   },
   methods: {
     navigateToChat(index, conversation) {
@@ -172,16 +169,6 @@ export default {
         query: {
           id: id
         }
-      })
-    },
-    init_chat() {
-      var that = this
-      this.$axios.get(
-        // 后端接口
-        '/chatList'
-      ).then((response) => {
-        // userList是当前收到的信息列表，包括发送方姓名、头像和未读消息数
-        that.conversations = response.data.conversations
       })
     },
     showImageFullScreen(message) {

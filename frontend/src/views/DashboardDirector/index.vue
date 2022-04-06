@@ -118,26 +118,13 @@ export default {
   data() {
     return {
       consultList: [],
-      consultNum: 5,
-      directorName: '督导',
-      consultTodayNum: 15,
-      consultTodayTime: '6:12:30',
+      consultNum: null,
+      directorName: null,
+      consultTodayNum: null,
+      consultTodayTime: null,
       squareUrl: 'https://images.pexels.com/photos/4491461/pexels-photo-4491461.jpeg?cs=srgb&dl=pexels-karolina-grabowska-4491461.jpg&fm=jpg',
-      tableData: [{
-        name: '王小虎',
-        time: '00:12:54',
-        date: '2016-05-02'
-      }],
-      calendarData: [
-        {
-          month: '04',
-          day: '15'
-        },
-        {
-          month: '06',
-          day: '14'
-        }
-      ]
+      tableData: [],
+      calendarData: []
     }
   },
   methods: {

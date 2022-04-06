@@ -8,7 +8,6 @@ import datetime
 def dashboard(request):
     if request.method == 'GET':
         token = request.COOKIES.get('token')
-
         data, err = getDashboardConsultant(token)
 
         if err != '':

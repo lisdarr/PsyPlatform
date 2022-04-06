@@ -2,7 +2,7 @@ import request from '@/utils/request'
 
 export function dashboardDirector(token) {
   return request({
-    url: '/user/dashboard/director/',
+    url: '/director/dashboard/',
     method: 'GET',
     params: { token }
   })
@@ -10,7 +10,7 @@ export function dashboardDirector(token) {
 
 export function recordDirector(data) {
   return request({
-    url: '/user/record/director/',
+    url: '/director/record',
     method: 'GET',
     params: data
   })
