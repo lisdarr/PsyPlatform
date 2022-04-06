@@ -123,7 +123,7 @@ export default {
           this.$store.dispatch('user/login', this.loginForm).then(() => {
             console.log('登录成功了')
             // 登录成功，进行路由跳转
-            this.$router.push({ path: '/' })
+            this.$router.push({ path: '/DashboardConsult' })
             // loading效果结束
             this.loading = false
           }).catch(() => {

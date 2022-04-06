@@ -16,14 +16,14 @@
 }
 
 .message-item .chat-avatar {
-  margin-right: 0.1rem;
+  margin-right: 0.5rem;
   margin-left: 0;
   width: 50px;
   height: 50px;
 }
 
 .message-item.self .chat-avatar {
-  margin-left: 0.1rem;
+  margin-left: 0.5rem;
   margin-right: 0;
 }
 
@@ -59,7 +59,7 @@
 
 .chat-message .text-content {
   padding: 5px;
-  border-radius: 25px;
+  border-radius: 10px;
   color: #ffffff;
   background: #618DFF;
   /*允许在单词内换行*/

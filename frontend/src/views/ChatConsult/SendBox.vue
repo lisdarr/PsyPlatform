@@ -114,7 +114,6 @@ export default {
         this.history = this.service.getGroupMessages(toId)
       }
       this.history.push(message)
-      // console.log(this.history)
       this.goEasy.im.sendMessage({
         message: message,
         onSuccess: function(message) {
