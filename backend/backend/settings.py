@@ -40,6 +40,9 @@ INSTALLED_APPS = [
     'corsheaders',
     'database',
     'userAdmin',
+    'consultant',
+    'director',
+    'visitor',
 ]
 
 MIDDLEWARE = [
@@ -128,11 +131,12 @@ WSGI_APPLICATION = 'backend.wsgi.application'
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.mysql',
-        'NAME': 'psyplatform',
+        'NAME': 'psy',
         'USER': 'root',
         'HOST': '123.57.45.27',
-        'PASSWORD': '123456',
-        'PORT': '3306'
+        'PASSWORD': 'Zy1999@jd',
+        'PORT': '3306',
+        'OPTIONS': {'init_command': "SET sql_mode='STRICT_TRANS_TABLES'",},
     }
 }
 
@@ -167,7 +171,7 @@ USE_I18N = True
 
 USE_L10N = True
 
-USE_TZ = True
+USE_TZ = False
 
 
 # Static files (CSS, JavaScript, Images)

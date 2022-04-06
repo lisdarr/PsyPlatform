@@ -2,6 +2,8 @@
 backend/__pycache__/
 database/__pycache__/
 userAdmin/__pycache__/
-userAdmin/migrations/__pycache__/
 utils/__pycache__/
+consultant/__pycache__/
+director/__pycache__/
 database/migrations/
+visitor/__pycache__/
