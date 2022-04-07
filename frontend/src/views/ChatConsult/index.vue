@@ -1,7 +1,7 @@
 <template>
   <div class="root-style">
     <!--      监听到没有conversations的时候，显示默认背景图-->
-    <div v-if="!this.conversations">
+    <div v-if="!this.conversations.length">
       <div style="text-align: center; padding-top: 100px">
         <img src="~@/assets/chat.png" width="300">
         <p>努力做好每一次咨询!</p>
@@ -45,16 +45,20 @@
             <div style="margin-top: 40px; margin-left: 70px; font-weight: bold; font-size: 20px">正在咨询中...</div>
             <div style="margin-top: 60px; margin-left: 5px; font-weight: bold; font-size: 20px">已咨询时间：</div>
             <div style="margin-top: 30px; font-size: 50px; margin-left: 40px">{{ consultTime }}</div>
-            <div style="margin-top: 310px; margin-left: 20px">
-              <el-link style="font-size: 35px;padding-left: 20px">
+            <div style="margin-top: 280px; margin-left: 20px">
+              <el-button type="text" style="font-size: 35px;padding-left: 15px" @click="ToDir">
                 请求督导
-              </el-link>
+              </el-button>
             </div>
             <el-divider/>
             <div style="margin-left: 20px">
-              <el-link style="font-size: 35px;padding-left: 20px">
+              <el-button
+                type="text"
+                style="font-size: 35px;padding-left: 15px"
+                @click="removeConversation"
+              >
                 结束咨询
-              </el-link>
+              </el-button>
             </div>
           </div>
           <div class="chat-space">
@@ -113,20 +117,24 @@ export default {
       // 聊天记录:当前用户在该聊天窗口发生的全部聊天记录
       messages: [],
       // 聊天对象信息
-      friend: {
-        // avatar: '/IM/user/Avatar-3.png',
-        // name: 'cymm',
-        // // uuid: 'fdee46b0-4b01-4590-bdba-6586d7617f95'/
-        // uuid: '123'
-        avatar: 'https://cube.elemecdn.com/9/c2/f0ee8a3c7c9638a54940382568c9dpng.png',
-        name: 'Mattie',
-        uuid: '08c0a6ec-a42b-47b2-bb1e-15e0f5f9a19a'
-      },
+      friends: [
+        {
+          avatar: 'http://inews.gtimg.com/newsapp_bt/0/13540171754/1000',
+          name: 'cymm',
+          uuid: 'user1'
+        },
+        {
+          avatar: 'https://images.pexels.com/photos/4491461/pexels-photo-4491461.jpeg?cs=srgb&dl=pexels-karolina-grabowska-4491461.jpg&fm=jpg',
+          name: '周导',
+          uuid: 'director1'
+        }
+      ],
+      friend: {},
       // 当前用户信息
       currentUser: {
-        avatar: 'https://cube.elemecdn.com/9/c2/f0ee8a3c7c9638a54940382568c9dpng.png',
-        name: 'Tracy',
-        uuid: 'fdee46b0-4b01-4590-bdba-6586d7617f95'
+        avatar: 'https://i03piccdn.sogoucdn.com/0354d6ffc3ecbe11',
+        name: '王咨询师',
+        uuid: 'consult1'
       },
       // 控制图片，show：为true时放大查看
       image: {
@@ -150,6 +158,8 @@ export default {
       onSuccess: function(res) {
         const content = res.content
         self.conversations = content.conversations
+        var test = { 'conversations': self.conversations }
+        console.log(test)
       },
       onFailed: function(error) {
         console.log('失败获取最新会话列表, code:' + error.code + ' content:' + error.content)
@@ -172,6 +182,11 @@ export default {
       // 对话人的基本信息，包括name, avatar, uuid;
       // 之后随不同id取不同用户信息
       // this.friend = this.service.findFriendById(friendId)
+      if (friendId === 'user1') {
+        this.friend = this.friends[0]
+      } else {
+        this.friend = this.friends[1]
+      }
       // 和该对话人的全部聊天记录
       this.messages = this.service.getPrivateMessages(friendId)
       console.log(this.messages)
@@ -207,6 +222,50 @@ export default {
         },
         onFailed: function(error) {
           console.log('标记为已读失败', error)
+        }
+      })
+    },
+    ToDir() {
+      this.$alert('正在为您分配在线督导，点击确认按钮开始连线...', {
+        confirmButtonText: '确定',
+        callback: action => {
+          this.$message({
+            type: 'info',
+            message: `已为您连线督导`
+          })
+          this.$router.push({
+            name: 'ChatConsult',
+            query: {
+              id: 'director1'
+            }
+          })
+        }
+      })
+    },
+    removeConversation() {
+      this.$prompt('本次咨询已结束，请填写评价', {
+        confirmButtonText: '确定',
+        cancelButtonText: '点错了，继续咨询'
+      }).then(({ value }) => {
+        this.$message({
+          type: 'success',
+          message: '感谢您的反馈！'
+        })
+      }).catch(() => {
+        this.$message({
+          type: 'info',
+          message: '咨询继续'
+        })
+      })
+      const self = this
+      self.showLoading = true
+      this.goEasy.im.removePrivateConversation({
+        userId: this.$route.query.id,
+        onSuccess: function() {
+          self.showLoading = false
+        },
+        onFailed: function(error) {
+          console.log(error)
         }
       })
     }

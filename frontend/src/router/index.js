@@ -164,7 +164,7 @@ export const asyncRoutes = [
     meta: { roles: ['Admin'] },
     children: [{
       path: 'RecordAdmin',
-      name: 'RecordAdmin',
+      // name: 'RecordAdmin',
       component: () => import('@/views/RecordAdmin/index'),
       meta: { roles: ['Admin'], title: '咨询记录', icon: 'el-icon-document' }
     }]
@@ -176,7 +176,7 @@ export const asyncRoutes = [
     component: Layout,
     children: [{
       path: 'ScheduleAdmin',
-      name: 'ScheduleAdmin',
+      // name: 'ScheduleAdmin',
       component: () => import('@/views/ScheduleAdmin/index'),
       meta: { roles: ['Admin'], title: '排班表', icon: 'el-icon-date' }
     }]
@@ -189,7 +189,7 @@ export const asyncRoutes = [
     component: Layout,
     children: [{
       path: 'consultantmanage',
-      name: 'consultantManage',
+      // name: 'consultantManage',
       component: () => import('@/views/consultantManage/index'),
       meta: { roles: ['Admin'], title: '咨询师管理', icon: 'el-icon-service' }
     }]
@@ -202,7 +202,7 @@ export const asyncRoutes = [
     component: Layout,
     children: [{
       path: 'monitormanage',
-      name: 'monitorManage',
+      // name: 'monitorManage',
       component: () => import('@/views/monitorManage/index'),
       meta: { roles: ['Admin'], title: '督导管理', icon: 'el-icon-s-platform' }
     }]
@@ -214,7 +214,7 @@ export const asyncRoutes = [
     meta: { roles: ['Admin'] },
     children: [{
       path: 'usermanage',
-      name: 'userManage',
+      // name: 'userManage',
       component: () => import('@/views/userManage/index'),
       meta: { roles: ['Admin'], title: '访客管理', icon: 'el-icon-s-custom' }
     }]

@@ -135,7 +135,7 @@ export default {
       var that = this
       dashboardDirector(getToken()).then((response) => {
         that.consultList = response.consultList
-        that.squareUrl = response.squareUrl
+        // that.squareUrl = response.squareUrl
         that.directorName = response.directorName
         that.consultNum = response.consultNum
         that.consultTodayNum = response.today_num
