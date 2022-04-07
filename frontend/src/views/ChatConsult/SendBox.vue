@@ -88,6 +88,7 @@ export default {
     },
     submitMessage() {
       if (this.content.trim().length !== 0) {
+        // console.log(this.content)
         const textMessage = this.goEasy.im.createTextMessage({
           text: this.content,
           to: {

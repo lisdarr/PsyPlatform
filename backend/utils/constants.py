@@ -1,4 +1,3 @@
-
 Visitor = 1
 Admin = 0
-state = ['正常', '禁用']
+state = ['禁用', '正常']

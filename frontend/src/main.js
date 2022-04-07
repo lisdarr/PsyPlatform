@@ -38,7 +38,7 @@ Vue.use(VueResource)
 
 const goEasy = GoEasy.getInstance({
   host: 'hangzhou.goeasy.io', // 应用所在的区域地址: [hangzhou.goeasy.io, 新加坡暂不支持IM，敬请期待]
-  appkey: 'BC-51b5a52577df4ba8ae017cd70fb83835', // common key
+  appkey: 'BC-a9e0b1b27564446d942734742f8cbf07', // common key
   modules: ['im']
 })
 

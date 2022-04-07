@@ -6,6 +6,7 @@ from django.contrib.auth.hashers import make_password, check_password
 from django.utils import timezone
 from utils import constants, convert
 from django.db.models.aggregates import Sum, Count, Avg, Variance, StdDev, Max, Min
+from datetime import datetime
 
 
 def registUser(user):
@@ -40,7 +41,6 @@ def checkUser(username, password):
         user = Director.objects.get(username=username)
     if user == '':
         return 0
-    print(make_password(password))
     if check_password(password, user.password):
         ticket = ''
         for i in range(15):
@@ -62,39 +62,54 @@ def checkUser(username, password):
 def getDashboardConsultant(token):
     try:
         user_info = Consultant.objects.get(u_ticket=token)
-    except:
+    except Consultant.DoesNotExist:
         return '', 'Consultant err'
 
     try:
         today_info = ConToday.objects.get(con_id=user_info.con_id)
-    except:
+    except ConToday.DoesNotExist:
         return '', 'ConToday err'
 
     try:
         conschedule = ConSchedule.objects.filter(con_id=user_info.con_id)
-
-    except:
+    except ConSchedule.DoesNotExist:
         return '', 'ConSchedule err'
 
-    time = timezone.localtime(timezone.now()).strftime(("%Y-%m-%d %H:%M:%S"))
-    time = time.split(' ')
     calendar = []
     for sch in conschedule:
         list = convert.get_date(sch.weekday)
         for i in list:
             calendar.append(i)
 
-    data = {'name': user_info.username,
-            'time': time[1],
-            'date': time[0],
-            'rate': user_info.av_score,
-            'squareUrl': user_info.icon,
-            'consultNum': user_info.totel_num,
-            'consultTodayNum': today_info.today_num,
-            'consultTodayTime': today_info.today_dur,
-            'callNum': today_info.now_num,
-            'calendar': calendar,
+    tableData = []
+    try:
+        records = VisitorConRecord.objects.filter(con_id=user_info.con_id).order_by('stime')[:5]
+        for record in records:
+            try:
+                name = Visitor.objects.get(vis_id=record.vis_id).name
+            except Visitor.DoesNotExist:
+                continue
+            ele = {
+                'name': name,
+                'time': convert.timeChange(record.duration),
+                'date': record.stime.strftime("%Y-%m-%d %H:%M:%S"),
+                'rate': record.v2c_score,
+                'comment': record.v2c_comm,
             }
+            tableData.append(ele)
+    except VisitorConRecord.DoesNotExist:
+        return '', 'VisitorConRecord Does Not Exist'
+
+    data = {
+        'tableData': tableData,
+        'rate': user_info.av_score,
+        'squareUrl': user_info.icon,
+        'consultNum': user_info.totel_num,
+        'consultTodayNum': today_info.today_num,
+        'consultTodayTime': today_info.today_dur,
+        'callNum': today_info.now_num,
+        'calendar': calendar,
+    }
 
     return data, ''
 
@@ -115,12 +130,11 @@ def getRecordConsult(username, begin_date, end_date):
         except VisitorConRecord.DoesNotExist:
             continue
         for record in records:
-            if username == '':
-                username = Visitor.objects.get(vis_id=record.vis_id).name
+            username = Visitor.objects.get(vis_id=record.vis_id).name
             ele = {
                 'name': username,
-                'time': record.duration,
-                'date': record.stime.strftime(("%Y-%m-%d %H:%M:%S")),
+                'time': convert.timeChange(record.duration),
+                'date': record.stime.strftime("%Y-%m-%d %H:%M:%S"),
                 'rate': record.v2c_score,
                 'comment': record.v2c_comm
             }
@@ -129,20 +143,20 @@ def getRecordConsult(username, begin_date, end_date):
     return list, ''
 
 
-def getDashboardDirctor(token):
+def getDashboardDirector(token):
     try:
         user_info = Director.objects.get(u_ticket=token)
-    except:
+    except Director.DoesNotExist:
         return '', 'Director No Data'
 
     try:
         consults = Consultant.objects.filter(dir_id=user_info.dir_id)
-    except:
+    except Consultant.DoesNotExist:
         return '', 'No consultant'
 
     try:
         dirSchedule = DirSchedule.objects.filter(dir_id=user_info.dir_id)
-    except:
+    except DirSchedule.DoesNotExist:
         return '', 'DirSchedule err'
 
     list = []
@@ -158,13 +172,13 @@ def getDashboardDirctor(token):
             data = {}
 
     tableData = []
-    records = ConDirRecord.objects.filter(dir_id=user_info.dir_id)
+    records = ConDirRecord.objects.filter(dir_id=user_info.dir_id).order_by('stime')[0:5]
     for record in records:
         consult = Consultant.objects.get(con_id=record.con_id)
         data = {
             'name': consult.username,
-            'time': record.duration,
-            'date': record.stime.strftime(("%Y-%m-%d %H:%M:%S")),
+            'time': convert.timeChange(record.duration),
+            'date': record.stime.strftime("%Y-%m-%d %H:%M:%S"),
         }
         tableData.append(data)
     today_info = DirToday.objects.get(dir_id=user_info.dir_id)
@@ -180,7 +194,7 @@ def getDashboardDirctor(token):
         'consultNum': today_info.today_num,
         'directorName': user_info.username,
         'today_num': today_info.today_num,
-        'today_time': today_info.today_dur,
+        'today_time': convert.timeChange(today_info.today_dur),
         'squarUrl': user_info.icon,
         'tableData': tableData,
         'calendarData': calendarData,
@@ -189,7 +203,7 @@ def getDashboardDirctor(token):
     return res, ''
 
 
-def getRecordDirctor(username, begin_date, end_date):
+def getRecordDirector(username, begin_date, end_date):
     if username == '':
         consultants = Consultant.objects.all()
     else:
@@ -198,17 +212,18 @@ def getRecordDirctor(username, begin_date, end_date):
         except Consultant.DoesNotExist:
             return [], 'No such consultant'
     list = []
+    if consultants.count() == 0:
+        return [], 'No such consultant'
     for consultant in consultants:
         try:
             records = ConDirRecord.objects.filter(con_id=consultant.con_id, stime__range=[begin_date, end_date])
         except ConDirRecord.DoesNotExist:
             continue
         for record in records:
-            if username == '':
-                username = Consultant.objects.get(con_id=record.con_id).username
+            username = Consultant.objects.get(con_id=record.con_id).username
             ele = {
                 'name': username,
-                'time': record.duration,
+                'time': convert.timeChange(record.duration),
                 'date': record.stime.strftime(("%Y-%m-%d %H:%M:%S")),
             }
             list.append(ele)
@@ -217,20 +232,23 @@ def getRecordDirctor(username, begin_date, end_date):
 
 
 def getRecordAdmin(username, begin_date, end_date):
-    try:
-        visitors = Visitor.objects.filter(username=username)
-    except:
-        return '', 'Visitor: No data'
+    if username == '':
+        visitors = Visitor.objects.all()
+    else:
+        try:
+            visitors = Visitor.objects.filter(name=username)
+        except Visitor.DoesNotExist:
+            return '', 'Visitor: No data'
 
     list = []
     for visitor in visitors:
         try:
             records = VisitorConRecord.objects.filter(vis_id=visitor.vis_id, stime__range=[begin_date, end_date])
-        except:
-            return '', 'VisitorConRecord: No data'
+        except VisitorConRecord.DoesNotExist:
+            continue
         for record in records:
             ele = {
-                'name': username,
+                'name': visitor.name,
                 'time': record.duration,
                 'date': record.stime.strftime(("%Y-%m-%d %H:%M:%S")),
                 'rate': record.v2c_score,
@@ -247,43 +265,58 @@ def getRecordAdmin(username, begin_date, end_date):
 
 
 def getConsultantManage(username):
-    try:
-        consults = Consultant.objects.filter(username=username)
-    except:
-        return '', 'Consultant: No Data'
+    if username == '':
+        consults = Consultant.objects.all()
+    else:
+        try:
+            consults = Consultant.objects.filter(username=username)
+        except Consultant.DoesNotExist:
+            return '', 'Consultant: No Data'
     list = []
+    if consults.count() == 0:
+        return '', 'Consultant: Not Exist!'
     for consult in consults:
-        mid = ConDirRecord.objects.get(con_id=consult.con_id).dir_id
-        monitor = Director.objects.get(dir_id=mid).username
-        sches = ConSchedule.objects.filter(con_id=consult.con_id)
-        weekday = ''
-        for sche in sches:
-            weekday += sche.weekday
+        records = ConDirRecord.objects.filter(con_id=consult.con_id)
+        monitor_list = []
+        for r in records:
+            if r.dir_id in monitor_list:
+                continue
+            monitor_list.append(r.dir_id)
+            monitor = Director.objects.get(dir_id=r.dir_id).username
+            sches = ConSchedule.objects.filter(con_id=consult.con_id)
+            weekday = ''
+            for sche in sches:
+                weekday += sche.weekday
 
-        data = {
-            'name': username,
-            'monitor': monitor,
-            'sum': consult.totel_num,
-            'time': consult.totel_dur,
-            'rate': consult.av_score,
-            'weekday': weekday
-        }
-        list.append(data)
+            data = {
+                'name': consult.username,
+                'monitor': monitor,
+                'sum': consult.totel_num,
+                'time': convert.timeChange(consult.totel_dur),
+                'rate': consult.av_score,
+                'schedule': weekday
+            }
+            list.append(data)
 
     return list, ''
 
 
 def getMonitorAdmin(name):
-    directors = Director.objects.filter(username=name)
+    if name == '':
+        directors = Director.objects.all()
+    else:
+        directors = Director.objects.filter(username=name)
     list = []
-
+    if directors.count() == 0:
+        return []
     for director in directors:
-        consultants = ConDirRecord.objects.filter(dir_id=director.dir_id)
-        consol = ''
+        consultants = Consultant.objects.filter(dir_id=director.dir_id)
+        coList = []
         for consultant in consultants:
-            id = consultant.con_id
-            username = Consultant.objects.get(con_id=id).username
-            consol += username
+            username = consultant.username
+            if username not in coList:
+                coList.append(username)
+        consol = ",".join(coList)
         sches = DirSchedule.objects.filter(dir_id=director.dir_id)
         weekday = ''
         for sche in sches:
@@ -292,10 +325,10 @@ def getMonitorAdmin(name):
         time = director.duration
 
         data = {
-            'name': username,
+            'name': director.username,
             'consultant': consol,
             'sum': sum,
-            'time': time,
+            'time': convert.timeChange(time),
             'schedule': weekday
         }
         list.append(data)
@@ -304,13 +337,16 @@ def getMonitorAdmin(name):
 
 
 def getUserAdmin(username):
-    users = Visitor.objects.filter(name=username, type=constants.Visitor)
+    if username == '':
+        users = Visitor.objects.filter(type=constants.Visitor)
+    else:
+        users = Visitor.objects.filter(name=username, type=constants.Visitor)
     list = []
     for user in users:
         data = {
-            'name': user.username,
+            'name': user.name,
             'gender': 'No Record',
-            'username': user.username,
+            'username': user.name,
             'phonenumber': user.tele,
             'contact': user.emer_name,
             'contactnumber': user.emer_tele,
@@ -372,47 +408,14 @@ def getLoginInfo(token):
 def getDashboardAdmin(token):
     try:
         admin = Visitor.objects.filter(u_ticket=token)
-    except:
+    except Visitor.DoesNotExist:
         return '', 'User is not admin'
 
     if admin.count() == 0:
         return '', 'User is not admin'
 
-    try:
-        consultants = Consultant.objects.all()
-    except:
-        return '', 'Consultant err'
-
-    consultantList = []
-    for consultant in consultants:
-        try:
-            state = ConToday.objects.get(con_id=consultant.con_id).state
-        except:
-            state = 0
-        data = {
-            'name': consultant.username,
-            'state': state
-        }
-        consultantList.append(data)
-
-    try:
-        dirctors = Director.objects.all()
-    except:
-        return '', 'Director err'
-
-    directorList = []
-    for dirctor in dirctors:
-        try:
-            state = DirToday.objects.get(dir_id=dirctor.dir_id).state
-        except:
-            state = 'NULL'
-
-        data = {
-            'name': dirctor.username,
-            'state': state
-        }
-
-        directorList.append(data)
+    consultantList = getConsultantList()
+    directorList = getDirectorList()
 
     consultNum = ConToday.objects.filter(state=1).count()
     chatNum = DirToday.objects.filter(state=1).count()
@@ -497,4 +500,248 @@ def getDashboardAdmin(token):
     return res, ''
 
 
-# def addConsultant(form):
+def getDirectorList():
+    try:
+        dirctors = Director.objects.all()
+    except Director.DoesNotExist:
+        return '', 'Director err'
+
+    directorList = []
+    for dirctor in dirctors:
+        try:
+            state = DirToday.objects.get(dir_id=dirctor.dir_id).state
+        except DirToday.DoesNotExist:
+            state = 'NULL'
+
+        data = {
+            'name': dirctor.username,
+            'state': state
+        }
+
+        directorList.append(data)
+
+    return directorList
+
+
+def getConsultantList():
+    try:
+        consultants = Consultant.objects.all()
+    except Consultant.DoesNotExist:
+        return '', 'Consultant err'
+
+    consultantList = []
+    for consultant in consultants:
+        try:
+            state = ConToday.objects.get(con_id=consultant.con_id).state
+        except:
+            state = 0
+        data = {
+            'name': consultant.username,
+            'state': state
+        }
+        consultantList.append(data)
+
+    return consultantList
+
+
+def getScheduleEvent():
+    records = ConSchedule.objects.all()
+    dict = {
+        'Mon': 0,
+        'Tue': 0,
+        'Wed': 0,
+        'Thu': 0,
+        'Fri': 0,
+        'Sat': 0,
+        'Sun': 0
+    }
+    for record in records:
+        dict[record.weekday] = dict.get(record.weekday) + 1
+
+    thisWeek = convert.getThisWeekDict()
+    events = []
+    for k, v in dict.items():
+        ele = {
+            'title': "咨询师： " + str(v),
+            'start': thisWeek.get(k)
+        }
+        events.append(ele)
+    return events
+
+
+def getScheduleQuery(date):
+    weekday = convert.getWeekDay(date)
+    try:
+        recordsConsul = ConSchedule.objects.filter(weekday=weekday)
+    except ConSchedule.DoesNotExist:
+        return '', 'ConSchedule: ' + date + ' no scehdule'
+
+    consultantList = []
+    for record in recordsConsul:
+        name = Consultant.objects.get(con_id=record.con_id).username
+        if name not in consultantList:
+            consultantList.append(name)
+
+    consultantName = ",".join(consultantList)
+
+    try:
+        recordsMonitor = DirSchedule.objects.filter(weekday=weekday)
+    except DirSchedule.DoesNotExist:
+        return '', 'DirSchedule: ' + date + ' no scehdule'
+
+    monitorList = []
+    for record in recordsMonitor:
+        name = Director.objects.get(dir_id=record.dir_id).username
+        if name not in monitorList:
+            monitorList.append(name)
+
+    monitorName = ",".join(monitorList)
+
+    res = {
+        'consultantName': consultantName,
+        'monitorName': monitorName
+    }
+    return res, ''
+
+
+def addConsultantShcedule(addForm):
+    consultantId = addForm['consultantId']
+    monitorId = addForm['monitorId']
+    dateValue = addForm['dateValue']
+    dateList = dateValue.split(",")
+    err = ''
+
+    if monitorId != '':
+        try:
+            monitor = Director.objects.get(dir_id=monitorId)
+            for date in dateList:
+                date = datetime.strptime(date, "%Y-%m-%d")
+                weekday = convert.getWeekDay(date)
+                try:
+                    DirSchedule.objects.get(dir_id=monitor.dir_id, weekday=weekday)
+                except DirSchedule.DoesNotExist:
+                    DirSchedule.objects.create(dir_id=monitor.dir_id, weekday=weekday)
+        except Director.DoesNotExist:
+            err += "No Such monitor please register first"
+
+    if consultantId != '':
+        try:
+            consultant = Consultant.objects.get(con_id=consultantId)
+            for date in dateList:
+                date = datetime.strptime(date, "%Y-%m-%d")
+                weekday = convert.getWeekDay(date)
+                try:
+                    ConSchedule.objects.get(con_id=consultant.con_id, weekday=weekday)
+                except ConSchedule.DoesNotExist:
+                    ConSchedule.objects.create(con_id=consultant.con_id, weekday=weekday)
+        except Consultant.DoesNotExist:
+            err += "No Such consultant please register first"
+
+    return err
+
+
+def addConsultantItem(form):
+    name = form["name"]
+    gender = form["gender"]
+    age = form["age"]
+    identity = form["idNumber"]
+    phone = form["phone"]
+    email = form["email"]
+    dir_id = form["monitorId"]
+    username = form["userName"]
+    password = make_password(form["pwd"])
+    company = form["company"]
+    title = form["rank"]
+
+    Consultant.objects.create(name=name, sex=gender, age=age,
+                              identity=identity, tele=phone, email=email,
+                              dir_id=dir_id, username=username, password=password,
+                              unit=company, title=title)
+
+
+def editConsultantItem(form, name):
+    editName = form['name']
+    dir_id = form['monitor']
+    schedules = form['schedule']
+    scheduleList = schedules.split(",")
+    err1 = ''
+    err2 = ''
+
+    try:
+        consultant = Consultant.objects.get(username=name)
+        if editName != '':
+            consultant.username = editName
+
+        if dir_id != '':
+            consultant.dir_id = dir_id
+
+        consultant.save()
+        try:
+            ConSchedule.objects.filter(con_id=consultant.con_id).delete()
+        except ConSchedule.DoesNotExist:
+            err1 = "This is the first time to set its schedule."
+        for sche in scheduleList:
+            ConSchedule.objects.create(con_id=consultant.con_id, weekday=sche)
+    except Consultant.DoesNotExist:
+        err2 = "No such consultant please register first"
+
+    return err1, err2
+
+
+def addDirectorItem(form):
+    name = form["name"]
+    gender = form["gender"]
+    age = form["age"]
+    identity = form["idNumber"]
+    phone = form["phone"]
+    email = form["email"]
+    username = form["userName"]
+    password = make_password(form["pwd"])
+    company = form["company"]
+    title = form["rank"]
+    qual = form["qualId"]
+    qualNum = form["certId"]
+
+    Director.objects.create(name=name, sex=gender, age=age, identity=identity,
+                            tele=phone, email=email, username=username,
+                            password=password, unit=company, title=title, qual=qual, qualnum=qualNum,
+                            number=0, duration=0)
+
+
+def editDirectorItem(form, name):
+    editName = form['name']
+    schedules = form['schedule']
+    scheduleList = schedules.split(",")
+    msg = ''
+
+    try:
+        director = Director.objects.get(username=name)
+        if editName != '':
+            director.username = editName
+
+        director.save()
+
+        try:
+            DirSchedule.objects.filter(dir_id=director.dir_id).delete()
+        except DirSchedule.DoesNotExist:
+            msg = 'This is the first time to set the schedule of director.'
+
+        for schedule in scheduleList:
+            DirSchedule.objects.create(dir_id=director.dir_id, weekday=schedule)
+
+        return msg, ''
+    except Director.DoesNotExist:
+        return '', 'No such director, please register it first.'
+
+
+def banVisitor(name):
+    try:
+        visitors = Visitor.objects.filter(name=name)
+
+        for visitor in visitors:
+            visitor.ban = 0
+            visitor.save()
+
+        return ''
+    except Visitor.DoesNotExist:
+        return 'No such visitor, please register first.'

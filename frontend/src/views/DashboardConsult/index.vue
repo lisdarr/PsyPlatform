@@ -115,13 +115,18 @@ export default {
     return {
       tableData: [],
       // value: new Date()
-      squareUrl: 'https://cube.elemecdn.com/9/c2/f0ee8a3c7c9638a54940382568c9dpng.png',
-      value: 3.7,
-      consultNum: 12345,
-      consultTodayNum: 35,
-      consultTodayTime: '6:32:24',
-      callNum: 2,
-      calendarData: []
+      squareUrl: '',
+      value: null,
+      consultNum: null,
+      consultTodayNum: null,
+      consultTodayTime: '',
+      callNum: null,
+      calendarData: [],
+      currentUser: {
+        avatar: 'https://cube.elemecdn.com/9/c2/f0ee8a3c7c9638a54940382568c9dpng.png',
+        name: 'Tracy',
+        uuid: 'fdee46b0-4b01-4590-bdba-6586d7617f95'
+      }
     }
   },
   computed: {
@@ -129,6 +134,13 @@ export default {
       'name',
       'token'
     ])
+  },
+  beforeMount() {
+    const user = this.currentUser
+    // 建立会话连接，user包含用户名+头像+用户id
+    if (this.goEasy.getConnectionStatus() === 'disconnected') {
+      this.service.connect(user)
+    }
   },
   methods: {
     handleEdit(index, row) {
@@ -146,9 +158,8 @@ export default {
     init_dashboardConsult() {
       var that = this
       dashboardConsultant(getToken()).then(response => {
-        console.log('12344455')
         const data = response
-        that.tableData = Array(data.tableData)
+        that.tableData = data.tableData
         that.squareUrl = data.squareUrl
         that.value = data.value
         that.consultNum = data.consultNum

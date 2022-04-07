@@ -52,140 +52,16 @@ export default {
   name: 'RecordConsult',
   data() {
     return {
-      tableData: [
-        {
-          name: '王小虎',
-          time: '00:12:54',
-          date: '2016-05-02',
-          rate: 3.7,
-          comment: '很好的咨询师！'
-        },
-        {
-          name: '王小红',
-          time: '00:12:54',
-          date: '2016-05-02',
-          rate: 3.7,
-          comment: '很好的咨询师！'
-        },
-        {
-          name: '王小虎',
-          time: '00:12:54',
-          date: '2016-05-02',
-          rate: 3.7,
-          comment: '很好的咨询师！'
-        },
-        {
-          name: '王小虎',
-          time: '00:12:54',
-          date: '2016-05-02',
-          rate: 3.7,
-          comment: '很好的咨询师！'
-        },
-        {
-          name: '王小虎',
-          time: '00:12:54',
-          date: '2016-05-02',
-          rate: 3.7,
-          comment: '很好的咨询师！'
-        },
-        {
-          name: '王小虎',
-          time: '00:12:54',
-          date: '2016-05-02',
-          rate: 3.7,
-          comment: '很好的咨询师！'
-        },
-        {
-          name: '王小虎',
-          time: '00:12:54',
-          date: '2016-05-02',
-          rate: 3.7,
-          comment: '很好的咨询师！'
-        },
-        {
-          name: '王小虎',
-          time: '00:12:54',
-          date: '2016-05-02',
-          rate: 3.7,
-          comment: '很好的咨询师！'
-        },
-        {
-          name: '王小虎',
-          time: '00:12:54',
-          date: '2016-05-02',
-          rate: 3.7,
-          comment: '很好的咨询师！'
-        },
-        {
-          name: '王小虎',
-          time: '00:12:54',
-          date: '2016-05-02',
-          rate: 3.7,
-          comment: '很好的咨询师！'
-        },
-        {
-          name: '王小虎',
-          time: '00:12:54',
-          date: '2016-05-02',
-          rate: 3.7,
-          comment: '很好的咨询师！'
-        },
-        {
-          name: '王小虎',
-          time: '00:12:54',
-          date: '2016-05-02',
-          rate: 3.7,
-          comment: '很好的咨询师！'
-        },
-        {
-          name: '王小虎',
-          time: '00:12:54',
-          date: '2016-05-02',
-          rate: 3.7,
-          comment: '很好的咨询师！'
-        },
-        {
-          name: '王小虎',
-          time: '00:12:54',
-          date: '2016-05-02',
-          rate: 3.7,
-          comment: '很好的咨询师！'
-        },
-        {
-          name: '王小虎',
-          time: '00:12:54',
-          date: '2016-05-02',
-          rate: 3.7,
-          comment: '很好的咨询师！'
-        },
-        {
-          name: '王小虎',
-          time: '00:12:54',
-          date: '2016-05-02',
-          rate: 3.7,
-          comment: '很好的咨询师！'
-        },
-        {
-          name: '王小虎',
-          time: '00:12:54',
-          date: '2016-05-02',
-          rate: 3.7,
-          comment: '很好的咨询师！'
-        },
-        {
-          name: '王小虎',
-          time: '00:12:54',
-          date: '2016-05-02',
-          rate: 3.7,
-          comment: '很好的咨询师！'
-        }
-      ],
+      tableData: [],
       inputValue: '',
       dataValue: '',
       currentPage: 1,
       pageSize: 10,
-      totalSize: 18
+      totalSize: null
     }
+  },
+  mounted() {
+    this.search()
   },
   methods: {
     handleSizeChange(val) {
@@ -195,7 +71,6 @@ export default {
       console.log(`当前页: ${val}`)
     },
     search() {
-      console.log('我在搜索')
       var that = this
       recordConsultant({
         name: this.inputValue,

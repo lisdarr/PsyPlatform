@@ -26,7 +26,7 @@ function IMService(goEasy, GoEasy) {
 
   // 私聊消息记录，map格式，每个好友对应一个数组
   this.privateMessages = {}
-
+  console.log(this.privateMessages)
   // 群聊消息记录，map格式，每个群对应一个数组
   this.groupMessages = {}
 
@@ -81,7 +81,9 @@ IMService.prototype.getPrivateMessages = function(friendId) {
 
 // 连接GoEasy
 IMService.prototype.connect = function(currentUser) {
+  console.log('1.进入IMSERVICE.connect')
   this.currentUser = currentUser
+  console.log(this.currentUser)
   const userData = {
     name: this.currentUser.name,
     avatar: this.currentUser.avatar

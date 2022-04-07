@@ -47,7 +47,8 @@
 </template>
 
 <script>
-import { recordConsultant } from '@/api/consultant'
+
+import { recordDirector } from '@/api/director'
 
 export default {
   name: 'RecordDirector',
@@ -102,7 +103,7 @@ export default {
     search(inputValue, dataValue) {
       console.log('我在搜索')
       var that = this
-      recordConsultant({
+      recordDirector({
         name: this.inputValue,
         begin_date: this.dataValue[0],
         end_date: this.dataValue[1]
