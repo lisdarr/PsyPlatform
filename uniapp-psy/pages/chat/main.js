@@ -27,7 +27,7 @@ Page({
     content: '',
 	friend: null,
 	currentUser: {
-		uuid: "123",
+		uuid: "user1",
 		name: "cymm",
 		avatar: "/static/images/Avatar-1.png"
 	},
@@ -122,12 +122,12 @@ Page({
 
 	// 获取初始数据并加载
 	// let friendId = options.to; //咨询师id
-	let friendId = "1"
+	let friendId = "consult1"
 	let service = app.globalData.service;
 	let currentUser = this.data.currentUser; //当前用户
 	let friend = {
 		name: "王咨询师",
-		uuid: "1",
+		uuid: "consult1",
 		avatar: "/static/images/Avatar-1.png"
 	}
 

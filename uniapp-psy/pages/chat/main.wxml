@@ -7,31 +7,31 @@
 		<view class="scroll-view">
 			<view class="header">
 				<i-card full title="咨询师" extra="计时" thumb="https://i.loli.net/2017/08/21/599a521472424.jpg">
-          <button slot="content" bindtap="evaluate" size="mini" type="primary">咨询完成</button>
-          <button slot="content" bindtap="sendRecord" size="mini">发送记录</button>
-        </i-card>
+					<button slot="content" bindtap="evaluate" size="mini" type="primary">咨询完成</button>
+					<button slot="content" bindtap="sendRecord" size="mini">发送记录</button>
+				</i-card>
 			</view>
 			<!-- 评价 -->
 			<view class="eva" hidden="{{hiddenkey}}">
-			<i-card>
-        <view slot="content">请对本次咨询进行评价</view>
-        <i-cell slot="content" title="星星">
-          <i-rate 
-              bind:change="onChange" 
-              value="{{starIndex}}">
-              {{starIndex}}星
-           </i-rate>
-         </i-cell>
-				 <view slot="footer"><button bindtap="submit" size="mini" type="primary">提交</button></view>
-			</i-card>\
-		</view>
+				<i-card>
+					<view slot="content">请对本次咨询进行评价</view>
+					<i-cell slot="content" title="星星">
+					<i-rate 
+						bind:change="onChange" 
+						value="{{starIndex}}">
+						{{starIndex}}星
+					</i-rate>
+					</i-cell>
+					<view slot="footer"><button bindtap="submit" size="mini" type="primary">提交</button></view>
+				</i-card>
+			</view>
+
 			<!--已经收到的消息-->
 			<view wx:for="{{messages || []}}" wx:for-index="index" wx:key="index" wx:for-item="message">
 				<!--时间显示，类似于微信，隔5分钟不发言，才显示时间-->
 				<view class="time-lag">
 					{{message.showTime}}
 				</view>
-
 				<!--消息内容-->
 				<view class="{{message.senderId == currentUser.uuid ? 'message-item self' : 'message-item'}}">
 					<view class="avatar other-icon" wx:if="{{message.senderId !== currentUser.uuid}}">
