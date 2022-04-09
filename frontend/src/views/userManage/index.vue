@@ -99,7 +99,7 @@
 </template>
 
 <script>
-import { userAdmin } from "@/api/admin";
+import { visitor_ban, visitor_info } from "@/api/admin";
 
 export default {
   name: "userManage",
@@ -246,7 +246,7 @@ export default {
     };
   },
   mounted() {
-    // this.init_List();
+    this.init_List();
   },
   methods: {
     handleSizeChange(val) {
@@ -255,20 +255,20 @@ export default {
     handleCurrentChange(val) {
       console.log(`当前页: ${val}`);
     },
-    // init_List(){
-    //   userAdmin(getToken())
-    //     .then((response) => {
-    //       that.list = response.list;
-    //       that.total = response.total;
-    //     })
-    //     .catch((error) => {
-    //       console.log(error);
-    //     });
-    // },
-    search() {
-      console.log("搜索");
+    init_List() {
       var that = this;
-      userAdmin({
+      visitor_info()
+        .then((response) => {
+          that.list = response.list;
+          that.total = response.total;
+        })
+        .catch((error) => {
+          console.log(error);
+        });
+    },
+    search() {
+      var that = this;
+      visitor_info({
         name: this.inputValue,
       })
         .then((response) => {
@@ -286,22 +286,26 @@ export default {
         type: "warning",
       })
         .then(() => {
-          // userAdmin({
-          //   name: this.row.name,
-          // })
-          // .then(() => {
-          //   row.state = "异常";
-          this.$message({
-            type: "success",
-            message: "已禁用!",
-          });
-          // })         
+          if (confirmResult == "confirm") {
+            visitor_ban({
+              name: row.name,
+            }).then(() => {
+              // row.state = "异常";
+              this.$message({
+                type: "success",
+                message: "已禁用!",
+              });
+              // })
+            });
+          } else {
+            this.$message({
+              type: "info",
+              message: "已取消操作",
+            });
+          }
         })
-        .catch(() => {
-          this.$message({
-            type: "info",
-            message: "已取消操作",
-          });
+        .catch((error) => {
+          console.log(error);
         });
     },
   },

@@ -72,8 +72,9 @@
 import FullCalendar from "@fullcalendar/vue";
 import dayGridPlugin from "@fullcalendar/daygrid";
 import interactionPlugin from "@fullcalendar/interaction";
-import axios from "axios";
 import { getToken } from "@/utils/auth";
+import { addSchedule, scheduleInfo } from "@/api/admin";
+import { scheduleQuery } from "@/api/admin";
 
 export default {
   name: "ScheduleAdmin",
@@ -104,36 +105,29 @@ export default {
         buttonText: { today: "今天" },
         selectable: true,
         dateClick: this.handleDateClick,
-        events: [
-          { title: "咨询师：5", start: "2022-03-21" },
-          { title: "督导：2", start: "2022-03-21" },
-          { title: "咨询师：4 ", start: "2022-03-22" },
-          { title: "督导：3", start: "2022-03-22" },
-        ],
+        events: [],
+        // events: [
+        //   { title: "咨询师：5", start: "2022-03-21" },
+        //   { title: "督导：2", start: "2022-03-21" },
+        //   { title: "咨询师：4 ", start: "2022-03-22" },
+        //   { title: "督导：3", start: "2022-03-22" },
+        // ],
         eventColor: "#f08f00",
         locale: "zh-cn",
         weekNumberCalculation: "ISO",
         customButtons: {},
       },
       consultantList: [
-        {
-          consultantName: "咨询师A",
-          consultantId: "1",
-        },
-        {
-          consultantName: "咨询师B",
-          consultantId: "2",
-        },
+        // {
+        //   consultantName: "咨询师A",
+        //   consultantId: "1",
+        // },
       ],
       monitorList: [
-        {
-          monitorName: "督导A",
-          monitorId: 1,
-        },
-        {
-          monitorName: "督导B",
-          monitorId: 2,
-        },
+        // {
+        //   monitorName: "督导A",
+        //   monitorId: 1,
+        // },
       ],
     };
   },
@@ -143,16 +137,19 @@ export default {
 
   methods: {
     init_Schedule() {
-      // var that = this
-      // scheduleAdmin(getToken())
-      // .then((response) =>{
-      //   that.events = response.events;
-      //   that.consultantList = response.consultantList;
-      //   that.monitorList = response.monitorList;
-      // })
-      // .catch((error) =>{
-      //   console.log(error)
-      // })
+      var that = this;
+      scheduleInfo(getToken())
+        .then((response) => {
+          this.calendarOptions.events = response.event;
+          // console.log(that.events);
+          that.consultantList = response.consultantList;
+          // console.log(that.consultantList);
+          that.monitorList = response.monitorList;
+          console.log(that.monitorList);
+        })
+        .catch((error) => {
+          console.log(error);
+        });
     },
     addPaiban() {
       this.dialogFormVisible = true;
@@ -165,33 +162,33 @@ export default {
     save() {
       console.log("保存");
       this.dialogFormVisible = false;
-      // var that = this;
-      // scheduleAdmin({
-      //   addForm: this.addForm,
-      // })
-      //   .then((response) => {
-      //     that.$message.success("保存成功！");
-      //     that.events = response.events;
-      //     that.init_Schedule();
-      //   })
-      //   .catch((error) => {
-      //     console.log(error);
-      //   });
+      var that = this;
+      addSchedule({
+        addForm: this.addForm,
+      })
+        .then(() => {
+          that.$message.success("保存成功！");
+          that.init_Schedule();
+        })
+        .catch((error) => {
+          console.log(error);
+        });
       //send三个值，request new title
     },
     handleDateClick(info) {
       console.log("点击日期");
       console.log(info.dateStr);
-      // var that = this;
-      // scheduleAdmin({
-      //   dateStr: this.info.dateStr,
-      // })
-      //   .then((response) => {
-      //     that.form = response.form;
-      //   })
-      //   .catch((error) => {
-      //     console.log(error);
-      //   });
+      var that = this;
+      scheduleQuery({
+        dateStr: info.dateStr,
+      })
+        .then((response) => {
+          that.form = response.form;
+          // console.log(that.form);
+        })
+        .catch((error) => {
+          console.log(error);
+        });
     },
     dateToString(now) {
       var year = now.getFullYear();

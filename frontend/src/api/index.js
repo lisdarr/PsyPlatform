@@ -1,3 +1,4 @@
+<<<<<<< Updated upstream
 import * as consultRecord from './consultRecord'
 import * as schedule from './schedule'
 import * as consultantManage from './consultantManage'
@@ -12,3 +13,5 @@ export default {
   monitorManage,
   userManage
 }
+=======
+>>>>>>> Stashed changes

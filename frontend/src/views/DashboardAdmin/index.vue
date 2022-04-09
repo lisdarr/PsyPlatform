@@ -476,12 +476,10 @@ export default {
         .then((response) => {
           that.consultList = response.consultList;
           that.monitorList = response.monitorList;
-          that.consultNum = response.data.consultNum;
+          that.consultNum = response.consultNum;
           that.chatNum = response.chatNum;
-          that.consultTodayNum = response.data.consultTodayNum;
-          that.consultTodayTime = response.data.consultTodayTime;
-          that.myChartData = response.myChartData;
-          that.weekChartData = response.weekChartData;
+          that.consultTodayNum = response.consultTodayNum;
+          that.consultTodayTime = response.consultTodayTime;
           that.sumList = response.sumList;
           that.rateList = response.rateList;
         })
@@ -490,14 +488,6 @@ export default {
         });
     },
     init_myChart() {
-      var that = this;
-      dashboardAdmin(getToken())
-        .then((response) => {
-          that.myChartData = response.myChartData;
-        })
-        .catch((error) => {
-          console.log(error);
-        });
       this.myChart = echarts.init(document.getElementById("mychart"));
       this.myChart.setOption({
         title: {
@@ -522,14 +512,13 @@ export default {
         },
         yAxis: {
           type: "value",
-          // type: "value",
           name: "咨询量",
         },
         series: [
           {
             type: "line",
             smooth: "true",
-            data: that.myChartData,
+            data: [],
             itemStyle: {
               color: "#D6AB15",
             },
@@ -556,16 +545,49 @@ export default {
           },
         ],
       });
-    },
-    init_weekChart() {
       var that = this;
       dashboardAdmin(getToken())
         .then((response) => {
-          that.weekChartData = response.weekChartData;
+          that.myChartData = response.myChartData;
+          // console.log(that.myChartData);
+          this.myChart.setOption({
+            series: [
+              {
+                type: "line",
+                smooth: "true",
+                data: this.myChartData,
+                itemStyle: {
+                  color: "#D6AB15",
+                },
+                areaStyle: {
+                  color: {
+                    type: "linear",
+                    x: 0,
+                    y: 0,
+                    x2: 0,
+                    y2: 1,
+                    colorStops: [
+                      {
+                        offset: 0,
+                        color: "#D9981B", // 0% 处的颜色
+                      },
+                      {
+                        offset: 1,
+                        color: "#BDD99A", //   100% 处的颜色
+                      },
+                    ],
+                    global: false, // 缺省为 false
+                  },
+                },
+              },
+            ],
+          });
         })
         .catch((error) => {
           console.log(error);
         });
+    },
+    init_weekChart() {
       this.weekChart = echarts.init(document.getElementById("weekchart"));
       this.weekChart.setOption({
         title: {
@@ -592,13 +614,32 @@ export default {
         series: [
           {
             type: "line",
-            data: that.weekChartData,
+            data: [],
             itemStyle: {
               color: "#68D7A8",
             },
           },
         ],
       });
+      var that = this;
+      dashboardAdmin(getToken())
+        .then((response) => {
+          that.weekChartData = response.weekChartData;
+          this.weekChart.setOption({
+            series: [
+              {
+                type: "line",
+                data: that.weekChartData,
+                itemStyle: {
+                  color: "#68D7A8",
+                },
+              },
+            ],
+          });
+        })
+        .catch((error) => {
+          console.log(error);
+        });
     },
   },
 };

@@ -91,6 +91,7 @@ def info(request):
 def add(request):
     if request.method == 'POST':
         form = request.POST.get("Form")
+        # print(form)
         if type(form) == str:
             form = json.loads(form)
         addConsultantItem(form)

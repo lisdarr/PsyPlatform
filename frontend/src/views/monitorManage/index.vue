@@ -259,7 +259,7 @@
 </template>
 
 <script>
-import { monitorAdmin } from "@/api/admin";
+import { dir_edit, dir_info, dir_add } from "@/api/admin";
 
 export default {
   name: "monitorManage",
@@ -399,7 +399,7 @@ export default {
     };
   },
   mounted() {
-    // this.init_List();
+    this.init_List();
   },
   methods: {
     handleSizeChange(val) {
@@ -408,21 +408,22 @@ export default {
     handleCurrentChange(val) {
       console.log(`当前页: ${val}`);
     },
-    // init_List(){
-    //   monitorAdmin(getToken())
-    //     .then((response) => {
-    //       that.list = response.list;
-    //       that.total = response.total;
-    //       that.qualList = response.qualList;
-    //     })
-    //     .catch((error) => {
-    //       console.log(error);
-    //     });
-    // },
+    init_List(){
+      var that = this;
+      dir_info()
+        .then((response) => {
+          that.list = response.list;
+          that.total = response.total;
+          // that.qualList = response.qualList;
+        })
+        .catch((error) => {
+          console.log(error);
+        });
+    },
     search() {
       console.log("搜索");
       var that = this;
-      monitorAdmin({
+      dir_info({
         name: this.inputValue,
       })
         .then((response) => {
@@ -459,34 +460,34 @@ export default {
         console.log("保存修改");
         this.dialogVisible = false;
         this.saveFlag = false;
-        // var that = this;
-        // consultantManage({
-        //   editform: this.editform,
-        //   name: name,
-        // })
-        //   .then(() => {
-        //     that.$message.success("修改成功！");
-        //     that.init_List();
-        //   })
-        //   .catch((error) => {
-        //     console.log(error);
-        //   });
+        var that = this;
+        dir_edit({
+          editform: this.editform,
+          name: name,
+        })
+          .then(() => {
+            that.$message.success("修改成功！");
+            that.init_List();
+          })
+          .catch((error) => {
+            console.log(error);
+          });
       }
     },
     saveAdd() {
       console.log("保存添加");
       this.dialogFormVisible = false;
-      // var that = this;
-      // monitorManage({
-      //   form: this.form,
-      // })
-      //   .then(() => {
-      //     that.$message.success("添加成功！");
-      //     that.init_List();
-      //   })
-      //   .catch((error) => {
-      //     console.log(error);
-      //   });
+      var that = this;
+      dir_add({
+        form: this.form,
+      })
+        .then(() => {
+          that.$message.success("添加成功！");
+          that.init_List();
+        })
+        .catch((error) => {
+          console.log(error);
+        });
     },
   },
 };

@@ -121,7 +121,7 @@
 </template>
 
 <script>
-import {recordAdmin} from '@/api/admin';
+import {record} from '@/api/admin';
 
 export default {
   name: 'RecordAdmin',
@@ -243,7 +243,7 @@ export default {
     {
       console.log('搜索')
       var that = this
-      recordAdmin({
+      record({
         name: this.inputValue,
         begin_date: this.dataValue[0],
         end_date: this.dataValue[1]

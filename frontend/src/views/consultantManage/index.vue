@@ -1,6 +1,6 @@
 <template>
   <div>
-    <div inline = "true">
+    <div inline="true">
       <div
         style="width: 200px; float: left; margin-top: 20px; margin-left: 20px"
       >
@@ -15,8 +15,12 @@
           placeholder="请输入姓名进行搜索"
         />
       </div>
-      <div style="width: 30px;float: left;margin-top: 50px;margin-left: 10px;">
-        <el-button size="small" icon="el-icon-search" @click="search">搜索</el-button>
+      <div
+        style="width: 30px; float: left; margin-top: 50px; margin-left: 10px"
+      >
+        <el-button size="small" icon="el-icon-search" @click="search"
+          >搜索</el-button
+        >
       </div>
       <div class="addbtn">
         <el-button type="primary" @click="addConsultant" size="small"
@@ -86,7 +90,7 @@
             plain
             icon="el-icon-edit"
             size="mini"
-            @click="editConsultant"
+            @click="editConsultant(scope.row.name)"
             >修改</el-button
           >
         </template>
@@ -211,7 +215,9 @@
         <el-button @click="dialogFormVisible = false" size="small"
           >取 消</el-button
         >
-        <el-button type="primary" @click="saveAdd" size="small">确 定</el-button>
+        <el-button type="primary" @click="saveAdd" size="small"
+          >确 定</el-button
+        >
       </div>
     </el-dialog>
 
@@ -235,20 +241,34 @@
       <el-form :model="editform" label-width="90px" size="small">
         <el-form-item label="周值班安排">
           <el-checkbox-group v-model="editform.schedule">
-            <el-checkbox label="周一"><el-tag type="success">周一</el-tag></el-checkbox>
-            <el-checkbox label="周二"><el-tag type="success">周二</el-tag></el-checkbox>
-            <el-checkbox label="周三" name="schedule"><el-tag type="success">周三</el-tag></el-checkbox>
-            <el-checkbox label="周四" name="schedule"><el-tag type="success">周四</el-tag></el-checkbox>
-            <el-checkbox label="周五" name="schedule"><el-tag type="success">周五</el-tag></el-checkbox>
-            <el-checkbox label="周六" name="schedule"><el-tag type="success">周六</el-tag></el-checkbox>
-            <el-checkbox label="周日" name="schedule"><el-tag type="success">周日</el-tag></el-checkbox>
+            <el-checkbox label="周一"
+              ><el-tag type="success">周一</el-tag></el-checkbox
+            >
+            <el-checkbox label="周二"
+              ><el-tag type="success">周二</el-tag></el-checkbox
+            >
+            <el-checkbox label="周三" name="schedule"
+              ><el-tag type="success">周三</el-tag></el-checkbox
+            >
+            <el-checkbox label="周四" name="schedule"
+              ><el-tag type="success">周四</el-tag></el-checkbox
+            >
+            <el-checkbox label="周五" name="schedule"
+              ><el-tag type="success">周五</el-tag></el-checkbox
+            >
+            <el-checkbox label="周六" name="schedule"
+              ><el-tag type="success">周六</el-tag></el-checkbox
+            >
+            <el-checkbox label="周日" name="schedule"
+              ><el-tag type="success">周日</el-tag></el-checkbox
+            >
           </el-checkbox-group>
         </el-form-item>
       </el-form>
 
       <div slot="footer">
         <el-button @click="dialogVisible = false" size="small">取 消</el-button>
-        <el-button type="primary" @click="saveFlag = true" size="small"
+        <el-button type="primary" @click="saveEdit" size="small"
           >确 定</el-button
         >
       </div>
@@ -257,129 +277,132 @@
 </template>
 
 <script>
-import {consultantAdmin} from '@/api/admin'
+import { con_info } from "@/api/admin";
+import { con_add } from "@/api/admin";
+import { con_edit } from "@/api/admin";
+import { getToken } from "@/utils/auth";
 
 export default {
   name: "consultantManage",
   data() {
     return {
       flag: "false",
-      saveFlag: false,
       page: 1,
       limit: 7,
       total: 12,
       inputValue: "",
-      dataValue: '',
-      list: [
-        {
-          name: "咨询师A",
-          role: "咨询师",
-          monitor: "督导1",
-          sum: 128,
-          time: "34:12:50",
-          rate: 3,
-          schedule: "周一、周三、周五",
-        },
-        {
-          name: "咨询师A",
-          role: "咨询师",
-          monitor: "督导1",
-          sum: 128,
-          time: "34:12:50",
-          rate: 3,
-          schedule: "周一、周三、周五",
-        },
-        {
-          name: "咨询师A",
-          role: "咨询师",
-          monitor: "督导1",
-          sum: 128,
-          time: "34:12:50",
-          rate: 3,
-          schedule: "周一、周三、周五",
-        },
-        {
-          name: "咨询师A",
-          role: "咨询师",
-          monitor: "督导1",
-          sum: 128,
-          time: "34:12:50",
-          rate: 3,
-          schedule: "周一、周三、周五",
-        },
-        {
-          name: "咨询师A",
-          role: "咨询师",
-          monitor: "督导1",
-          sum: 128,
-          time: "34:12:50",
-          rate: 3,
-          schedule: "周一、周三、周五",
-        },
-        {
-          name: "咨询师A",
-          role: "咨询师",
-          monitor: "督导1",
-          sum: 128,
-          time: "34:12:50",
-          rate: 3,
-          schedule: "周一、周三、周五",
-        },
-        {
-          name: "咨询师A",
-          role: "咨询师",
-          monitor: "督导1",
-          sum: 128,
-          time: "34:12:50",
-          rate: 3,
-          schedule: "周一、周三、周五",
-        },
-        {
-          name: "咨询师A",
-          role: "咨询师",
-          monitor: "督导1",
-          sum: 128,
-          time: "34:12:50",
-          rate: 3,
-          schedule: "周一、周三、周五",
-        },
-        {
-          name: "咨询师A",
-          role: "咨询师",
-          monitor: "督导1",
-          sum: 128,
-          time: "34:12:50",
-          rate: 3,
-          schedule: "周一、周三、周五",
-        },
-        {
-          name: "咨询师A",
-          role: "咨询师",
-          monitor: "督导1",
-          sum: 128,
-          time: "34:12:50",
-          rate: 3,
-          schedule: "周一、周三、周五",
-        },
-        {
-          name: "咨询师A",
-          role: "咨询师",
-          monitor: "督导1",
-          sum: 128,
-          time: "34:12:50",
-          rate: 3,
-          schedule: "周一、周三、周五",
-        },
-        {
-          name: "咨询师A",
-          role: "咨询师",
-          monitor: "督导1",
-          sum: 128,
-          time: "34:12:50",
-          rate: 3,
-          schedule: "周一、周三、周五",
-        },
-      ],
+      dataValue: "",
+      list: [],
+      // list: [
+      //   {
+      //     name: "咨询师A",
+      //     role: "咨询师",
+      //     monitor: "督导1",
+      //     sum: 128,
+      //     time: "34:12:50",
+      //     rate: 3,
+      //     schedule: "周一、周三、周五",
+      //   },
+      //   {
+      //     name: "咨询师A",
+      //     role: "咨询师",
+      //     monitor: "督导1",
+      //     sum: 128,
+      //     time: "34:12:50",
+      //     rate: 3,
+      //     schedule: "周一、周三、周五",
+      //   },
+      //   {
+      //     name: "咨询师A",
+      //     role: "咨询师",
+      //     monitor: "督导1",
+      //     sum: 128,
+      //     time: "34:12:50",
+      //     rate: 3,
+      //     schedule: "周一、周三、周五",
+      //   },
+      //   {
+      //     name: "咨询师A",
+      //     role: "咨询师",
+      //     monitor: "督导1",
+      //     sum: 128,
+      //     time: "34:12:50",
+      //     rate: 3,
+      //     schedule: "周一、周三、周五",
+      //   },
+      //   {
+      //     name: "咨询师A",
+      //     role: "咨询师",
+      //     monitor: "督导1",
+      //     sum: 128,
+      //     time: "34:12:50",
+      //     rate: 3,
+      //     schedule: "周一、周三、周五",
+      //   },
+      //   {
+      //     name: "咨询师A",
+      //     role: "咨询师",
+      //     monitor: "督导1",
+      //     sum: 128,
+      //     time: "34:12:50",
+      //     rate: 3,
+      //     schedule: "周一、周三、周五",
+      //   },
+      //   {
+      //     name: "咨询师A",
+      //     role: "咨询师",
+      //     monitor: "督导1",
+      //     sum: 128,
+      //     time: "34:12:50",
+      //     rate: 3,
+      //     schedule: "周一、周三、周五",
+      //   },
+      //   {
+      //     name: "咨询师A",
+      //     role: "咨询师",
+      //     monitor: "督导1",
+      //     sum: 128,
+      //     time: "34:12:50",
+      //     rate: 3,
+      //     schedule: "周一、周三、周五",
+      //   },
+      //   {
+      //     name: "咨询师A",
+      //     role: "咨询师",
+      //     monitor: "督导1",
+      //     sum: 128,
+      //     time: "34:12:50",
+      //     rate: 3,
+      //     schedule: "周一、周三、周五",
+      //   },
+      //   {
+      //     name: "咨询师A",
+      //     role: "咨询师",
+      //     monitor: "督导1",
+      //     sum: 128,
+      //     time: "34:12:50",
+      //     rate: 3,
+      //     schedule: "周一、周三、周五",
+      //   },
+      //   {
+      //     name: "咨询师A",
+      //     role: "咨询师",
+      //     monitor: "督导1",
+      //     sum: 128,
+      //     time: "34:12:50",
+      //     rate: 3,
+      //     schedule: "周一、周三、周五",
+      //   },
+      //   {
+      //     name: "咨询师A",
+      //     role: "咨询师",
+      //     monitor: "督导1",
+      //     sum: 128,
+      //     time: "34:12:50",
+      //     rate: 3,
+      //     schedule: "周一、周三、周五",
+      //   },
+      // ],
       isShowBtn: false,
       dialogFormVisible: false,
       dialogVisible: false,
@@ -403,20 +426,20 @@ export default {
       },
       // 选择督导框
       monitorList: [
-          {
-            monitorName:"督导A",
-            monitorId:1,
-          },
-          {
-            monitorName:"督导B",
-            monitorId:2,
-          }
-        ],
+        {
+          monitorName: "督导A",
+          monitorId: 1,
+        },
+        {
+          monitorName: "督导B",
+          monitorId: 2,
+        },
+      ],
     };
   },
 
   mounted() {
-    // this.init_List();
+    this.init_List();
   },
   methods: {
     handleSizeChange(val) {
@@ -425,79 +448,65 @@ export default {
     handleCurrentChange(val) {
       console.log(`当前页: ${val}`);
     },
-    // init_List(){
-    //   consultantAdmin(getToken())
-    //     .then((response) => {
-    //       that.list = response.list;
-    //       that.total = response.total;
-    //     })
-    //     .catch((error) => {
-    //       console.log(error);
-    //     });
-    // },
-    search(){
-      console.log('搜索')
-      var that = this
-      consultantAdmin({
+    init_List() {
+      var that = this;
+      con_info()
+        .then((response) => {
+          that.list = response.list;
+          that.total = response.total;
+        })
+        .catch((error) => {
+          console.log(error);
+        });
+    },
+    search() {
+      console.log("搜索");
+      var that = this;
+      con_info({
         name: this.inputValue,
-      }).then((response) => {
-        that.list = response.list
-        that.total = response.total
-      }).catch((error) => {
-        console.log(error)
       })
+        .then((response) => {
+          that.list = response.list;
+          that.total = response.total;
+        })
+        .catch((error) => {
+          console.log(error);
+        });
     },
     addConsultant() {
       this.dialogFormVisible = true;
-      this.form = {
-        name: "",
-        gender: "",
-        age: "",
-        idNumber: "",
-        phone: "",
-        email: "",
-        monitorId: "",
-        userName: "",
-        pwd: "",
-        company: "",
-        rank: "",
-      };
-      this.isShowBtn = false;
     },
     editConsultant(name) {
       this.dialogVisible = true;
-      if ((this.saveFlag = true)) {
-        console.log("保存修改");
-        this.dialogVisible = false;
-        this.saveFlag = false;
-      // var that = this;
-      // consultantManage({
-      //   editform: this.editform,
-      //   name: name
-      // })
-      //   .then(() => {
-      //     that.$message.success("修改成功！");
-      //     that.init_List();
-      //   })
-      //   .catch((error) => {
-      //     console.log(error);
-      //   });
-      }
     },
-    saveAdd(){
+    saveEdit(){
+      return
+  // 将修改数据传送到后端，并接收修改后的返回数据
+  // const {data:res}=await this.$http.put('users/'+this.editForm.id,{email:this.editForm.email,mobile: this.editForm.mobile})
+    },
+    // var that = this;
+    //     con_edit(this.editform, name)
+    //       .then(() => {
+    //         that.$message.success("修改成功！");
+    //         that.init_List();
+    //       })
+    //       .catch((error) => {
+    //         console.log(error);
+    //       });
+    saveAdd() {
       console.log("保存添加");
       this.dialogFormVisible = false;
-      // var that = this;
-      // consultantManage({
-      //   form: this.form,
-      // })
-      //   .then(() => {
-      //     that.$message.success("添加成功！");
-      //     that.init_List();
-      //   })
-      //   .catch((error) => {
-      //     console.log(error);
-      //   });
+      var that = this;
+      con_add({
+        form: this.form,
+      })
+        .then(() => {
+          that.$message.success("添加成功！");
+          that.init_List();
+        })
+        .catch((error) => {
+          console.log(error);
+        });
     },
   },
 };
