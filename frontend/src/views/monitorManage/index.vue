@@ -452,7 +452,6 @@ export default {
         qualId: "",
         certId: "",
       };
-      this.isShowBtn = false;
     },
     editMonitor(name) {
       this.dialogVisible = true;

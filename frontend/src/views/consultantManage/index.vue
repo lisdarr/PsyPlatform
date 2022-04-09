@@ -90,7 +90,7 @@
             plain
             icon="el-icon-edit"
             size="mini"
-            @click="editConsultant(scope.row.name)"
+            @click="editConsultant(scope.row)"
             >修改</el-button
           >
         </template>
@@ -295,6 +295,7 @@ export default {
       list: [],
       // list: [
       //   {
+      //     id: "",
       //     name: "咨询师A",
       //     role: "咨询师",
       //     monitor: "督导1",
@@ -420,6 +421,7 @@ export default {
         rank: "",
       },
       editform: {
+        id: "",
         name: "",
         monitor: "",
         schedule: [],
@@ -454,6 +456,7 @@ export default {
         .then((response) => {
           that.list = response.list;
           that.total = response.total;
+          that.monitorList = response.monitorList;
         })
         .catch((error) => {
           console.log(error);
@@ -476,29 +479,28 @@ export default {
     addConsultant() {
       this.dialogFormVisible = true;
     },
-    editConsultant(name) {
+    editConsultant(row) {
+      this.editform.id = row.id;
       this.dialogVisible = true;
     },
-    saveEdit(){
-      return
-  // 将修改数据传送到后端，并接收修改后的返回数据
-  // const {data:res}=await this.$http.put('users/'+this.editForm.id,{email:this.editForm.email,mobile: this.editForm.mobile})
+    saveEdit() {
+      var that = this;
+      // con_edit(this.editform)
+      //   .then(() => {
+      //     that.$message.success("修改成功！");
+      //     that.init_List();
+      //   })
+      //   .catch((error) => {
+      //     console.log(error);
+      //   });
     },
-    // var that = this;
-    //     con_edit(this.editform, name)
-    //       .then(() => {
-    //         that.$message.success("修改成功！");
-    //         that.init_List();
-    //       })
-    //       .catch((error) => {
-    //         console.log(error);
-    //       });
+
     saveAdd() {
       console.log("保存添加");
       this.dialogFormVisible = false;
       var that = this;
       con_add({
-        form: this.form,
+        Form: this.form,
       })
         .then(() => {
           that.$message.success("添加成功！");

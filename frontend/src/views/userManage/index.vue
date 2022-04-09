@@ -13,7 +13,7 @@
       />
     </div>
     <div style="width: 30px; float: left; margin-top: 50px; margin-left: 10px">
-      <el-button size="small" icon="el-icon-search" @click="search"
+      <el-button size="small" icon="el-icon-search" @click="search" 
         >搜索</el-button
       >
     </div>
