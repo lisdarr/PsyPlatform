@@ -641,13 +641,15 @@ def addConsultantShcedule(addForm):
 
 
 def addConsultantItem(form):
+    print(form)
     name = form["name"]
     gender = form["gender"]
     age = form["age"]
     identity = form["idNumber"]
     phone = form["phone"]
     email = form["email"]
-    dir_id = form["monitorId"]
+    #dir_id = form["monitorId"]
+    dir_id = 1
     username = form["userName"]
     password = make_password(form["pwd"])
     company = form["company"]

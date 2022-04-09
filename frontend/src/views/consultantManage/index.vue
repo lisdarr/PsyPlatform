@@ -19,12 +19,13 @@
         style="width: 30px; float: left; margin-top: 50px; margin-left: 10px"
       >
         <el-button size="small" icon="el-icon-search" @click="search"
-          >搜索</el-button
+        >搜索
+        </el-button
         >
       </div>
       <div class="addbtn">
         <el-button type="primary" @click="addConsultant" size="small"
-          >新增咨询师
+        >新增咨询师
         </el-button>
       </div>
     </div>
@@ -68,7 +69,8 @@
         label="平均咨询评级"
         width="180px"
         align="center"
-        ><template slot-scope="scope">
+      >
+        <template slot-scope="scope">
           <el-rate
             v-model="scope.row.rate"
             :allow-half="true"
@@ -91,7 +93,8 @@
             icon="el-icon-edit"
             size="mini"
             @click="editConsultant(scope.row)"
-            >修改</el-button
+          >修改
+          </el-button
           >
         </template>
       </el-table-column>
@@ -113,7 +116,8 @@
     <el-dialog title="新增咨询师" :visible.sync="dialogFormVisible">
       <el-form :model="form" inline="true" label-width="90px" size="small">
         <el-form-item label="姓名"
-          ><el-input
+        >
+          <el-input
             v-model="form.name"
             placeholder="请输入姓名"
             autocomplete="off"
@@ -128,12 +132,14 @@
       </el-form>
       <el-form :model="form" inline="true" label-width="90px" size="small">
         <el-form-item label="年龄"
-          ><el-input
+        >
+          <el-input
             v-model="form.age"
             placeholder="请输入年龄"
             autocomplete="off"
           ></el-input
-        ></el-form-item>
+          >
+        </el-form-item>
         <el-form-item label="身份证号码">
           <el-input
             v-model="form.idNumber"
@@ -213,10 +219,12 @@
       </el-form>
       <div slot="footer" class="dialog-footer">
         <el-button @click="dialogFormVisible = false" size="small"
-          >取 消</el-button
+        >取 消
+        </el-button
         >
         <el-button type="primary" @click="saveAdd" size="small"
-          >确 定</el-button
+        >确 定
+        </el-button
         >
       </div>
     </el-dialog>
@@ -242,25 +250,39 @@
         <el-form-item label="周值班安排">
           <el-checkbox-group v-model="editform.schedule">
             <el-checkbox label="周一"
-              ><el-tag type="success">周一</el-tag></el-checkbox
+            >
+              <el-tag type="success">周一</el-tag>
+            </el-checkbox
             >
             <el-checkbox label="周二"
-              ><el-tag type="success">周二</el-tag></el-checkbox
+            >
+              <el-tag type="success">周二</el-tag>
+            </el-checkbox
             >
             <el-checkbox label="周三" name="schedule"
-              ><el-tag type="success">周三</el-tag></el-checkbox
+            >
+              <el-tag type="success">周三</el-tag>
+            </el-checkbox
             >
             <el-checkbox label="周四" name="schedule"
-              ><el-tag type="success">周四</el-tag></el-checkbox
+            >
+              <el-tag type="success">周四</el-tag>
+            </el-checkbox
             >
             <el-checkbox label="周五" name="schedule"
-              ><el-tag type="success">周五</el-tag></el-checkbox
+            >
+              <el-tag type="success">周五</el-tag>
+            </el-checkbox
             >
             <el-checkbox label="周六" name="schedule"
-              ><el-tag type="success">周六</el-tag></el-checkbox
+            >
+              <el-tag type="success">周六</el-tag>
+            </el-checkbox
             >
             <el-checkbox label="周日" name="schedule"
-              ><el-tag type="success">周日</el-tag></el-checkbox
+            >
+              <el-tag type="success">周日</el-tag>
+            </el-checkbox
             >
           </el-checkbox-group>
         </el-form-item>
@@ -269,7 +291,8 @@
       <div slot="footer">
         <el-button @click="dialogVisible = false" size="small">取 消</el-button>
         <el-button type="primary" @click="saveEdit" size="small"
-          >确 定</el-button
+        >确 定
+        </el-button
         >
       </div>
     </el-dialog>
@@ -277,21 +300,18 @@
 </template>
 
 <script>
-import { con_info } from "@/api/admin";
-import { con_add } from "@/api/admin";
-import { con_edit } from "@/api/admin";
-import { getToken } from "@/utils/auth";
+import { con_add, con_info } from '@/api/admin'
 
 export default {
-  name: "consultantManage",
+  name: 'consultantManage',
   data() {
     return {
-      flag: "false",
+      flag: 'false',
       page: 1,
       limit: 7,
       total: 12,
-      inputValue: "",
-      dataValue: "",
+      inputValue: '',
+      dataValue: '',
       list: [],
       // list: [
       //   {
@@ -408,83 +428,81 @@ export default {
       dialogFormVisible: false,
       dialogVisible: false,
       form: {
-        name: "",
-        gender: "",
-        age: "",
-        idNumber: "",
-        phone: "",
-        email: "",
-        monitorId: "",
-        userName: "",
-        pwd: "",
-        company: "",
-        rank: "",
+        name: '',
+        gender: '',
+        age: '',
+        idNumber: '',
+        phone: '',
+        email: '',
+        monitorId: '',
+        userName: '',
+        pwd: '',
+        company: '',
+        rank: ''
       },
       editform: {
-        id: "",
-        name: "",
-        monitor: "",
-        schedule: [],
+        id: '',
+        name: '',
+        monitor: '',
+        schedule: []
       },
       // 选择督导框
       monitorList: [
         {
-          monitorName: "督导A",
-          monitorId: 1,
+          monitorName: '督导A',
+          monitorId: 1
         },
         {
-          monitorName: "督导B",
-          monitorId: 2,
-        },
-      ],
-    };
+          monitorName: '督导B',
+          monitorId: 2
+        }
+      ]
+    }
   },
 
   mounted() {
-    this.init_List();
+    this.init_List()
   },
   methods: {
     handleSizeChange(val) {
-      console.log(`每页 ${val} 条`);
+      console.log(`每页 ${val} 条`)
     },
     handleCurrentChange(val) {
-      console.log(`当前页: ${val}`);
+      console.log(`当前页: ${val}`)
     },
     init_List() {
-      var that = this;
+      var that = this
       con_info()
         .then((response) => {
-          that.list = response.list;
-          that.total = response.total;
-          that.monitorList = response.monitorList;
+          that.list = response.list
+          that.total = response.total
+          that.monitorList = response.monitorList
         })
         .catch((error) => {
-          console.log(error);
-        });
+          console.log(error)
+        })
     },
     search() {
-      console.log("搜索");
-      var that = this;
-      con_info({
-        name: this.inputValue,
-      })
+      console.log('搜索')
+      var that = this
+      con_info(this.form)
         .then((response) => {
-          that.list = response.list;
-          that.total = response.total;
+          that.list = response.list
+          that.total = response.total
         })
         .catch((error) => {
-          console.log(error);
-        });
+          console.log(error)
+        })
     },
     addConsultant() {
-      this.dialogFormVisible = true;
+      this.dialogFormVisible = true
     },
     editConsultant(row) {
-      this.editform.id = row.id;
-      this.dialogVisible = true;
+      this.editform.id = row.id
+      this.dialogVisible = true
     },
     saveEdit() {
-      var that = this;
+      var that = this
       // con_edit(this.editform)
       //   .then(() => {
       //     that.$message.success("修改成功！");
@@ -496,22 +514,21 @@ export default {
     },
 
     saveAdd() {
-      console.log("保存添加");
-      this.dialogFormVisible = false;
-      var that = this;
-      con_add({
-        Form: this.form,
-      })
+      console.log('保存添加')
+      this.dialogFormVisible = false
+      var that = this
+      console.log(typeof this.form)
+      con_add(this.form)
         .then(() => {
-          that.$message.success("添加成功！");
-          that.init_List();
+          that.$message.success('添加成功！')
+          that.init_List()
         })
         .catch((error) => {
-          console.log(error);
-        });
-    },
-  },
-};
+          console.log(error)
+        })
+    }
+  }
+}
 </script>
 
 <style>

@@ -90,12 +90,25 @@ def info(request):
 
 def add(request):
     if request.method == 'POST':
-        form = request.POST.get("Form")
-        # print(form)
-        if type(form) == str:
-            form = json.loads(form)
+        form = {
+            'name': request.POST.get("name"),
+            'gender': request.POST.get("gender"),
+            'age': request.POST.get("age"),
+            'idNumber': request.POST.get("idNumber"),
+            'phone': request.POST.get("phone"),
+            'monitorId': request.POST.get("monitorId"),
+            'userName': request.POST.get("userName"),
+            'pwd': request.POST.get("pwd"),
+            'company': request.POST.get("company"),
+            'rank': request.POST.get("rank"),
+            'email': request.POST.get("email")
+        }
         addConsultantItem(form)
-        return HttpResponse(status=200)
+        res = {
+            'msg': "Success!",
+            'status': 200
+        }
+        return HttpResponse(json.dumps(res, ensure_ascii=False ), status=200)
     else:
         return HttpResponse(status=400)
 
