@@ -211,7 +211,11 @@ export default {
         console.log('失败获取最新会话列表, code:' + error.code + ' content:' + error.content)
       }
     })
+    this.scrollToBottom()
     this.initialPrivateListeners()
+    if (this.messages.length !== 0) {
+      this.markMessageAsRead(this.friend.uuid)
+    }
   },
   methods: {
     navigateToChat(index, conversation) {

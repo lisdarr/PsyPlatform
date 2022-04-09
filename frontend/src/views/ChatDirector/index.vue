@@ -116,7 +116,7 @@
           <!--          右侧消息同步区-->
           <div class="syn-chat-space">
             <div class="message-container">
-              <div ref="scrollView" class="scroll-view-side">
+              <div ref="scrollViewside" class="scroll-view-side">
                 <div v-for="(message, index) in synchat" :key="index">
                   <div
                     v-if="index === 0 || synchat[index].timestamp - synchat[index-1].timestamp > 5 * 60 * 1000"
@@ -226,7 +226,11 @@ export default {
         console.log('失败获取最新会话列表, code:' + error.code + ' content:' + error.content)
       }
     })
+    this.scrollToBottom()
     this.initialPrivateListeners()
+    if (this.messages.length !== 0) {
+      this.markMessageAsRead(this.friend.uuid)
+    }
   },
   methods: {
     navigateToChat(index, conversation) {
@@ -248,7 +252,8 @@ export default {
       // 和该对话人的全部聊天记录
       this.messages = this.service.getPrivateMessages(friendId)
       console.log('开始获取同步消息')
-      this.timer = setInterval(this.getHistory, 3000)
+      this.timer = setInterval(this.getHistory, 800)
+      this.scrollToBottom()
     },
     showImageFullScreen(message) {
       this.image.url = message.payload.url
@@ -256,7 +261,9 @@ export default {
     },
     scrollToBottom() {
       this.$nextTick(() => {
+        console.log('触发下滑器')
         this.$refs.scrollView.scrollTo(0, this.$refs.scrollView.scrollHeight)
+        this.$refs.scrollViewside.scrollTo(0, this.$refs.scrollViewside.scrollHeight)
       })
     },
     initialPrivateListeners() {
@@ -332,6 +339,7 @@ export default {
       }).then((response) => {
         console.log(response.content)
         this.synchat = response.content
+        this.$refs.scrollViewside.scrollTo(0, this.$refs.scrollViewside.scrollHeight)
         // console.log(response.data.code)
       }).catch((error) => {
         console.log('出错！')
