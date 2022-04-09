@@ -28,7 +28,7 @@ if (process.env.NODE_ENV === 'production') {
   mockXHR()
 }
 var axios = require('axios')
-axios.defaults.baseURL = 'http://127.0.0.1:8000/'
+// axios.defaults.baseURL = 'http://127.0.0.1:8000/'
 axios.defaults.headers.post['Content-Type'] = 'application/x-www-form-urlencoded'
 Vue.prototype.$axios = axios
 // set ElementUI lang to EN

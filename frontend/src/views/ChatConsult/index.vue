@@ -46,19 +46,53 @@
             <div style="margin-top: 60px; margin-left: 5px; font-weight: bold; font-size: 20px">已咨询时间：</div>
             <div style="margin-top: 30px; font-size: 50px; margin-left: 40px">{{ consultTime }}</div>
             <div style="margin-top: 280px; margin-left: 20px">
-              <el-button type="text" style="font-size: 35px;padding-left: 15px" @click="ToDir">
+              <el-button type="text" style="font-size: 35px;padding-left: 15px" @click="dialogVisible = true">
                 请求督导
               </el-button>
+              <el-dialog
+                :visible.sync="dialogVisible"
+                width="30%"
+              >
+                <span>正在为您连线督导，点击确认开始咨询...</span>
+                <span slot="footer" class="dialog-footer">
+                  <el-button @click="dialogVisible = false">取 消</el-button>
+                  <el-button type="primary" @click="ToDir">确 定</el-button>
+                </span>
+              </el-dialog>
+
             </div>
             <el-divider/>
             <div style="margin-left: 20px">
               <el-button
                 type="text"
                 style="font-size: 35px;padding-left: 15px"
-                @click="removeConversation"
+                @click="dialogFormVisible = true"
               >
                 结束咨询
               </el-button>
+              <el-dialog title="本次咨询已结束，请您填写评价" :visible.sync="dialogFormVisible" width="400px">
+                <el-form ref="form" :model="form" :rules="rules">
+                  <el-form-item label="咨询类型" :label-width="formLabelWidth">
+                    <el-select v-model="form.type" placeholder="请选择咨询类型">
+                      <el-option label="类型1" value="类型1"/>
+                      <el-option label="类型2" value="类型2"/>
+                    </el-select>
+                  </el-form-item>
+                  <el-form-item label="评价" :label-width="formLabelWidth">
+                    <el-input
+                      v-model="form.content"
+                      autocomplete="off"
+                      type="textarea"
+                      :rows="3"
+                      placeholder="请输入评价内容"
+                    />
+                  </el-form-item>
+                </el-form>
+                <div slot="footer" class="dialog-footer">
+                  <el-button @click="dialogFormVisible = false">点错了，继续咨询</el-button>
+                  <el-button type="primary" @click="removeConversation('form')">确 定</el-button>
+                </div>
+              </el-dialog>
             </div>
           </div>
           <div class="chat-space">
@@ -86,8 +120,6 @@
               <!--          <img src="image.url" alt="[图片]">-->
               <!--        </div>-->
             </div>
-            <!--      接收消息区：12-18 ，根据{{ this.$route.query.id }}-->
-            <!--      chatmessage区：输入框和发送部分-->
           </div>
         </div>
       </div>
@@ -142,7 +174,21 @@ export default {
         url: 'blob:https://localhost:8080/cf9c0c42-5f04-427f-806d-c250b3ceb2f2'
       },
       // private表示私聊
-      type: 'private'
+      type: 'private',
+      // 请求督导会话框
+      dialogVisible: false,
+      //  评价框相关
+      dialogFormVisible: false,
+      form: {
+        type: [],
+        content: ''
+      },
+      formLabelWidth: '120px',
+      rules: {
+        type: [
+          { required: true, message: '请选择咨询类型', trigger: 'change' }
+        ]
+      }
     }
   },
   beforeMount() {
@@ -165,6 +211,7 @@ export default {
         console.log('失败获取最新会话列表, code:' + error.code + ' content:' + error.content)
       }
     })
+    this.initialPrivateListeners()
   },
   methods: {
     navigateToChat(index, conversation) {
@@ -189,12 +236,6 @@ export default {
       }
       // 和该对话人的全部聊天记录
       this.messages = this.service.getPrivateMessages(friendId)
-      console.log(this.messages)
-      // this.scrollToBottom()
-      // this.initialPrivateListeners()
-      // if (this.messages.length !== 0) {
-      //   this.markMessageAsRead(friendId)
-      // }
     },
     showImageFullScreen(message) {
       this.image.url = message.payload.url
@@ -206,9 +247,16 @@ export default {
       })
     },
     initialPrivateListeners() {
+      const self = this
+      console.log('监听到新消息')
       // 传入监听器，收到一条私聊消息总是滚到到页面底部
       this.service.onNewPrivateMessageReceive = (friendId, message) => {
-        if (friendId === this.friend.uuid) {
+        // if (self.friend.uuid === 'user1') {
+        //   self.$store.dispatch('history/setMessages', self.messages)
+        //   const test = { 'messages in store:': self.$store.getters.messages }
+        //   console.log(test)
+        // }
+        if (friendId === self.friend.uuid) {
           this.markMessageAsRead(friendId)
           this.scrollToBottom()
         }
@@ -226,37 +274,37 @@ export default {
       })
     },
     ToDir() {
-      this.$alert('正在为您分配在线督导，点击确认按钮开始连线...', {
-        confirmButtonText: '确定',
-        callback: action => {
-          this.$message({
-            type: 'info',
-            message: `已为您连线督导`
-          })
-          this.$router.push({
-            name: 'ChatConsult',
-            query: {
-              id: 'director1'
-            }
-          })
+      const dir_conversation = {
+        type: 'private',
+        userId: 'director1',
+        unread: 0, // 未读消息条数
+        // 私聊好友Data信息，来源于发送私聊消息时的to.data和发送方im.connect时传入的data
+        data: {
+          'avatar': 'https://images.pexels.com/photos/4491461/pexels-photo-4491461.jpeg?cs=srgb&dl=pexels-karolina-grabowska-4491461.jpg&fm=jpg',
+          'name': '周导'
+        },
+        lastMessage: {}
+      }
+      this.dialogVisible = false
+      this.conversations.push(dir_conversation)
+      this.$router.push({
+        name: 'ChatConsult',
+        query: {
+          id: dir_conversation.userId
         }
       })
     },
-    removeConversation() {
-      this.$prompt('本次咨询已结束，请填写评价', {
-        confirmButtonText: '确定',
-        cancelButtonText: '点错了，继续咨询'
-      }).then(({ value }) => {
-        this.$message({
-          type: 'success',
-          message: '感谢您的反馈！'
-        })
-      }).catch(() => {
-        this.$message({
-          type: 'info',
-          message: '咨询继续'
-        })
+    removeConversation(formName) {
+      this.$refs[formName].validate((valid) => {
+        if (valid) {
+          console.log('success submit!!')
+        } else {
+          console.log('error submit!!')
+          return false
+        }
       })
+      this.dialogFormVisible = false
+      console.log(this.form.type)
       const self = this
       self.showLoading = true
       this.goEasy.im.removePrivateConversation({

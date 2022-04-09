@@ -54,44 +54,16 @@ export default {
   name: 'RecordDirector',
   data() {
     return {
-      tableData: [
-        {
-          name: '王小虎',
-          time: '00:12:54',
-          date: '2016-05-02'
-        },
-        {
-          name: '王小虎',
-          time: '00:12:54',
-          date: '2016-05-02'
-        },
-        {
-          name: '王小虎',
-          time: '00:12:54',
-          date: '2016-05-02'
-        },
-        {
-          name: '王小虎',
-          time: '00:12:54',
-          date: '2016-05-02'
-        },
-        {
-          name: '王小虎',
-          time: '00:12:54',
-          date: '2016-05-02'
-        },
-        {
-          name: '王小虎',
-          time: '00:12:54',
-          date: '2016-05-02'
-        }
-      ],
+      tableData: [],
       inputValue: '',
       dataValue: '',
       currentPage: 1,
       pageSize: 10,
       totalSize: 6
     }
+  },
+  mounted() {
+    this.search()
   },
   methods: {
     handleSizeChange(val) {

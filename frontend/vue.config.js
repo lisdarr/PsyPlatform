@@ -39,11 +39,29 @@ module.exports = {
     // before: require('./mock/mock-server.js')
     // 配置代理跨域
     proxy: {
-      '/dev-api': {
-        target: 'http://localhost:8000',
+      '/admin': {
+        target: 'http://127.0.0.1:8000',
         ws: true, // 启用webSocket
-        changeOrigin: true, // 开启代理跨域
-        pathRewrite: { '^/dev-api': '' }
+        changeOrigin: true // 开启代理跨域
+        // pathRewrite: { '^/admin': '' }
+      },
+      '/consultant': {
+        target: 'http://127.0.0.1:8000',
+        ws: true, // 启用webSocket
+        changeOrigin: true // 开启代理跨域
+        // pathRewrite: { '^/consultant': '' }
+      },
+      '/director': {
+        target: 'http://127.0.0.1:8000',
+        ws: true, // 启用webSocket
+        changeOrigin: true // 开启代理跨域
+        // pathRewrite: { '^/director': '' }
+      },
+      '/ChatDirector': {
+        target: 'http://rest-hangzhou.goeasy.io/v2/im/history',
+        ws: true,
+        changeOrigin: true,
+        pathRewrite: { '^/ChatDirector': '' }
       }
     }
   },
@@ -100,8 +118,7 @@ module.exports = {
               inline: /runtime\..*\.js$/
             }])
             .end()
-          config
-            .optimization.splitChunks({
+          config.optimization.splitChunks({
             chunks: 'all',
             cacheGroups: {
               libs: {

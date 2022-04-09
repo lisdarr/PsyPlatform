@@ -8,6 +8,15 @@
   align-items: center;
 }
 
+.scroll-view-side .message-item {
+  max-height: 60px;
+  margin-top: 5px;
+  margin-bottom: 5px;
+  overflow: hidden;
+  display: flex;
+  align-items: center;
+}
+
 .message-item.self {
   overflow: hidden;
   display: flex;
@@ -25,9 +34,11 @@
 .message-item.self .chat-avatar {
   margin-left: 0.5rem;
   margin-right: 0;
+  width: 50px;
+  height: 50px;
 }
 
-.chat-message {
+.message-item .chat-message {
   font-size: 20px;
   line-height: 50px;
   max-height: 20px;
@@ -35,6 +46,16 @@
   align-items: center;
   justify-content: right;
   text-align: right;
+}
+
+.message-item.self .chat-message {
+  font-size: 20px;
+  line-height: 50px;
+  max-height: 20px;
+  display: flex;
+  align-items: center;
+  justify-content: left;
+  text-align: left;
 }
 
 .chat-message .pending {
@@ -128,69 +149,4 @@
   text-align: left;
   font-size: 0.12rem;
   color: #666666;
-}
-
-.chat-message .video-content {
-  position: relative;
-  height: 1.5rem;
-  max-width: 2rem;
-  background: #000000;
-}
-
-.chat-message .video-content img {
-  max-height: 1.5rem;
-  max-width: 2rem;
-}
-
-.chat-message .video-content video {
-  max-height: 1.5rem;
-  max-width: 2rem;
-}
-
-.chat-message .video-content .video-play-icon {
-  position: absolute;
-  width: 0.2rem;
-  height: 0.2rem;
-  border-radius: 0.1rem;
-  background: url("/public/IM/icon/play.png") no-repeat center;
-  background-size: 100%;
-  top: 50%;
-  left: 50%;
-  margin: -0.1rem;
-}
-
-.chat-message .custom-message {
-  width: 2rem;
-  height: 1.3rem;
-  display: flex;
-  flex-direction: column;
-  justify-content: space-around;
-  align-items: flex-start;
-  box-sizing: border-box;
-  padding: 0.05rem 0.15rem;
-  border: 1px solid rgba(0, 0, 0, 0.05);
-  border-radius: 0.1rem;
-}
-
-.chat-message .custom-message .title {
-  width: 100%;
-  display: flex;
-  align-items: center;
-  font-size: 0.15rem;
-  height: 0.25rem;
-  overflow: hidden;
-}
-
-.chat-message .custom-message .title img {
-  width: 0.2rem;
-  height: 0.2rem;
-}
-
-.chat-message .custom-message .custom-message-item {
-  text-align: left;
-  font-size: 0.14rem;
-  overflow: hidden;
-  width: 100%;
-  text-overflow: ellipsis;
-  white-space: nowrap;
 }

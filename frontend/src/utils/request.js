@@ -5,7 +5,7 @@ import { getToken } from '@/utils/auth'
 import qs from 'qs'
 // create an axios instance
 const service = axios.create({
-  baseURL: 'http://127.0.0.1:8000/', // url = base url + request url
+  // baseURL: 'http://127.0.0.1:8000', // url = base url + request url
   withCredentials: true, // send cookies when cross-domain requests
   timeout: 5000, // request timeout
   headers: {
@@ -54,7 +54,7 @@ service.interceptors.response.use(
     const res = response.data
     // if the custom code is not 20000, it is judged as an error.
     // 服务器响应失败后干什么
-    if (res.status !== 20000 && res.status !== 200) {
+    if (res.status !== 20000 && res.status !== 200 && res.code !== 200) {
       Message({
         message: res.message || 'Error',
         type: 'error',
@@ -77,7 +77,7 @@ service.interceptors.response.use(
       return Promise.reject(new Error(res.message || 'Error'))
     } else {
       // 服务器响应成功后干什么
-      // console.log(res)
+      console.log('服务器响应成功')
       return res
     }
   },
