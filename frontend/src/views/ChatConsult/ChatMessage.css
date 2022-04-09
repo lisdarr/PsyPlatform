@@ -1,17 +1,17 @@
 /*message-item:每条信息的样式*/
 .scroll-view .message-item {
-  max-height: 60px;
-  margin-top: 5px;
-  margin-bottom: 5px;
+  max-height: 10rem;
+  margin-top: 0.8rem;
+  margin-bottom: 0.8rem;
   overflow: hidden;
   display: flex;
   align-items: center;
 }
 
 .scroll-view-side .message-item {
-  max-height: 60px;
-  margin-top: 5px;
-  margin-bottom: 5px;
+  max-height: 10rem;
+  margin-top: 0.8rem;
+  margin-bottom: 0.8rem;
   overflow: hidden;
   display: flex;
   align-items: center;
@@ -27,35 +27,23 @@
 .message-item .chat-avatar {
   margin-right: 0.5rem;
   margin-left: 0;
-  width: 50px;
-  height: 50px;
+  width: 3rem;
+  height: 3rem;
 }
 
 .message-item.self .chat-avatar {
   margin-left: 0.5rem;
   margin-right: 0;
-  width: 50px;
-  height: 50px;
 }
 
-.message-item .chat-message {
-  font-size: 20px;
-  line-height: 50px;
-  max-height: 20px;
+.chat-message {
+  font-size: 1.3rem;
+  line-height: 1.7rem;
+  max-height: 4rem;
   display: flex;
   align-items: center;
   justify-content: right;
   text-align: right;
-}
-
-.message-item.self .chat-message {
-  font-size: 20px;
-  line-height: 50px;
-  max-height: 20px;
-  display: flex;
-  align-items: center;
-  justify-content: left;
-  text-align: left;
 }
 
 .chat-message .pending {
@@ -79,8 +67,8 @@
 }
 
 .chat-message .text-content {
-  padding: 5px;
-  border-radius: 10px;
+  padding: 0.8rem;
+  border-radius: 0.5rem;
   color: #ffffff;
   background: #618DFF;
   /*允许在单词内换行*/
@@ -88,65 +76,23 @@
   text-align: left;
   vertical-align: center;
   display: block;
+  max-width: 25rem;
 }
 
+
 .chat-message .text-content img {
-  width: 0.25rem;
-  height: 0.25rem;
+  width: 1.5rem;
+  height: 1.5rem;
 }
 
 .chat-message .image-content {
   padding: 0.08rem;
   border-radius: 0.06rem;
-  max-width: 1.5rem;
-  max-height: 1.5rem;
+  max-width: 5rem;
+  max-height: 5rem;
 }
 
 .chat-message .image-content img {
   width: 100%;
   height: 100%;
-}
-
-.chat-message .file-content {
-  width: 2rem;
-  height: 0.8rem;
-  background: #EFEFEF;
-  overflow: hidden;
-  border-radius: 0.1rem;
-  display: flex;
-  align-items: center;
-}
-
-.chat-message .file-content img {
-  width: 0.5rem;
-  height: 0.5rem;
-  flex-grow: 0;
-  flex-shrink: 0;
-  margin-right: 0.1rem;
-}
-
-.chat-message .file-content .description {
-  font-size: 0.14rem;
-  display: flex;
-  flex-direction: column;
-  width: 1.3rem;
-}
-
-.chat-message .file-content .description .title {
-  height: 0.4rem;
-  line-height: 0.2rem;
-  width: 100%;
-  overflow: hidden;
-  text-overflow: ellipsis;
-  display: -webkit-box;
-  -webkit-box-orient: vertical;
-  text-align: left;
-}
-
-.chat-message .file-content .description .size {
-  height: 0.3rem;
-  width: 100%;
-  text-align: left;
-  font-size: 0.12rem;
-  color: #666666;
 }

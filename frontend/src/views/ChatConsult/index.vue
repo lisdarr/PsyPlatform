@@ -43,9 +43,9 @@
           <div class="timer">
             <div class="el-icon-phone-outline" style="font-size: 50px; float: left;margin-top: 20px"/>
             <div style="margin-top: 40px; margin-left: 70px; font-weight: bold; font-size: 20px">正在咨询中...</div>
-            <div style="margin-top: 60px; margin-left: 5px; font-weight: bold; font-size: 20px">已咨询时间：</div>
-            <div style="margin-top: 30px; font-size: 50px; margin-left: 40px">{{ consultTime }}</div>
-            <div style="margin-top: 280px; margin-left: 20px">
+            <!--            <div style="margin-top: 60px; margin-left: 5px; font-weight: bold; font-size: 20px">已咨询时间：</div>-->
+            <!--            <div style="margin-top: 30px; font-size: 50px; margin-left: 40px">{{ consultTime }}</div>-->
+            <div style="margin-top: 420px; margin-left: 20px">
               <el-button type="text" style="font-size: 35px;padding-left: 15px" @click="dialogVisible = true">
                 请求督导
               </el-button>
@@ -115,10 +115,9 @@
                 </div>
               </div>
               <send-box :to="friend" :type="type" @onSent="scrollToBottom"/>
-              <!--      放大查看图片-->
-              <!--        <div>-->
-              <!--          <img src="image.url" alt="[图片]">-->
-              <!--        </div>-->
+              <div>
+                <img :src="image.url" alt="[图片]">
+              </div>
             </div>
           </div>
         </div>
@@ -171,7 +170,7 @@ export default {
       // 控制图片，show：为true时放大查看
       image: {
         show: false,
-        url: 'blob:https://localhost:8080/cf9c0c42-5f04-427f-806d-c250b3ceb2f2'
+        url: ''
       },
       // private表示私聊
       type: 'private',
@@ -364,6 +363,7 @@ export default {
   font-size: 18px;
   text-align: center;
   color: #304156;
+  padding: 0.5rem;
 }
 
 .root-style {

@@ -43,9 +43,9 @@
           <div class="timer">
             <div class="el-icon-phone-outline" style="font-size: 50px; float: left;margin-top: 20px"/>
             <div style="margin-top: 40px; margin-left: 70px; font-weight: bold; font-size: 20px">正在咨询中...</div>
-            <div style="margin-top: 60px; margin-left: 5px; font-weight: bold; font-size: 20px">已咨询时间：</div>
-            <div style="margin-top: 30px; font-size: 50px; margin-left: 40px">{{ consultTime }}</div>
-            <div style="margin-top: 280px; margin-left: 20px">
+            <!--            <div style="margin-top: 60px; margin-left: 5px; font-weight: bold; font-size: 20px">已咨询时间：</div>-->
+            <!--            <div style="margin-top: 30px; font-size: 50px; margin-left: 40px">{{ consultTime }}</div>-->
+            <div style="margin-top: 420px; margin-left: 20px">
               <el-button
                 type="text"
                 style="font-size: 25px;padding-left: 10px"

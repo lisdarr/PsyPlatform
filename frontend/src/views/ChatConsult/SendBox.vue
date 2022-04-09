@@ -23,7 +23,10 @@
         </div>
         <el-button slot="reference" icon="emoji-icon" class="send-button-icon"/>
       </el-popover>
-      <el-button icon="el-icon-picture" class="send-button-icon"/>
+      <div class="file">
+        <el-button icon="el-icon-picture" @change="chooseImage" class="send-button-icon" size="40px"/>
+        <input type="file" @change="chooseImage">
+      </div>
       <el-button type="success" class="send-button-icon-send" :disabled="content == ''" @click="submitMessage">发送
       </el-button>
     </div>
@@ -77,8 +80,9 @@ export default {
     getBrow(index) {
       console.log('用户选择表情')
       for (const i in this.faceList) {
-        if (index === i) {
+        if (String(index) === i) {
           this.getBrowString = this.faceList[index]
+          console.log(this.getBrowString)
           this.content += this.getBrowString
         }
       }
@@ -126,9 +130,29 @@ export default {
           console.log('发送失败:', error)
         }
       })
+    },
+    chooseImage(e) {
+      const file = e.target.files[0]
+      const imageMessage = this.goEasy.im.createImageMessage({
+        to: {
+          id: this.to.uuid,
+          type: this.type,
+          data: {
+            name: this.to.name,
+            avatar: this.to.avatar
+          }
+        },
+        file: file,
+        onProgress: function(progress) {
+          console.log(progress)
+        }
+      })
+      this.sendMessage(imageMessage)
+      this.$emit('onSent')
     }
   }
 }
+
 </script>
 
 <style>
