@@ -662,10 +662,7 @@ def editConsultantItem(form):
     editName = form['name']
     dir_id = form['monitor']
     schedules = form['schedule']
-<<<<<<< Updated upstream
     print(schedules)
-=======
->>>>>>> Stashed changes
     scheduleList = schedules.split("&")
     con_id = form['id']
     err1 = ''
