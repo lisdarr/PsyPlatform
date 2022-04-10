@@ -71,12 +71,13 @@ def info(request):
         dict_data = request.GET
         name = dict_data.get('name', '')
 
-        data, err = getConsultantManage(name)
+        data, monitorList, err = getConsultantManage(name)
         if err != '':
             msg = err
         else:
             msg = "Success!"
         res = {
+            'monitorList': monitorList,
             'list': data,
             'total': len(data),
             'msg': msg,
@@ -118,8 +119,7 @@ def edit(request):
         editForm = request.POST.get("editForm")
         if type(editForm) == str:
             editForm = json.loads(editForm)
-        name = request.POST.get("name")
-        err1, err2 = editConsultantItem(editForm, name)
+        err1, err2 = editConsultantItem(editForm)
 
         if err2 != '':
             msg = {
