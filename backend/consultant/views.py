@@ -116,9 +116,12 @@ def add(request):
 
 def edit(request):
     if request.method == 'POST':
-        editForm = request.POST.get("editForm")
-        if type(editForm) == str:
-            editForm = json.loads(editForm)
+        editForm = {
+            'name': request.POST.get("name"),
+            'monitor': request.POST.get("monitor"),
+            'id': request.POST.get("id"),
+            'schedule': request.POST.get("schedule")
+        }
         err1, err2 = editConsultantItem(editForm)
 
         if err2 != '':
