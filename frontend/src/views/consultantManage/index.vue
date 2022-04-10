@@ -375,9 +375,8 @@ export default {
       this.dialogFormVisible = true
     },
     editConsultant(row) {
-      this.editform.id = row.id
-      this.dialogVisible = true
-      console.log(typeof this.editform)
+      this.editform.id = row.id;
+      this.dialogVisible = true;
     },
     saveEdit() {
       this.dialogVisible = false
