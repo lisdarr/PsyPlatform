@@ -661,6 +661,7 @@ def editConsultantItem(form):
     editName = form['name']
     dir_id = form['monitor']
     schedules = form['schedule']
+    scheduleList = schedules.split(",")
     con_id = form['id']
     err1 = ''
     err2 = ''
@@ -678,7 +679,7 @@ def editConsultantItem(form):
             ConSchedule.objects.filter(con_id=consultant.con_id).delete()
         except ConSchedule.DoesNotExist:
             err1 = "This is the first time to set its schedule."
-        for sche in schedules:
+        for sche in scheduleList:
             ConSchedule.objects.create(con_id=consultant.con_id, weekday=sche)
     except Consultant.DoesNotExist:
         err2 = "No such consultant please register first"
@@ -709,6 +710,7 @@ def addDirectorItem(form):
 def editDirectorItem(form):
     editName = form['name']
     schedules = form['schedule']
+    scheduleList = schedules.split(",")
     dir_id = form['id']
     msg = ''
 
@@ -724,7 +726,7 @@ def editDirectorItem(form):
         except DirSchedule.DoesNotExist:
             msg = 'This is the first time to set the schedule of director.'
 
-        for schedule in schedules:
+        for schedule in scheduleList:
             DirSchedule.objects.create(dir_id=director.dir_id, weekday=schedule)
 
         return msg, ''
