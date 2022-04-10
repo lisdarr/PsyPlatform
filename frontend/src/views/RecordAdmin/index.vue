@@ -84,7 +84,7 @@
         width="80px"
         align="center"
       ></el-table-column>
-      <el-table-column prop="operate" label="操作" align="center">
+      <!-- <el-table-column prop="operate" label="操作" align="center">
         <template slot-scope="scope">
           <el-button
             type="info"
@@ -103,7 +103,7 @@
             >导出记录
           </el-button>
         </template>
-      </el-table-column>
+      </el-table-column> -->
     </el-table>
     <el-pagination
       style="margin-top: 20px; text-align: center"
@@ -130,104 +130,105 @@ export default {
       page: 1,
       limit: 7,
       total: 12,
-      list: [
-        {
-          name: '张先生',
-          time: '1:02:00',
-          date: '2022-03-12 13:45:06',
-          rate: 4.5,
-          eva: '体验很好',
-          assit: '无'
-        },
-        {
-          name: '张先生',
-          time: '1:02:00',
-          date: '2022-03-13 13:45:06',
-          rate: 4.5,
-          eva: '体验很好',
-          assit: '无'
-        },
-        {
-          name: '张先生',
-          time: '1:02:00',
-          date: '2022-03-14 13:43:06',
-          rate: 4.5,
-          eva: '体验很好',
-          assit: '无'
-        },
-        {
-          name: '张先生',
-          time: '1:02:00',
-          date: '2022-03-14 13:45:06',
-          rate: 4.5,
-          eva: '体验很好',
-          assit: '无'
-        },
-        {
-          name: '张先生',
-          time: '1:02:00',
-          date: '2022-03-14 13:45:06',
-          rate: 4.5,
-          eva: '体验很好',
-          assit: '无'
-        },
-        {
-          name: '张先生',
-          time: '1:02:00',
-          date: '2022-03-14 13:45:06',
-          rate: 4.5,
-          eva: '体验很好',
-          assit: '无'
-        },
-        {
-          name: '张先生',
-          time: '1:02:00',
-          date: '2022-03-14 13:45:06',
-          rate: 4.5,
-          eva: '体验很好',
-          assit: '无'
-        },
-        {
-          name: '张先生',
-          time: '1:02:00',
-          date: '2022-03-14 13:45:06',
-          rate: 4.5,
-          eva: '体验很好',
-          assit: '无'
-        },
-        {
-          name: '张先生',
-          time: '1:02:00',
-          date: '2022-03-14 13:45:06',
-          rate: 4.5,
-          eva: '体验很好',
-          assit: '无'
-        },
-        {
-          name: '张先生',
-          time: '1:02:00',
-          date: '2022-03-14 13:45:06',
-          rate: 4.5,
-          eva: '体验很好',
-          assit: '无'
-        },
-        {
-          name: '张先生',
-          time: '1:02:00',
-          date: '2022-03-14 13:45:06',
-          rate: 4.5,
-          eva: '体验很好',
-          assit: '无'
-        },
-        {
-          name: '刘女士',
-          time: '1:02:00',
-          date: '2022-04-01 13:45:06',
-          rate: 4.7,
-          eva: '体验很好',
-          assit: '无'
-        }
-      ],
+      list: "",
+      // list: [
+      //   {
+      //     name: '张先生',
+      //     time: '1:02:00',
+      //     date: '2022-03-12 13:45:06',
+      //     rate: 4.5,
+      //     eva: '体验很好',
+      //     assit: '无'
+      //   },
+      //   {
+      //     name: '张先生',
+      //     time: '1:02:00',
+      //     date: '2022-03-13 13:45:06',
+      //     rate: 4.5,
+      //     eva: '体验很好',
+      //     assit: '无'
+      //   },
+      //   {
+      //     name: '张先生',
+      //     time: '1:02:00',
+      //     date: '2022-03-14 13:43:06',
+      //     rate: 4.5,
+      //     eva: '体验很好',
+      //     assit: '无'
+      //   },
+      //   {
+      //     name: '张先生',
+      //     time: '1:02:00',
+      //     date: '2022-03-14 13:45:06',
+      //     rate: 4.5,
+      //     eva: '体验很好',
+      //     assit: '无'
+      //   },
+      //   {
+      //     name: '张先生',
+      //     time: '1:02:00',
+      //     date: '2022-03-14 13:45:06',
+      //     rate: 4.5,
+      //     eva: '体验很好',
+      //     assit: '无'
+      //   },
+      //   {
+      //     name: '张先生',
+      //     time: '1:02:00',
+      //     date: '2022-03-14 13:45:06',
+      //     rate: 4.5,
+      //     eva: '体验很好',
+      //     assit: '无'
+      //   },
+      //   {
+      //     name: '张先生',
+      //     time: '1:02:00',
+      //     date: '2022-03-14 13:45:06',
+      //     rate: 4.5,
+      //     eva: '体验很好',
+      //     assit: '无'
+      //   },
+      //   {
+      //     name: '张先生',
+      //     time: '1:02:00',
+      //     date: '2022-03-14 13:45:06',
+      //     rate: 4.5,
+      //     eva: '体验很好',
+      //     assit: '无'
+      //   },
+      //   {
+      //     name: '张先生',
+      //     time: '1:02:00',
+      //     date: '2022-03-14 13:45:06',
+      //     rate: 4.5,
+      //     eva: '体验很好',
+      //     assit: '无'
+      //   },
+      //   {
+      //     name: '张先生',
+      //     time: '1:02:00',
+      //     date: '2022-03-14 13:45:06',
+      //     rate: 4.5,
+      //     eva: '体验很好',
+      //     assit: '无'
+      //   },
+      //   {
+      //     name: '张先生',
+      //     time: '1:02:00',
+      //     date: '2022-03-14 13:45:06',
+      //     rate: 4.5,
+      //     eva: '体验很好',
+      //     assit: '无'
+      //   },
+      //   {
+      //     name: '刘女士',
+      //     time: '1:02:00',
+      //     date: '2022-04-01 13:45:06',
+      //     rate: 4.7,
+      //     eva: '体验很好',
+      //     assit: '无'
+      //   }
+      // ],
       inputValue: '',
       dataValue: '',
     }

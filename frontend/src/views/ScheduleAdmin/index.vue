@@ -30,7 +30,7 @@
             <el-option
               v-for="(item, index) in consultantList"
               :key="item.consultantId"
-              :label="item.consultantName"
+              :label="item.name"
               :value="item.consultantId"
             >
             </el-option>
@@ -41,7 +41,7 @@
             <el-option
               v-for="item in monitorList"
               :key="item.monitorId"
-              :label="item.monitorName"
+              :label="item.name"
               :value="item.monitorId"
             >
             </el-option>
@@ -106,29 +106,13 @@ export default {
         selectable: true,
         dateClick: this.handleDateClick,
         events: [],
-        // events: [
-        //   { title: "咨询师：5", start: "2022-03-21" },
-        //   { title: "督导：2", start: "2022-03-21" },
-        //   { title: "咨询师：4 ", start: "2022-03-22" },
-        //   { title: "督导：3", start: "2022-03-22" },
-        // ],
         eventColor: "#f08f00",
         locale: "zh-cn",
         weekNumberCalculation: "ISO",
         customButtons: {},
       },
-      consultantList: [
-        // {
-        //   consultantName: "咨询师A",
-        //   consultantId: "1",
-        // },
-      ],
-      monitorList: [
-        // {
-        //   monitorName: "督导A",
-        //   monitorId: 1,
-        // },
-      ],
+      consultantList: "",
+      monitorList: "",
     };
   },
   mounted() {

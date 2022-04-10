@@ -59,7 +59,7 @@ export function con_edit(data){
 }
 export function dir_info(data){
     return request({
-        url: '/visitor/info/',
+        url: '/director/info/',
         method: 'GET',
         params: data
     })

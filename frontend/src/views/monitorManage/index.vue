@@ -271,104 +271,7 @@ export default {
       limit: 7,
       total: 12,
       inputValue: "",
-      list: [
-        {
-          name: "督导1",
-          role: "督导",
-          consultant: "咨询师A、咨询师B、咨询师C",
-          sum: "256",
-          time: "34:12:50",
-          schedule: "周一、周三、周五",
-        },
-        {
-          name: "督导1",
-          role: "督导",
-          consultant: "咨询师A、咨询师B、咨询师C",
-          sum: "256",
-          time: "34:12:50",
-          schedule: "周一、周三、周五",
-        },
-        {
-          name: "督导1",
-          role: "督导",
-          consultant: "咨询师A、咨询师B、咨询师C",
-          sum: "256",
-          time: "34:12:50",
-          schedule: "周一、周三、周五",
-        },
-        {
-          name: "督导1",
-          role: "督导",
-          consultant: "咨询师A、咨询师B、咨询师C",
-          sum: "256",
-          time: "34:12:50",
-          schedule: "周一、周三、周五",
-        },
-        {
-          name: "督导1",
-          role: "督导",
-          consultant: "咨询师A、咨询师B、咨询师C",
-          sum: "256",
-          time: "34:12:50",
-          schedule: "周一、周三、周五",
-        },
-        {
-          name: "督导1",
-          role: "督导",
-          consultant: "咨询师A、咨询师B、咨询师C",
-          sum: "256",
-          time: "34:12:50",
-          schedule: "周一、周三、周五",
-        },
-        {
-          name: "督导1",
-          role: "督导",
-          consultant: "咨询师A、咨询师B、咨询师C",
-          sum: "256",
-          time: "34:12:50",
-          schedule: "周一、周三、周五",
-        },
-        {
-          name: "督导1",
-          role: "督导",
-          consultant: "咨询师A、咨询师B、咨询师C",
-          sum: "256",
-          time: "34:12:50",
-          schedule: "周一、周三、周五",
-        },
-        {
-          name: "督导1",
-          role: "督导",
-          consultant: "咨询师A、咨询师B、咨询师C",
-          sum: "256",
-          time: "34:12:50",
-          schedule: "周一、周三、周五",
-        },
-        {
-          name: "督导1",
-          role: "督导",
-          consultant: "咨询师A、咨询师B、咨询师C",
-          sum: "256",
-          time: "34:12:50",
-          schedule: "周一、周三、周五",
-        },
-        {
-          name: "督导1",
-          role: "督导",
-          consultant: "咨询师A、咨询师B、咨询师C",
-          sum: "256",
-          time: "34:12:50",
-          schedule: "周一、周三、周五",
-        },
-        {
-          name: "督导1",
-          role: "督导",
-          consultant: "咨询师A、咨询师B、咨询师C",
-          sum: "256",
-          time: "34:12:50",
-          schedule: "周一、周三、周五",
-        },
-      ],
+      list: "",
       isShowBtn: false,
       dialogFormVisible: false,
       dialogVisible: false,
@@ -390,16 +293,11 @@ export default {
         name: "",
         schedule: [],
       },
-      qualList: [
-        {
-          qualName: "qef",
-          qualId: "1",
-        },
-      ],
+      qualList: "",
     };
   },
   mounted() {
-    this.init_List();
+    this.search();
   },
   methods: {
     handleSizeChange(val) {
@@ -408,20 +306,8 @@ export default {
     handleCurrentChange(val) {
       console.log(`当前页: ${val}`);
     },
-    init_List(){
-      var that = this;
-      dir_info()
-        .then((response) => {
-          that.list = response.list;
-          that.total = response.total;
-          // that.qualList = response.qualList;
-        })
-        .catch((error) => {
-          console.log(error);
-        });
-    },
     search() {
-      console.log("搜索");
+      // console.log("搜索");
       var that = this;
       dir_info({
         name: this.inputValue,
@@ -429,6 +315,9 @@ export default {
         .then((response) => {
           that.list = response.list;
           that.total = response.total;
+          console.log(that.total)
+          that.qualList = response.qualList;
+          console.log(that.qualList)
         })
         .catch((error) => {
           console.log(error);
@@ -477,9 +366,7 @@ export default {
       console.log("保存添加");
       this.dialogFormVisible = false;
       var that = this;
-      dir_add({
-        form: this.form,
-      })
+      dir_add(this.form)
         .then(() => {
           that.$message.success("添加成功！");
           that.init_List();

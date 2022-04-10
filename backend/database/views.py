@@ -664,7 +664,7 @@ def editConsultantItem(form):
     con_id = form['id']
     err1 = ''
     err2 = ''
-
+    print(form)
     try:
         consultant = Consultant.objects.get(con_id=con_id)
         if editName != '':

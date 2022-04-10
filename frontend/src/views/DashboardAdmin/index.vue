@@ -335,42 +335,12 @@ export default {
   },
   data() {
     return {
-      consultList: [
-        {
-          name: "咨询师A",
-          state: "true",
-        },
-        {
-          name: "咨询师B",
-          state: "false",
-        },
-        {
-          name: "咨询师C",
-          state: "false",
-        },
-        {
-          name: "咨询师D",
-          state: "false",
-        },
-      ],
-      monitorList: [
-        {
-          name: "督导A",
-          state: "true",
-        },
-        {
-          name: "督导B",
-          state: "false",
-        },
-        {
-          name: "督导C",
-          state: "false",
-        },
-      ],
-      consultNum: 5,
-      chatNum: 2,
-      consultTodayNum: 15,
-      consultTodayTime: "6:12:30",
+      consultList: "",
+      monitorList: "",
+      consultNum: "",
+      chatNum: "",
+      consultTodayNum: "",
+      consultTodayTime: "",
       myChart: {},
       myChartStyle: {
         float: "left",
@@ -383,30 +353,8 @@ export default {
         width: "100%",
         height: "230px",
       },
-      myChartData: [
-        ["00:00", 0],
-        ["01:00", 0],
-        ["02:00", 0],
-        ["03:00", 0],
-        ["05:00", 0],
-        ["07:00", 1],
-        ["08:00", 3],
-        ["10:00", 12],
-        ["12:00", 6],
-        ["13:00", 9],
-        ["14:00", 13],
-        ["16:00", 2],
-        ["23:00", 0],
-      ],
-      weekChartData: [
-        ["3-28", 35],
-        ["3-29", 32],
-        ["3-30", 36],
-        ["3-31", 42],
-        ["4-1", 33],
-        ["4-2", 29],
-        ["4-3", 37],
-      ],
+      myChartData: '',
+      weekChartData: '',
       sumList: [
         {
           photo:
@@ -467,9 +415,6 @@ export default {
     this.init_weekChart();
   },
   methods: {
-    // jump() {
-    //   this.$router.push({ path: '/RecordConsult' })
-    // },
     init_dashboardAdmin() {
       var that = this;
       dashboardAdmin(getToken())

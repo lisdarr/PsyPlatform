@@ -14,9 +14,8 @@
     </div>
     <div style="width: 30px; float: left; margin-top: 50px; margin-left: 10px">
       <el-button size="small" icon="el-icon-search" @click="search"
-      >搜索
-      </el-button
-      >
+        >搜索
+      </el-button>
     </div>
     <el-table
       style="width: 100%; margin-left: 12px; padding-top: 15px; height = 400px"
@@ -79,9 +78,8 @@
       <el-table-column prop="operate" label="操作" align="center">
         <template slot-scope="scope">
           <el-button type="danger" plain size="mini" @click="stopUse(scope.row)"
-          >禁用
-          </el-button
-          >
+            >禁用
+          </el-button>
         </template>
       </el-table-column>
     </el-table>
@@ -101,217 +99,73 @@
 </template>
 
 <script>
-import { visitor_ban, visitor_info } from '@/api/admin'
+import { visitor_ban, visitor_info } from "@/api/admin";
 
 export default {
-  name: 'userManage',
+  name: "userManage",
   data() {
     return {
-      inputValue: '',
+      inputValue: "",
       page: 1,
       limit: 7,
       total: 12,
-      list: [
-        {
-          name: '用户某某某',
-          gender: '女',
-          username: 'oicw138aib47GasW',
-          phonenumber: '18362482284',
-          contact: 'lucy',
-          contactnumber: '19362829173',
-          role: '访客',
-          date: '2022-3-15',
-          state: '正常'
-        },
-        {
-          name: '用户某某某',
-          gender: '女',
-          username: 'oicw138aib47GasW',
-          phonenumber: '18362482284',
-          contact: 'lucy',
-          contactnumber: '19362829173',
-          role: '访客',
-          date: '2022-3-15',
-          state: '正常'
-        },
-        {
-          name: '用户某某某',
-          gender: '女',
-          username: 'oicw138aib47GasW',
-          phonenumber: '18362482284',
-          contact: 'lucy',
-          contactnumber: '19362829173',
-          role: '访客',
-          date: '2022-3-15',
-          state: '正常'
-        },
-        {
-          name: '用户某某某',
-          gender: '女',
-          username: 'oicw138aib47GasW',
-          phonenumber: '18362482284',
-          contact: 'lucy',
-          contactnumber: '19362829173',
-          role: '访客',
-          date: '2022-3-15',
-          state: '正常'
-        },
-        {
-          name: '用户某某某',
-          gender: '女',
-          username: 'oicw138aib47GasW',
-          phonenumber: '18362482284',
-          contact: 'lucy',
-          contactnumber: '19362829173',
-          role: '访客',
-          date: '2022-3-15',
-          state: '正常'
-        },
-        {
-          name: '用户某某某',
-          gender: '女',
-          username: 'oicw138aib47GasW',
-          phonenumber: '18362482284',
-          contact: 'lucy',
-          contactnumber: '19362829173',
-          role: '访客',
-          date: '2022-3-15',
-          state: '正常'
-        },
-        {
-          name: '用户某某某',
-          gender: '女',
-          username: 'oicw138aib47GasW',
-          phonenumber: '18362482284',
-          contact: 'lucy',
-          contactnumber: '19362829173',
-          role: '访客',
-          date: '2022-3-15',
-          state: '正常'
-        },
-        {
-          name: '用户某某某',
-          gender: '女',
-          username: 'oicw138aib47GasW',
-          phonenumber: '18362482284',
-          contact: 'lucy',
-          contactnumber: '19362829173',
-          role: '访客',
-          date: '2022-3-15',
-          state: '正常'
-        },
-        {
-          name: '用户某某某',
-          gender: '女',
-          username: 'oicw138aib47GasW',
-          phonenumber: '18362482284',
-          contact: 'lucy',
-          contactnumber: '19362829173',
-          role: '访客',
-          date: '2022-3-15',
-          state: '正常'
-        },
-        {
-          name: '用户某某某',
-          gender: '女',
-          username: 'oicw138aib47GasW',
-          phonenumber: '18362482284',
-          contact: 'lucy',
-          contactnumber: '19362829173',
-          role: '访客',
-          date: '2022-3-15',
-          state: '正常'
-        },
-        {
-          name: '用户某某某',
-          gender: '女',
-          username: 'oicw138aib47GasW',
-          phonenumber: '18362482284',
-          contact: 'lucy',
-          contactnumber: '19362829173',
-          role: '访客',
-          date: '2022-3-15',
-          state: '正常'
-        },
-        {
-          name: '用户某某某',
-          gender: '女',
-          username: 'oicw138aib47GasW',
-          phonenumber: '18362482284',
-          contact: 'lucy',
-          contactnumber: '19362829173',
-          role: '访客',
-          date: '2022-3-15',
-          state: '正常'
-        }
-      ]
-    }
+      list: "",
+    };
   },
   mounted() {
-    this.search()
+    this.search();
   },
   methods: {
     handleSizeChange(val) {
-      console.log(`每页 ${val} 条`)
+      console.log(`每页 ${val} 条`);
     },
     handleCurrentChange(val) {
-      console.log(`当前页: ${val}`)
+      console.log(`当前页: ${val}`);
     },
-    // init_List() {
-    //   var that = this
-    //   visitor_info()
-    //     .then((response) => {
-    //       that.list = response.list
-    //       that.total = response.total
-    //     })
-    //     .catch((error) => {
-    //       console.log(error)
-    //     })
-    // },
     search() {
-      var that = this
+      var that = this;
       visitor_info({
-        name: this.inputValue
+        name: this.inputValue,
       })
         .then((response) => {
-          that.list = response.list
-          that.total = response.total
+          that.list = response.list;
+          that.total = response.total;
         })
         .catch((error) => {
-          console.log(error)
-        })
+          console.log(error);
+        });
     },
     stopUse(row) {
-      this.$confirm('确定永久禁用该账号吗?', '提示', {
-        confirmButtonText: '确定',
-        cancelButtonText: '取消',
-        type: 'warning'
+      this.$confirm("确定永久禁用该账号吗?", "提示", {
+        confirmButtonText: "确定",
+        cancelButtonText: "取消",
+        type: "warning",
       })
         .then(() => {
-          if (confirmResult == 'confirm') {
-            visitor_ban({
-              name: row.name
-            }).then(() => {
-              // row.state = "异常";
+          visitor_ban({
+            name: row.name,
+          })
+            .then(() => {
+              that.search()
               this.$message({
-                type: 'success',
-                message: '已禁用!'
-              })
-              // })
+                type: "success",
+                message: "已禁用!",
+              });
             })
-          } else {
-            this.$message({
-              type: 'info',
-              message: '已取消操作'
-            })
-          }
+            .catch((error) => {
+              console.log(error);
+            });
         })
-        .catch((error) => {
-          console.log(error)
-        })
-    }
-  }
-}
+        .catch(() => {
+          this.$message({
+            type: "info",
+            message: "已取消操作",
+          });
+          // console.log(error);
+        });
+    },
+  },
+};
 </script>
 
 <style>
