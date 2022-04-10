@@ -287,7 +287,7 @@ def getConsultantManage(username):
         else:
             dur = consult.totel_dur
         data = {
-            'id': consult.dir_id,
+            'id': consult.con_id,
             'name': consult.username,
             'monitor': monitor,
             'sum': consult.totel_num,
