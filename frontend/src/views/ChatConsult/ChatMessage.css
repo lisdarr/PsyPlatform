@@ -1,15 +1,15 @@
 /*message-item:每条信息的样式*/
 .scroll-view .message-item {
-  max-height: 10rem;
+  height: 5rem;
   margin-top: 0.8rem;
   margin-bottom: 0.8rem;
-  overflow: hidden;
+  overflow: auto;
   display: flex;
   align-items: center;
 }
 
 .scroll-view-side .message-item {
-  max-height: 10rem;
+  height: 5rem;
   margin-top: 0.8rem;
   margin-bottom: 0.8rem;
   overflow: hidden;

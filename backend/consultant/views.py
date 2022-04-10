@@ -116,6 +116,7 @@ def add(request):
 
 def edit(request):
     if request.method == 'POST':
+        print(request.POST)
         editForm = {
             'name': request.POST.get("name"),
             'monitor': request.POST.get("monitor"),

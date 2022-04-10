@@ -19,12 +19,12 @@
         style="width: 30px; float: left; margin-top: 50px; margin-left: 10px"
       >
         <el-button size="small" icon="el-icon-search" @click="search"
-          >搜索
+        >搜索
         </el-button>
       </div>
       <div class="addbtn">
         <el-button type="primary" @click="addConsultant" size="small"
-          >新增咨询师
+        >新增咨询师
         </el-button>
       </div>
     </div>
@@ -92,7 +92,7 @@
             icon="el-icon-edit"
             size="mini"
             @click="editConsultant(scope.row)"
-            >修改
+          >修改
           </el-button>
         </template>
       </el-table-column>
@@ -214,10 +214,10 @@
       </el-form>
       <div slot="footer" class="dialog-footer">
         <el-button @click="dialogFormVisible = false" size="small"
-          >取 消
+        >取 消
         </el-button>
         <el-button type="primary" @click="saveAdd" size="small"
-          >确 定
+        >确 定
         </el-button>
       </div>
     </el-dialog>
@@ -246,7 +246,8 @@
               v-for="(item, index) in totalWeek"
               :label="item.name"
               :key="index"
-              >{{ item.name }}</el-checkbox
+            >{{ item.name }}
+            </el-checkbox
             >
             <!-- <el-checkbox label="Mon"
             >
@@ -290,7 +291,7 @@
       <div slot="footer">
         <el-button @click="dialogVisible = false" size="small">取 消</el-button>
         <el-button type="primary" @click="saveEdit" size="small"
-          >确 定
+        >确 定
         </el-button>
       </div>
     </el-dialog>
@@ -298,115 +299,117 @@
 </template>
 
 <script>
-import { con_add, con_info, con_edit } from "@/api/admin";
+import { con_add, con_edit, con_info } from '@/api/admin'
+import qs from 'qs'
 
 export default {
-  name: "consultantManage",
+  name: 'consultantManage',
   data() {
     return {
       totalWeek: [
-        {name: "Mon"},
-        {name: "Tue"},
-        {name: "Wen"},
-        {name: "Thu"},
-        {name: "Fri"},
-        {name: "Sat"},
-        {name: "Sun"},
+        { name: 'Mon' },
+        { name: 'Tue' },
+        { name: 'Wen' },
+        { name: 'Thu' },
+        { name: 'Fri' },
+        { name: 'Sat' },
+        { name: 'Sun' }
       ],
-      flag: "false",
+      flag: 'false',
       page: 1,
       limit: 7,
       total: 12,
-      inputValue: "",
-      dataValue: "",
+      inputValue: '',
+      dataValue: '',
       list: [],
       dialogFormVisible: false,
       dialogVisible: false,
       form: {
-        name: "",
-        gender: "",
-        age: "",
-        idNumber: "",
-        phone: "",
-        email: "",
-        monitorId: "",
-        userName: "",
-        pwd: "",
-        company: "",
-        rank: "",
+        name: '',
+        gender: '',
+        age: '',
+        idNumber: '',
+        phone: '',
+        email: '',
+        monitorId: '',
+        userName: '',
+        pwd: '',
+        company: '',
+        rank: ''
       },
       editform: {
-        id: "",
-        name: "",
-        monitor: "",
-        schedule: [],
+        id: '',
+        name: '',
+        monitor: '',
+        schedule: []
       },
       // 选择督导框
-      monitorList: "",
-    };
+      monitorList: ''
+    }
   },
 
   mounted() {
-    this.search();
+    this.search()
   },
   methods: {
     handleSizeChange(val) {
-      console.log(`每页 ${val} 条`);
+      console.log(`每页 ${val} 条`)
     },
     handleCurrentChange(val) {
-      console.log(`当前页: ${val}`);
+      console.log(`当前页: ${val}`)
     },
     search() {
-      console.log("搜索");
-      var that = this;
+      console.log('搜索')
+      var that = this
       con_info({ name: this.inputValue })
         .then((response) => {
-          that.list = response.list;
-          that.total = response.total;
-          that.monitorList = response.monitorList;
+          that.list = response.list
+          that.total = response.total
+          that.monitorList = response.monitorList
         })
         .catch((error) => {
-          console.log(error);
-        });
+          console.log(error)
+        })
     },
     addConsultant() {
-      this.dialogFormVisible = true;
+      this.dialogFormVisible = true
     },
     editConsultant(row) {
-      this.editform.id = row.id;
-      this.dialogVisible = true;
+      this.editform.id = row.id
+      this.dialogVisible = true
       console.log(typeof this.editform)
     },
     saveEdit() {
-      this.dialogVisible = false;
-      var that = this;
-      console.log(this.editform);
+      this.dialogVisible = false
+      var that = this
+      // 所有的list类型的都要进行这个格式转换，否则后端取值异常
+      this.editform.schedule = qs.stringify(this.editform.schedule, { arrayFormat: 'indices' })
       con_edit(this.editform)
         .then(() => {
-          that.$message.success("修改成功！");
-          that.search();
+          that.$message.success('修改成功！')
+          that.search()
         })
         .catch((error) => {
-          console.log(error);
-        });
+          console.log(error)
+        })
     },
 
     saveAdd() {
-      console.log("保存添加");
-      this.dialogFormVisible = false;
-      var that = this;
-      console.log(typeof this.form);
+      console.log('保存添加')
+      this.dialogFormVisible = false
+      var that = this
+      console.log(typeof this.form)
       con_add(this.form)
         .then(() => {
-          that.$message.success("添加成功！");
-          that.search();
+          that.$message.success('添加成功！')
+          that.search()
         })
         .catch((error) => {
-          console.log(error);
-        });
-    },
-  },
-};
+          console.log(error)
+        })
+    }
+  }
+}
 </script>
 
 <style>

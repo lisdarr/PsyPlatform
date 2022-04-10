@@ -19,6 +19,7 @@ service.interceptors.request.use(
     // do something before request is sent
     if (config.method === 'post') {
       config.data = qs.stringify(config.data)
+      console.log(config.data)
     }
     if (config.method === 'get') {
       config.url = config.url + '?' + qs.stringify(config.data)
