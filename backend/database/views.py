@@ -286,6 +286,7 @@ def getConsultantManage(username):
             dur = 0
         else:
             dur = consult.totel_dur
+
         data = {
             'id': consult.con_id,
             'name': consult.username,
@@ -661,12 +662,14 @@ def editConsultantItem(form):
     editName = form['name']
     dir_id = form['monitor']
     schedules = form['schedule']
+<<<<<<< Updated upstream
     print(schedules)
+=======
+>>>>>>> Stashed changes
     scheduleList = schedules.split("&")
     con_id = form['id']
     err1 = ''
     err2 = ''
-    print(form)
     try:
         consultant = Consultant.objects.get(con_id=con_id)
         if editName != '':
@@ -713,7 +716,7 @@ def addDirectorItem(form):
 def editDirectorItem(form):
     editName = form['name']
     schedules = form['schedule']
-    scheduleList = schedules.split(",")
+    scheduleList = schedules.split("&")
     dir_id = form['id']
     msg = ''
 
@@ -730,7 +733,8 @@ def editDirectorItem(form):
             msg = 'This is the first time to set the schedule of director.'
 
         for schedule in scheduleList:
-            DirSchedule.objects.create(dir_id=director.dir_id, weekday=schedule)
+            day = schedule.split("=")
+            DirSchedule.objects.create(dir_id=director.dir_id, weekday=day[1])
 
         return msg, ''
     except Director.DoesNotExist:
