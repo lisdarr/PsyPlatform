@@ -112,9 +112,11 @@ def add(request):
 
 def edit(request):
     if request.method == 'POST':
-        editForm = request.POST.get("editForm")
-        if type(editForm) == str:
-            editForm = json.loads(editForm)
+        editForm = {
+            'name': request.POST.get("name"),
+            'id': request.POST.get("id"),
+            'schedule': request.POST.get("schedule")
+        }
         msg, err = editDirectorItem(editForm)
 
         if err != '':
