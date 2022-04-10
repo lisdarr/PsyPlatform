@@ -90,10 +90,20 @@ def info(request):
 
 def add(request):
     if request.method == 'POST':
-        form = request.POST.get("Form")
-        if type(form) == str:
-            form = json.loads(form)
-
+        form = {
+            'name': request.POST.get("name"),
+            'gender': request.POST.get("gender"),
+            'age': request.POST.get("age"),
+            'idNumber': request.POST.get("idNumber"),
+            'phone': request.POST.get("phone"),
+            'email': request.POST.get("email"),
+            'userName': request.POST.get("userName"),
+            'pwd': request.POST.get("pwd"),
+            'company': request.POST.get("company"),
+            'rank': request.POST.get("rank"),
+            'qualId': request.POST.get("qualId"),
+            'certId': request.POST.get("certId"),
+        }
         addDirectorItem(form)
         return HttpResponse(status=200)
     else:
