@@ -73,10 +73,11 @@ def info(request):
         dict_data = request.GET
         name = dict_data.get('name', '')
 
-        data = getMonitorAdmin(name)
+        data, qualList = getMonitorAdmin(name)
 
         msg = {
             'list': data,
+            'qualList': qualList,
             'total': len(data),
             'msg': 'Success',
             'status': 200
@@ -101,11 +102,10 @@ def add(request):
 
 def edit(request):
     if request.method == 'POST':
-        name = request.POST.get("name")
         editForm = request.POST.get("editForm")
         if type(editForm) == str:
             editForm = json.loads(editForm)
-        msg, err = editDirectorItem(editForm, name)
+        msg, err = editDirectorItem(editForm)
 
         if err != '':
             msg = {
