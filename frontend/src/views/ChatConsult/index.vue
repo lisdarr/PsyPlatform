@@ -1,14 +1,14 @@
 <template>
   <div class="root-style">
     <!--      监听到没有conversations的时候，显示默认背景图-->
-    <div v-if="!this.conversations.length">
+    <div v-show="!this.conversations.length">
       <div style="text-align: center; padding-top: 100px">
         <img src="~@/assets/chat.png" width="300">
         <p>努力做好每一次咨询!</p>
       </div>
     </div>
     <!--      监听到有conversations的时候，显示会话列表-->
-    <div v-else>
+    <div v-show="this.conversations.length">
       <!--      会话列表-->
       <div class="conversations">
         <div
@@ -25,7 +25,7 @@
             {{ conversation.data.name }}
           </div>
           <div
-            v-if="conversation.unread"
+            v-show="conversation.unread"
             style="float: left; color: white; background-color: red; border-radius: 50%; width: 17px; height: 17px; text-align: center; margin-top: 1px"
           >
             {{ conversation.unread }}
@@ -33,19 +33,22 @@
         </div>
       </div>
       <div class="single-conversation">
-        <div v-if="!this.$route.query.id">
+        <div v-show="!this.$route.query.id">
           <div style="text-align: center; padding-top: 100px">
             <img src="~@/assets/chat.png" width="300">
             <p>努力做好每一次咨询!</p>
           </div>
         </div>
-        <div v-else>
+        <div v-show="this.$route.query.id">
           <div class="timer">
             <div class="el-icon-phone-outline" style="font-size: 50px; float: left;margin-top: 20px"/>
             <div style="margin-top: 40px; margin-left: 70px; font-weight: bold; font-size: 20px">正在咨询中...</div>
-            <!--            <div style="margin-top: 60px; margin-left: 5px; font-weight: bold; font-size: 20px">已咨询时间：</div>-->
-            <!--            <div style="margin-top: 30px; font-size: 50px; margin-left: 40px">{{ consultTime }}</div>-->
-            <div style="margin-top: 420px; margin-left: 20px">
+            <div style="margin-top: 60px; margin-left: 5px; font-weight: bold; font-size: 20px">已咨询时间：</div>
+            <div style="margin-top: 30px; font-size: 40px; margin-left: 18px">{{
+                this.consultTime[this.$route.query.id]
+              }}
+            </div>
+            <div style="margin-top: 290px; margin-left: 20px">
               <el-button type="text" style="font-size: 35px;padding-left: 15px" @click="dialogVisible = true">
                 请求督导
               </el-button>
@@ -100,7 +103,7 @@
               <div ref="scrollView" class="scroll-view">
                 <div v-for="(message, index) in messages" :key="index">
                   <div
-                    v-if="index === 0 || messages[index].timestamp - messages[index-1].timestamp > 5 * 60 * 1000"
+                    v-show="index === 0 || messages[index].timestamp - messages[index-1].timestamp > 5 * 60 * 1000"
                     class="time-lag"
                   >
                     {{ formatDate(message.timestamp) }}
@@ -141,7 +144,10 @@ export default {
     return {
       // 记录了咨询师现有全部会话
       conversations: [],
-      consultTime: '00:00',
+      // 计时器相关
+      consultTime: {},
+      initTime: {},
+      timer: {},
       // 用于判断用户栏指向，对选择对用户栏进行高亮
       findIndex: -1,
       // 通讯需要的数据
@@ -202,9 +208,16 @@ export default {
     this.goEasy.im.latestConversations({
       onSuccess: function(res) {
         const content = res.content
+        // 开始新的通话，启动新计时器
+        if (content.conversations !== self.conversations) {
+          const oldcon = new Set(self.conversations)
+          const minuscon = content.conversations.filter(x => !oldcon.has(x))
+          console.log('开启计时器')
+          var d = new Date()
+          self.initTime[minuscon[0].userId] = d.getTime()
+          console.log(self.initTime[minuscon[0].userId])
+        }
         self.conversations = content.conversations
-        var test = { 'conversations': self.conversations }
-        console.log(test)
       },
       onFailed: function(error) {
         console.log('失败获取最新会话列表, code:' + error.code + ' content:' + error.content)
@@ -227,18 +240,36 @@ export default {
         }
       })
       // 得到对话人的id
-      const friendId = this.$route.query.id
       this.type = this.GoEasy.IM_SCENE.PRIVATE
       // 对话人的基本信息，包括name, avatar, uuid;
       // 之后随不同id取不同用户信息
       // this.friend = this.service.findFriendById(friendId)
-      if (friendId === 'user1') {
+      if (id === 'user1') {
         this.friend = this.friends[0]
       } else {
         this.friend = this.friends[1]
       }
       // 和该对话人的全部聊天记录
-      this.messages = this.service.getPrivateMessages(friendId)
+      this.messages = this.service.getPrivateMessages(id)
+      if (!this.timer[id]) {
+        this.timer[id] = setInterval(this.timeComputed, 1000)
+      }
+    },
+    timeComputed() {
+      var d = new Date()
+      const id = this.friend.uuid
+      const timeminus = (d.getTime() - this.initTime[id]) / 1000
+      const hour = parseInt(timeminus / 3600)
+      const minite = parseInt((timeminus % 3600) / 60)
+      const second = Math.round(timeminus - hour * 3600 - minite * 60)
+      const alltime = this.toZero(hour) + ':' + this.toZero(minite) + ':' + this.toZero(second)
+      this.$set(this.consultTime, id, alltime)
+      // this.consultTime[id] = this.toZero(hour) + ':' + this.toZero(minite) + ':' + this.toZero(second)
+      console.log(this.consultTime)
+      // alert(this.consultTime[this.$route.query.id])
+    },
+    toZero(timeNumber) {
+      return timeNumber < 10 ? ('0' + timeNumber) : timeNumber
     },
     showImageFullScreen(message) {
       this.image.url = message.payload.url
@@ -296,6 +327,11 @@ export default {
           id: dir_conversation.userId
         }
       })
+      var d = new Date()
+      this.initTime[dir_conversation.userId] = d.getTime()
+      if (!this.timer[dir_conversation.userId]) {
+        this.timer[dir_conversation.userId] = setInterval(this.timeComputed, 1000)
+      }
     },
     removeConversation(formName) {
       this.$refs[formName].validate((valid) => {
@@ -310,6 +346,12 @@ export default {
       console.log(this.form.type)
       const self = this
       self.showLoading = true
+      clearInterval(this.timer[this.$route.query.id])
+      // 把当前计时器相关数据上传数据库后，清空
+      var d = new Date()
+      this.timer[this.$route.query.id] = ''
+      this.consultTime[this.$route.query.id] = ''
+      this.initTime[this.$route.query.id] = d.getTime()
       this.goEasy.im.removePrivateConversation({
         userId: this.$route.query.id,
         onSuccess: function() {

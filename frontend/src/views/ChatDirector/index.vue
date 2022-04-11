@@ -43,9 +43,12 @@
           <div class="timer">
             <div class="el-icon-phone-outline" style="font-size: 50px; float: left;margin-top: 20px"/>
             <div style="margin-top: 40px; margin-left: 70px; font-weight: bold; font-size: 20px">正在咨询中...</div>
-            <!--            <div style="margin-top: 60px; margin-left: 5px; font-weight: bold; font-size: 20px">已咨询时间：</div>-->
-            <!--            <div style="margin-top: 30px; font-size: 50px; margin-left: 40px">{{ consultTime }}</div>-->
-            <div style="margin-top: 420px; margin-left: 20px">
+            <div style="margin-top: 60px; margin-left: 5px; font-weight: bold; font-size: 20px">已咨询时间：</div>
+            <div style="margin-top: 30px; font-size: 45px; margin-left: 20px">{{
+                this.consultTime[this.$route.query.id]
+              }}
+            </div>
+            <div style="margin-top: 290px; margin-left: 20px">
               <el-button
                 type="text"
                 style="font-size: 25px;padding-left: 10px"
@@ -157,7 +160,10 @@ export default {
     return {
       // 记录了咨询师现有全部会话
       conversations: [],
-      consultTime: '00:00',
+      // 计时器相关
+      consultTime: {},
+      initTime: {},
+      timerChat: {},
       // 用于判断用户栏指向，对选择对用户栏进行高亮
       findIndex: -1,
       // 通讯需要的数据
@@ -218,9 +224,15 @@ export default {
     this.goEasy.im.latestConversations({
       onSuccess: function(res) {
         const content = res.content
+        if (content.conversations !== self.conversations) {
+          const oldcon = new Set(self.conversations)
+          const minuscon = content.conversations.filter(x => !oldcon.has(x))
+          console.log('开启计时器')
+          var d = new Date()
+          self.initTime[minuscon[0].userId] = d.getTime()
+          console.log(self.initTime[minuscon[0].userId])
+        }
         self.conversations = content.conversations
-        var test = { 'conversations': self.conversations }
-        console.log(test)
       },
       onFailed: function(error) {
         console.log('失败获取最新会话列表, code:' + error.code + ' content:' + error.content)
@@ -254,6 +266,25 @@ export default {
       console.log('开始获取同步消息')
       this.timer = setInterval(this.getHistory, 800)
       this.scrollToBottom()
+      if (!this.timer[id]) {
+        this.timerChat[id] = setInterval(this.timeComputed, 1000)
+      }
+    },
+    timeComputed() {
+      var d = new Date()
+      const id = this.friend.uuid
+      const timeminus = (d.getTime() - this.initTime[id]) / 1000
+      const hour = parseInt(timeminus / 3600)
+      const minite = parseInt((timeminus % 3600) / 60)
+      const second = Math.round(timeminus - hour * 3600 - minite * 60)
+      const alltime = this.toZero(hour) + ':' + this.toZero(minite) + ':' + this.toZero(second)
+      this.$set(this.consultTime, id, alltime)
+      // this.consultTime[id] = this.toZero(hour) + ':' + this.toZero(minite) + ':' + this.toZero(second)
+      console.log(this.consultTime)
+      // alert(this.consultTime[this.$route.query.id])
+    },
+    toZero(timeNumber) {
+      return timeNumber < 10 ? ('0' + timeNumber) : timeNumber
     },
     showImageFullScreen(message) {
       this.image.url = message.payload.url
@@ -287,27 +318,6 @@ export default {
         }
       })
     },
-    ToDir() {
-      const dir_conversation = {
-        type: 'private',
-        userId: 'director1',
-        unread: 0, // 未读消息条数
-        // 私聊好友Data信息，来源于发送私聊消息时的to.data和发送方im.connect时传入的data
-        data: {
-          'avatar': 'https://images.pexels.com/photos/4491461/pexels-photo-4491461.jpeg?cs=srgb&dl=pexels-karolina-grabowska-4491461.jpg&fm=jpg',
-          'name': '周导'
-        },
-        lastMessage: {}
-      }
-      this.dialogVisible = false
-      this.conversations.push(dir_conversation)
-      this.$router.push({
-        name: 'ChatConsult',
-        query: {
-          id: dir_conversation.userId
-        }
-      })
-    },
     removeConversation(formName) {
       this.$refs[formName].validate((valid) => {
         if (valid) {
@@ -320,6 +330,12 @@ export default {
       this.dialogFormVisible = false
       const self = this
       self.showLoading = true
+      clearInterval(this.timer[this.$route.query.id])
+      // 把当前计时器相关数据上传数据库后，清空
+      var d = new Date()
+      this.timerChat[this.$route.query.id] = ''
+      this.consultTime[this.$route.query.id] = ''
+      this.initTime[this.$route.query.id] = d.getTime()
       this.goEasy.im.removePrivateConversation({
         userId: this.$route.query.id,
         onSuccess: function() {
