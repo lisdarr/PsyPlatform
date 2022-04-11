@@ -19,7 +19,7 @@
           @click="navigateToChat(index, conversation)"
         >
           <div style="float: left;margin-left: 5px;margin-top: 5px">
-            <el-avatar shape="circle" :size="50" :src="conversation.avatar"/>
+            <el-avatar shape="circle" :size="50" :src="conversation.data.avatar"/>
           </div>
           <div style="float: left; color: white;margin-top:18px;margin-left: 5px">
             {{ conversation.data.name }}
@@ -204,7 +204,7 @@ export default {
       },
       synchat: [],
       user: {
-        avatar: 'http://inews.gtimg.com/newsapp_bt/0/13540171754/1000',
+        avatar: require('@/assets/test.png'),
         name: 'cymm',
         uuid: 'user1'
       },
