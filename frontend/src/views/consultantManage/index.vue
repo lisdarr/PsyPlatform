@@ -259,7 +259,7 @@
               <el-tag type="success">周二</el-tag>
             </el-checkbox
             >
-            <el-checkbox label="Wen" name="schedule"
+            <el-checkbox label="Wed" name="schedule"
             >
               <el-tag type="success">周三</el-tag>
             </el-checkbox
@@ -375,8 +375,8 @@ export default {
       this.dialogFormVisible = true
     },
     editConsultant(row) {
-      this.editform.id = row.id;
-      this.dialogVisible = true;
+      this.editform.id = row.id
+      this.dialogVisible = true
     },
     saveEdit() {
       this.dialogVisible = false
