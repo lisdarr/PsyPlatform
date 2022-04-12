@@ -47,7 +47,7 @@
         "ignoreUploadUnusedFiles": true
     },
     "compileType": "miniprogram",
-    "libVersion": "2.23.2",
+    "libVersion": "2.23.3",
     "appid": "wxf40baa13a7e927f7",
     "projectname": "uniapp-psy",
     "debugOptions": {

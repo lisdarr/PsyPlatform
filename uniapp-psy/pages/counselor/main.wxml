@@ -9,7 +9,7 @@
 <scroll-view class="scroll-container" enable-flex="true" scroll-y>
     <view class="sub-container">
         <view bindtap="toConsult" class="consultant-card" wx:for="{{Consultants}}" wx:key="item">
-            <image src="{{item.gender === '女' ? '/static/images/femal.png' : '/static/images/male.png'}}" alt class=".consultant-avatar"></image>
+            <image src="https://i03piccdn.sogoucdn.com/0354d6ffc3ecbe11" alt class=".consultant-avatar"></image>
             <view class="info">
                 <view class="firstRow">
                     <view class="consultant-name">{{item.userName}}

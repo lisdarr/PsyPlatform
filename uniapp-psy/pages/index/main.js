@@ -13,82 +13,91 @@ Page({
 
     "type": " ",
     historyConversation: [
-        {
-            startTime:"2021-11-17 16:23:23",
-            status:"",
-            counselor:{
-                gender:"男",
-                name:"gyy"
-            },
-            duration:"16:23:23",
-            evaluate:3,
+      {
+        startTime:"04-08 16:23",
+        status:"",
+        counselor:{
+          avatar: "../../static/images/male.png",
+          name:"gyy"
         },
-        {
-            startTime:"2021-11-17 16:23:23",
-            status:"WAITING",
-            counselor:{
-                gender:"女",
-                name:"cy"
-            },
-            duration:"34:23:34",
-            evaluate:4,
+        duration:"6:23",
+        evaluate:3,
+      },
+      {
+        startTime:"04-08 16:22",
+        status:"WAITING",
+        counselor:{
+          avatar: "../../static/images/femal.png",
+          name:"cy"
         },
-        {
-            startTime:"2021-11-17 16:23:23",
-            status:"WAITING",
-            counselor:{
-                gender:"女",
-                name:"wrc"
-            },
-            duration:"14:23:34",
-            evaluate:2,
+        duration:"4:23",
+        evaluate:4,
+      },
+      {
+        startTime:"04-07 15:21",
+        status:"WAITING",
+        counselor:{
+          avatar: "../../static/images/male.png",
+          name:"xsh"
         },
-        {
-            startTime:"2021-11-17 16:23:23",
-            status:"WAITING",
-            counselor:{
-                gender:"男",
-                name:"xsh"
-            },
-            duration:"14:23:34",
-            evaluate:4,
-        }
-    ]
+        duration:"3:23",
+        evaluate:1,
+      }
+    ],
+
+    friend: {
+      name: "王咨询师",
+      uuid: "consult1",
+      avatar: "https://i03piccdn.sogoucdn.com/0354d6ffc3ecbe11"
+    },
+    currentUser: {
+      uuid: "user1",
+      name: "cymm",
+      avatar: "/static/images/Avatar-1.png"
+    },
+    messages:[]
   },
-  // 事件处理函数
-  // bindViewTap() {
-  //   wx.navigateTo({
-  //     url: '../logs/logs'
-  //   })
-  // },
-  onLoad() {
+
+  onLoad: function(options) {
     if (wx.getUserProfile) {
       this.setData({
         canIUseGetUserProfile: true
       })
     }
   },
+
+  onShow: function(){
+    let model = getApp().globalData.model
+    if(model){
+      console.log("历史记录：", model)
+      var items = JSON.parse(model);
+      console.log("历史记录：",items)
+      var self = this
+      self.setData({
+        historyConversation:items,
+      });
+    }
+    else{
+      console.log("没有历史记录")
+    }
+  },
+
+
+  
+  
   getUserProfile(e) {
     wx.getUserProfile({
       desc: '展示用户信息', // 声明获取用户个人信息后的用途，后续会展示在弹窗中，请谨慎填写
       success: (res) => {
-        console.log(res)
         this.setData({
           userInfo: res.userInfo,
           hasUserInfo: true
         })
+        console.log(res.userInfo)
       }
     })
   },
 
-  // getPhoneNumber (e) {
-  //   this.setData({
-  //     userNumber: e.detail
-  //   })
-  //   // console.log(e.detail.errMsg)
-  //   // console.log(e.detail.iv)
-  //   // console.log(e.detail.encryptedData)
-  // }
   handleSwitch: function(){
     wx.switchTab({
       url: '/pages/informed_consent/main',

@@ -15,32 +15,12 @@ Page({
         // },
         Consultants:[
             {
-                gender:"女",
-                userName:"cy",
-                isConsulted:"咨询过",
-                rate:"3",
+                gender:"男",
+                userName:"王咨询师",
+                isConsulted:"",
+                rate:"3.4",
                 status:"空闲",
-            },
-            {
-                gender:"女",
-                userName:"cy",
-                isConsulted:"咨询过",
-                rate:"3",
-                status:"空闲",
-            },
-            {
-                gender:"女",
-                userName:"cy",
-                isConsulted:"咨询过",
-                rate:"3",
-                status:"空闲",
-            },
-            {
-                gender:"女",
-                userName:"cy",
-                isConsulted:"咨询过",
-                rate:"3",
-                status:"空闲",
+                icon:"https://i03piccdn.sogoucdn.com/0354d6ffc3ecbe11"
             }
         ],
     },

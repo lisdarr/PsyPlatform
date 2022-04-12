@@ -6,7 +6,7 @@
 	<view class="chat-box">
 		<view class="scroll-view">
 			<view class="header">
-				<i-card full title="咨询师" extra="计时" thumb="https://i.loli.net/2017/08/21/599a521472424.jpg">
+				<i-card full title="{{friend.name}}" extra="计时" thumb="{{friend.avatar}}">
 					<button slot="content" bindtap="evaluate" size="mini" type="primary">咨询完成</button>
 					<button slot="content" bindtap="sendRecord" size="mini">发送记录</button>
 				</i-card>
@@ -38,7 +38,7 @@
 						<image class="avatar" src="{{friend.avatar}}" />
 					</view>
 					<view class="avatar self-icon" wx:else>
-						<image class="avatar" src="{{currentUser.avatar}}" />
+						<open-data class="avatar" type="userAvatarUrl"></open-data>
 					</view>
 					<view class="content">
 						<image src="/static/images/pending.gif" class="pending" wx:if="{{message.status === 'new'}}"></image>
@@ -91,15 +91,15 @@
 			<!--更多-->
 			<view class="action-bottom" wx:if="{{more.show}}">
 				<view class="more-item" bindtap="sendImage">
-					<image class="image" src="../../../static/images/tupian.png"></image>
+					<image class="image" src="../../static/images/tupian.png"></image>
 					<text class="text">图片</text>
 				</view>
 				<view class="more-item" bindtap="sendVideo">
-					<image class="image" src="../../../static/images/shipin.png"></image>
+					<image class="image" src="../../static/images/shipin.png"></image>
 					<text class="text">视频</text>
 				</view>
 				<view class="more-item" bindtap="showCustomMessageForm">
-					<image class="image" src="../../../static/images/custom.png"></image>
+					<image class="image" src="../../static/images/custom.png"></image>
 					<text class="text">自定义消息</text>
 				</view>
 			</view>

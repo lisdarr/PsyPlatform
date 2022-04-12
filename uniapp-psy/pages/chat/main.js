@@ -31,8 +31,43 @@ Page({
 		name: "cymm",
 		avatar: "/static/images/Avatar-1.png"
 	},
+	avatarUrl:'',
 
 	messages: [],
+	historyMessages: [
+		{
+			startTime:"04-08 16:23",
+			status:"",
+			counselor:{
+				avatar: "../../static/images/male.png",
+				name:"gyy"
+			},
+			duration:"6:23",
+			evaluate:3,
+		},
+		{
+			startTime:"04-08 16:22",
+			status:"WAITING",
+			counselor:{
+				avatar: "../../static/images/femal.png",
+				name:"cy"
+			},
+			duration:"4:23",
+			evaluate:4,
+		},
+		{
+			startTime:"04-07 15:21",
+			status:"WAITING",
+			counselor:{
+				avatar: "../../static/images/male.png",
+				name:"xsh"
+			},
+			duration:"3:23",
+			evaluate:1,
+		}
+	],
+
+
 	//默认为false展示输入框, 为true时显示录音按钮
 	recordVisible: false,
 
@@ -74,15 +109,31 @@ Page({
 
 //点击评价的提交按钮结束本次会话
   submit(){
-    wx.switchTab({
-      url: '/pages/index/main',
-    })
     let that = this
     console.log("点击提交前，hiddenkey的值是",that.data.hiddenkey)
     that.setData({
       hiddenkey:true
-    })
-    console.log("点击提交后，hiddenkey的值是",that.data.hiddenkey)
+	})
+
+	let start = that.data.starIndex;
+	let index = that.data.historyMessages.length-1;
+	let list = that.data.historyMessages;
+	list[index].evaluate = start;
+
+	that.setData({
+		historyMessages:list
+	});
+
+	var model = JSON.stringify(that.data.historyMessages);
+	getApp().globalData.model = model;
+	wx.switchTab({
+		url: '/pages/index/main',
+	  })
+	
+	console.log(model)
+	console.log("点击提交后，starIndex的值是",start)
+	console.log(that.data.historyMessages[0])
+	
   },
 
   showEmoji(){
@@ -124,20 +175,34 @@ Page({
 	// let friendId = options.to; //咨询师id
 	let friendId = "consult1"
 	let service = app.globalData.service;
-	let currentUser = this.data.currentUser; //当前用户
 	let friend = {
 		name: "王咨询师",
 		uuid: "consult1",
-		avatar: "/static/images/Avatar-1.png"
+		avatar: "https://i03piccdn.sogoucdn.com/0354d6ffc3ecbe11"
 	}
+	
+	wx.getUserInfo({
+	  success:(res)=>{
+		console.log(res)
+		var avatar = res.userInfo.avatarUrl
+		this.setData({
+			avatarUrl: avatar
+		  })
+		console.log(123)
+	  }
+	})
+
+	let currentUser = this.data.currentUser; //当前用户
+	
 
 	this.setData({
 		friend: friend,
 		currentUser: currentUser
 	});
+
 	// 获取消息
 	let messages = service.getPrivateMessages(friendId);
-	console.log(messages)
+
 	// 渲染表情与消息间隔5分钟显示时间
 	this.renderMessages(messages);
 	this.scrollToBottom();
@@ -154,6 +219,7 @@ Page({
 			this.markPrivateMessageAsRead(friendId);
 		}
 	};
+
   },
 
   //新增
@@ -165,14 +231,14 @@ Page({
       let service = app.globalData.service;
       if(service){
         service.onNewPrivateMessageReceive = function () {};
-      }
+	  }
   },
 
   /**
    * 页面相关事件处理函数--监听用户下拉动作
    */
   //下拉加载历史记录
-  onPullDownRefresh () {
+    onPullDownRefresh () {
 		this.loadMoreHistoryMessage();
 	},
 
@@ -343,6 +409,27 @@ Page({
 				wx.stopPullDownRefresh();
 			}
 		});
+		
+		var stime = app.formatDate(lastMessageTimeStamp);
+		let a = {
+			startTime: stime,
+			status:"",
+			counselor:{
+				avatar: this.data.friend.avatar,
+				name: this.data.friend.name
+			},
+			duration:"34:23:34",
+			evaluate: 0,
+		};
+
+		let old = this.data.historyMessages;
+		old.push(a);
+
+		self.setData({
+			historyMessages: old
+		});
+
+		console.log(this.data.historyMessages)
 	},
     renderMessages(messages){
         messages.forEach((message,index)=>{

@@ -3,20 +3,20 @@ import GoEasy from './static/lib/goeasy-2.2.7.min';
 
 
 App({
-  // onLaunch() {
-  //   // 展示本地存储能力
-  //   const logs = wx.getStorageSync('logs') || []
-  //   logs.unshift(Date.now())
-  //   wx.setStorageSync('logs', logs)
+  data:{
+    model: null,
+  },
 
-  //   // 登录
-  //   // wx.login({
-  //   //   success: res => {
-  //   //     // 发送 res.code 到后台换取 openId, sessionKey, unionId
-  //   //   }
-  //   // })
-  // },
   onLaunch: function () {
+    const logs = wx.getStorageSync('logs') || []
+    logs.unshift(Date.now())
+    wx.setStorageSync('logs', logs)
+    wx.login({
+      success: res => {
+        // 发送 res.code 到后台换取 openId, sessionKey, unionId
+      }
+    })
+
     wx.goEasy = GoEasy.getInstance({
         host:'hangzhou.goeasy.io',//应用所在的区域地址: [hangzhou.goeasy.io, 新加坡暂不支持IM，敬请期待]
         appkey: 'BC-a9e0b1b27564446d942734742f8cbf07',// common key
@@ -33,6 +33,7 @@ App({
     const minute = date.getMinutes();
     return [month, day].map(this.formatNumber).join('-') + ' ' + [hour, minute].map(this.formatNumber).join(':');
   },
+
   formatNumber:function(n) {
     n = n.toString();
     return n[1] ? n : '0' + n;

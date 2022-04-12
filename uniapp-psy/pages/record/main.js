@@ -8,107 +8,51 @@ Page({
         "type": " ",
         historyConversation: [
             {
-                startTime:"2021-11-17 16:23:23",
+                startTime:"04-08 16:23",
                 status:"",
                 counselor:{
-                    gender:"男",
+                    avatar: "../../static/images/male.png",
                     name:"gyy"
                 },
-                duration:"16:23:23",
+                duration:"6:23",
                 evaluate:3,
             },
             {
-                startTime:"2021-11-17 16:23:23",
+                startTime:"04-08 16:22",
                 status:"WAITING",
                 counselor:{
-                    gender:"女",
+                    avatar: "../../static/images/femal.png",
                     name:"cy"
                 },
-                duration:"34:23:34",
+                duration:"4:23",
                 evaluate:4,
             },
             {
-                startTime:"2021-11-17 16:23:23",
+                startTime:"04-07 15:21",
                 status:"WAITING",
                 counselor:{
-                    gender:"女",
-                    name:"wrc"
-                },
-                duration:"14:23:34",
-                evaluate:2,
-            },
-            {
-                startTime:"2021-11-17 16:23:23",
-                status:"WAITING",
-                counselor:{
-                    gender:"男",
+                    avatar: "../../static/images/male.png",
                     name:"xsh"
                 },
-                duration:"14:23:34",
-                evaluate:4,
+                duration:"3:23",
+                evaluate:1,
             }
         ]
     },
 
-    /**
-     * 生命周期函数--监听页面加载
-     */
-    onLoad: function (options) {
-
-    },
-
-    handleScroll(){
-
-    },
-    handleRecord(){
-
-    },
-    /**
-     * 生命周期函数--监听页面初次渲染完成
-     */
-    onReady: function () {
-
-    },
-
-    /**
-     * 生命周期函数--监听页面显示
-     */
-    onShow: function () {
-
-    },
-
-    /**
-     * 生命周期函数--监听页面隐藏
-     */
-    onHide: function () {
-
-    },
-
-    /**
-     * 生命周期函数--监听页面卸载
-     */
-    onUnload: function () {
-
-    },
-
-    /**
-     * 页面相关事件处理函数--监听用户下拉动作
-     */
-    onPullDownRefresh: function () {
-
-    },
-
-    /**
-     * 页面上拉触底事件的处理函数
-     */
-    onReachBottom: function () {
-
-    },
-
-    /**
-     * 用户点击右上角分享
-     */
-    onShareAppMessage: function () {
-
-    }
+    onShow: function(){
+        let model = getApp().globalData.model
+        if(model){
+          console.log("历史记录：", model)
+          var items = JSON.parse(model);
+          console.log("历史记录：",items)
+          var self = this
+          self.setData({
+            historyConversation:items,
+          });
+        }
+        else{
+          console.log("没有历史记录")
+        }
+      }
 })
