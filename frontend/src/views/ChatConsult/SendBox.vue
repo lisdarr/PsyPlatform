@@ -3,19 +3,19 @@
     <div class="send-box-top">
       <el-button icon="el-icon-microphone" class="send-button-icon"/>
       <el-popover
-        v-model="emojiShow"
-        placement="top"
-        width="500"
-        height="700"
-        trigger="click"
+          v-model="emojiShow"
+          placement="top"
+          width="500"
+          height="700"
+          trigger="click"
       >
         <div class="browBox">
           <ul style="display: flex;flex-wrap: wrap;list-style: none;">
             <li
-              v-for="(item, index) in faceList"
-              :key="index"
-              style="cursor: pointer;width: 10%;font-size: 26px;text-align: center;list-style: none;"
-              @click="getBrow(index)"
+                v-for="(item, index) in faceList"
+                :key="index"
+                style="cursor: pointer;width: 10%;font-size: 26px;text-align: center;list-style: none;"
+                @click="getBrow(index)"
             >
               {{ item }}
             </li>
@@ -23,23 +23,25 @@
         </div>
         <el-button slot="reference" icon="emoji-icon" class="send-button-icon"/>
       </el-popover>
-      <el-button icon="el-icon-picture" class="send-button-icon"/>
+      <div class="file">
+        <el-button icon="el-icon-picture" @change="chooseImage" class="send-button-icon" size="40px"/>
+        <input type="file" @change="chooseImage">
+      </div>
       <el-button type="success" class="send-button-icon-send" :disabled="content == ''" @click="submitMessage">发送
       </el-button>
     </div>
     <el-input
-      v-model="content"
-      class="send-box-bottom"
-      placeholder="请输入内容"
-      type="textarea"
-      :rows="5"
-      @keyup.enter.native="submitMessage"
+        v-model="content"
+        class="send-box-bottom"
+        placeholder="请输入内容"
+        type="textarea"
+        :rows="5"
+        @keyup.enter.native="submitMessage"
     />
   </div>
 </template>
 
 <script>
-
 const appData = require('@/assets/emojis.json')
 export default {
   name: 'SendBox',
@@ -78,9 +80,9 @@ export default {
     getBrow(index) {
       console.log('用户选择表情')
       for (const i in this.faceList) {
-        if (index === i) {
-          console.log(this.getBrowString)
+        if (String(index) === i) {
           this.getBrowString = this.faceList[index]
+          console.log(this.getBrowString)
           this.content += this.getBrowString
         }
       }
@@ -88,7 +90,6 @@ export default {
     },
     submitMessage() {
       if (this.content.trim().length !== 0) {
-        // console.log(this.content)
         const textMessage = this.goEasy.im.createTextMessage({
           text: this.content,
           to: {
@@ -114,6 +115,12 @@ export default {
         this.history = this.service.getGroupMessages(toId)
       }
       this.history.push(message)
+      // console.log(this.history)
+      // if (toId === 'user1') {
+      //   this.$store.dispatch('history/setMessages', this.history)
+      //   const test = { 'messages in store:': this.$store.getters.synmessages }
+      //   console.log(test)
+      // }
       this.goEasy.im.sendMessage({
         message: message,
         onSuccess: function(message) {
@@ -123,9 +130,29 @@ export default {
           console.log('发送失败:', error)
         }
       })
+    },
+    chooseImage(e) {
+      const file = e.target.files[0]
+      const imageMessage = this.goEasy.im.createImageMessage({
+        to: {
+          id: this.to.uuid,
+          type: this.type,
+          data: {
+            name: this.to.name,
+            avatar: this.to.avatar
+          }
+        },
+        file: file,
+        onProgress: function(progress) {
+          console.log(progress)
+        }
+      })
+      this.sendMessage(imageMessage)
+      this.$emit('onSent')
     }
   }
 }
+
 </script>
 
 <style>

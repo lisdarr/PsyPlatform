@@ -223,25 +223,25 @@
         </el-form-item>
         <el-form-item label="周值班安排">
           <el-checkbox-group v-model="editform.schedule">
-            <el-checkbox label="周一"
+            <el-checkbox label="Mon"
               ><el-tag type="success">周一</el-tag></el-checkbox
             >
-            <el-checkbox label="周二"
+            <el-checkbox label="Tue"
               ><el-tag type="success">周二</el-tag></el-checkbox
             >
-            <el-checkbox label="周三"
+            <el-checkbox label="Wed"
               ><el-tag type="success">周三</el-tag></el-checkbox
             >
-            <el-checkbox label="周四"
+            <el-checkbox label="Thu"
               ><el-tag type="success">周四</el-tag></el-checkbox
             >
-            <el-checkbox label="周五"
+            <el-checkbox label="Fri"
               ><el-tag type="success">周五</el-tag></el-checkbox
             >
-            <el-checkbox label="周六"
+            <el-checkbox label="Sat"
               ><el-tag type="success">周六</el-tag></el-checkbox
             >
-            <el-checkbox label="周日"
+            <el-checkbox label="Sun"
               ><el-tag type="success">周日</el-tag></el-checkbox
             >
           </el-checkbox-group>
@@ -259,7 +259,7 @@
 </template>
 
 <script>
-import { monitorAdmin } from "@/api/admin";
+import { dir_edit, dir_info, dir_add } from "@/api/admin";
 
 export default {
   name: "monitorManage",
@@ -271,104 +271,7 @@ export default {
       limit: 7,
       total: 12,
       inputValue: "",
-      list: [
-        {
-          name: "督导1",
-          role: "督导",
-          consultant: "咨询师A、咨询师B、咨询师C",
-          sum: "256",
-          time: "34:12:50",
-          schedule: "周一、周三、周五",
-        },
-        {
-          name: "督导1",
-          role: "督导",
-          consultant: "咨询师A、咨询师B、咨询师C",
-          sum: "256",
-          time: "34:12:50",
-          schedule: "周一、周三、周五",
-        },
-        {
-          name: "督导1",
-          role: "督导",
-          consultant: "咨询师A、咨询师B、咨询师C",
-          sum: "256",
-          time: "34:12:50",
-          schedule: "周一、周三、周五",
-        },
-        {
-          name: "督导1",
-          role: "督导",
-          consultant: "咨询师A、咨询师B、咨询师C",
-          sum: "256",
-          time: "34:12:50",
-          schedule: "周一、周三、周五",
-        },
-        {
-          name: "督导1",
-          role: "督导",
-          consultant: "咨询师A、咨询师B、咨询师C",
-          sum: "256",
-          time: "34:12:50",
-          schedule: "周一、周三、周五",
-        },
-        {
-          name: "督导1",
-          role: "督导",
-          consultant: "咨询师A、咨询师B、咨询师C",
-          sum: "256",
-          time: "34:12:50",
-          schedule: "周一、周三、周五",
-        },
-        {
-          name: "督导1",
-          role: "督导",
-          consultant: "咨询师A、咨询师B、咨询师C",
-          sum: "256",
-          time: "34:12:50",
-          schedule: "周一、周三、周五",
-        },
-        {
-          name: "督导1",
-          role: "督导",
-          consultant: "咨询师A、咨询师B、咨询师C",
-          sum: "256",
-          time: "34:12:50",
-          schedule: "周一、周三、周五",
-        },
-        {
-          name: "督导1",
-          role: "督导",
-          consultant: "咨询师A、咨询师B、咨询师C",
-          sum: "256",
-          time: "34:12:50",
-          schedule: "周一、周三、周五",
-        },
-        {
-          name: "督导1",
-          role: "督导",
-          consultant: "咨询师A、咨询师B、咨询师C",
-          sum: "256",
-          time: "34:12:50",
-          schedule: "周一、周三、周五",
-        },
-        {
-          name: "督导1",
-          role: "督导",
-          consultant: "咨询师A、咨询师B、咨询师C",
-          sum: "256",
-          time: "34:12:50",
-          schedule: "周一、周三、周五",
-        },
-        {
-          name: "督导1",
-          role: "督导",
-          consultant: "咨询师A、咨询师B、咨询师C",
-          sum: "256",
-          time: "34:12:50",
-          schedule: "周一、周三、周五",
-        },
-      ],
+      list: "",
       isShowBtn: false,
       dialogFormVisible: false,
       dialogVisible: false,
@@ -390,16 +293,11 @@ export default {
         name: "",
         schedule: [],
       },
-      qualList: [
-        {
-          qualName: "qef",
-          qualId: "1",
-        },
-      ],
+      qualList: "",
     };
   },
   mounted() {
-    // this.init_List();
+    this.search();
   },
   methods: {
     handleSizeChange(val) {
@@ -408,26 +306,18 @@ export default {
     handleCurrentChange(val) {
       console.log(`当前页: ${val}`);
     },
-    // init_List(){
-    //   monitorAdmin(getToken())
-    //     .then((response) => {
-    //       that.list = response.list;
-    //       that.total = response.total;
-    //       that.qualList = response.qualList;
-    //     })
-    //     .catch((error) => {
-    //       console.log(error);
-    //     });
-    // },
     search() {
-      console.log("搜索");
+      // console.log("搜索");
       var that = this;
-      monitorAdmin({
+      dir_info({
         name: this.inputValue,
       })
         .then((response) => {
           that.list = response.list;
           that.total = response.total;
+          console.log(that.total)
+          that.qualList = response.qualList;
+          console.log(that.qualList)
         })
         .catch((error) => {
           console.log(error);
@@ -451,7 +341,6 @@ export default {
         qualId: "",
         certId: "",
       };
-      this.isShowBtn = false;
     },
     editMonitor(name) {
       this.dialogVisible = true;
@@ -459,34 +348,32 @@ export default {
         console.log("保存修改");
         this.dialogVisible = false;
         this.saveFlag = false;
-        // var that = this;
-        // consultantManage({
-        //   editform: this.editform,
-        //   name: name,
-        // })
-        //   .then(() => {
-        //     that.$message.success("修改成功！");
-        //     that.init_List();
-        //   })
-        //   .catch((error) => {
-        //     console.log(error);
-        //   });
+        var that = this;
+        dir_edit({
+          editform: this.editform,
+          name: name,
+        })
+          .then(() => {
+            that.$message.success("修改成功！");
+            that.init_List();
+          })
+          .catch((error) => {
+            console.log(error);
+          });
       }
     },
     saveAdd() {
       console.log("保存添加");
       this.dialogFormVisible = false;
-      // var that = this;
-      // monitorManage({
-      //   form: this.form,
-      // })
-      //   .then(() => {
-      //     that.$message.success("添加成功！");
-      //     that.init_List();
-      //   })
-      //   .catch((error) => {
-      //     console.log(error);
-      //   });
+      var that = this;
+      dir_add(this.form)
+        .then(() => {
+          that.$message.success("添加成功！");
+          that.init_List();
+        })
+        .catch((error) => {
+          console.log(error);
+        });
     },
   },
 };

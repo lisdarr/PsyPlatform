@@ -14,8 +14,8 @@
     </div>
     <div style="width: 30px; float: left; margin-top: 50px; margin-left: 10px">
       <el-button size="small" icon="el-icon-search" @click="search"
-        >搜索</el-button
-      >
+        >搜索
+      </el-button>
     </div>
     <el-table
       style="width: 100%; margin-left: 12px; padding-top: 15px; height = 400px"
@@ -77,9 +77,9 @@
       ></el-table-column>
       <el-table-column prop="operate" label="操作" align="center">
         <template slot-scope="scope">
-          <el-button type="danger" plain size="mini" @click="stopUse(scope.row)"
-            >禁用</el-button
-          >
+          <el-button type="danger" plain size="mini" @click="stopUse(scope.row.name)"
+            >禁用
+          </el-button>
         </template>
       </el-table-column>
     </el-table>
@@ -99,7 +99,7 @@
 </template>
 
 <script>
-import { userAdmin } from "@/api/admin";
+import { visitor_ban, visitor_info } from "@/api/admin";
 
 export default {
   name: "userManage",
@@ -109,144 +109,11 @@ export default {
       page: 1,
       limit: 7,
       total: 12,
-      list: [
-        {
-          name: "用户某某某",
-          gender: "女",
-          username: "oicw138aib47GasW",
-          phonenumber: "18362482284",
-          contact: "lucy",
-          contactnumber: "19362829173",
-          role: "访客",
-          date: "2022-3-15",
-          state: "正常",
-        },
-        {
-          name: "用户某某某",
-          gender: "女",
-          username: "oicw138aib47GasW",
-          phonenumber: "18362482284",
-          contact: "lucy",
-          contactnumber: "19362829173",
-          role: "访客",
-          date: "2022-3-15",
-          state: "正常",
-        },
-        {
-          name: "用户某某某",
-          gender: "女",
-          username: "oicw138aib47GasW",
-          phonenumber: "18362482284",
-          contact: "lucy",
-          contactnumber: "19362829173",
-          role: "访客",
-          date: "2022-3-15",
-          state: "正常",
-        },
-        {
-          name: "用户某某某",
-          gender: "女",
-          username: "oicw138aib47GasW",
-          phonenumber: "18362482284",
-          contact: "lucy",
-          contactnumber: "19362829173",
-          role: "访客",
-          date: "2022-3-15",
-          state: "正常",
-        },
-        {
-          name: "用户某某某",
-          gender: "女",
-          username: "oicw138aib47GasW",
-          phonenumber: "18362482284",
-          contact: "lucy",
-          contactnumber: "19362829173",
-          role: "访客",
-          date: "2022-3-15",
-          state: "正常",
-        },
-        {
-          name: "用户某某某",
-          gender: "女",
-          username: "oicw138aib47GasW",
-          phonenumber: "18362482284",
-          contact: "lucy",
-          contactnumber: "19362829173",
-          role: "访客",
-          date: "2022-3-15",
-          state: "正常",
-        },
-        {
-          name: "用户某某某",
-          gender: "女",
-          username: "oicw138aib47GasW",
-          phonenumber: "18362482284",
-          contact: "lucy",
-          contactnumber: "19362829173",
-          role: "访客",
-          date: "2022-3-15",
-          state: "正常",
-        },
-        {
-          name: "用户某某某",
-          gender: "女",
-          username: "oicw138aib47GasW",
-          phonenumber: "18362482284",
-          contact: "lucy",
-          contactnumber: "19362829173",
-          role: "访客",
-          date: "2022-3-15",
-          state: "正常",
-        },
-        {
-          name: "用户某某某",
-          gender: "女",
-          username: "oicw138aib47GasW",
-          phonenumber: "18362482284",
-          contact: "lucy",
-          contactnumber: "19362829173",
-          role: "访客",
-          date: "2022-3-15",
-          state: "正常",
-        },
-        {
-          name: "用户某某某",
-          gender: "女",
-          username: "oicw138aib47GasW",
-          phonenumber: "18362482284",
-          contact: "lucy",
-          contactnumber: "19362829173",
-          role: "访客",
-          date: "2022-3-15",
-          state: "正常",
-        },
-        {
-          name: "用户某某某",
-          gender: "女",
-          username: "oicw138aib47GasW",
-          phonenumber: "18362482284",
-          contact: "lucy",
-          contactnumber: "19362829173",
-          role: "访客",
-          date: "2022-3-15",
-          state: "正常",
-        },
-        {
-          name: "用户某某某",
-          gender: "女",
-          username: "oicw138aib47GasW",
-          phonenumber: "18362482284",
-          contact: "lucy",
-          contactnumber: "19362829173",
-          role: "访客",
-          date: "2022-3-15",
-          state: "正常",
-        },
-      ],
+      list: "",
     };
   },
   mounted() {
-    // this.init_List();
+    this.search();
   },
   methods: {
     handleSizeChange(val) {
@@ -255,20 +122,9 @@ export default {
     handleCurrentChange(val) {
       console.log(`当前页: ${val}`);
     },
-    // init_List(){
-    //   userAdmin(getToken())
-    //     .then((response) => {
-    //       that.list = response.list;
-    //       that.total = response.total;
-    //     })
-    //     .catch((error) => {
-    //       console.log(error);
-    //     });
-    // },
     search() {
-      console.log("搜索");
       var that = this;
-      userAdmin({
+      visitor_info({
         name: this.inputValue,
       })
         .then((response) => {
@@ -279,29 +135,33 @@ export default {
           console.log(error);
         });
     },
-    stopUse(row) {
+    stopUse(name) {
       this.$confirm("确定永久禁用该账号吗?", "提示", {
         confirmButtonText: "确定",
         cancelButtonText: "取消",
         type: "warning",
       })
         .then(() => {
-          // userAdmin({
-          //   name: this.row.name,
-          // })
-          // .then(() => {
-          //   row.state = "异常";
-          this.$message({
-            type: "success",
-            message: "已禁用!",
-          });
-          // })         
+          visitor_ban({
+            name: name,
+          })
+            .then(() => {
+              this.search();
+              this.$message({
+                type: "success",
+                message: "已禁用!",
+              });
+            })
+            .catch((error) => {
+              console.log(error);
+            });
         })
-        .catch(() => {
+        .catch((error) => {
           this.$message({
             type: "info",
             message: "已取消操作",
           });
+          console.log(error);
         });
     },
   },

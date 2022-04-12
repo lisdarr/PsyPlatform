@@ -41,7 +41,9 @@ router.beforeEach(async(to, from, next) => {
           // console.log(roles)
           // generate accessible routes map based on role
           // 筛选用户可以看见的路由
+          // console.log(roles.role)
           const accessRoutes = await store.dispatch('permission/generateRoutes', roles.role)
+          // console.log(accessRoutes)
           // dynamically add accessible routes
           // 更新加载路由
           router.options.routes = constantRoutes.concat(accessRoutes)

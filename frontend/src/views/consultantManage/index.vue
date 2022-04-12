@@ -1,6 +1,6 @@
 <template>
   <div>
-    <div inline = "true">
+    <div inline="true">
       <div
         style="width: 200px; float: left; margin-top: 20px; margin-left: 20px"
       >
@@ -15,12 +15,16 @@
           placeholder="请输入姓名进行搜索"
         />
       </div>
-      <div style="width: 30px;float: left;margin-top: 50px;margin-left: 10px;">
-        <el-button size="small" icon="el-icon-search" @click="search">搜索</el-button>
+      <div
+        style="width: 30px; float: left; margin-top: 50px; margin-left: 10px"
+      >
+        <el-button size="small" icon="el-icon-search" @click="search"
+        >搜索
+        </el-button>
       </div>
       <div class="addbtn">
         <el-button type="primary" @click="addConsultant" size="small"
-          >新增咨询师
+        >新增咨询师
         </el-button>
       </div>
     </div>
@@ -64,7 +68,8 @@
         label="平均咨询评级"
         width="180px"
         align="center"
-        ><template slot-scope="scope">
+      >
+        <template slot-scope="scope">
           <el-rate
             v-model="scope.row.rate"
             :allow-half="true"
@@ -86,9 +91,9 @@
             plain
             icon="el-icon-edit"
             size="mini"
-            @click="editConsultant"
-            >修改</el-button
-          >
+            @click="editConsultant(scope.row)"
+          >修改
+          </el-button>
         </template>
       </el-table-column>
     </el-table>
@@ -108,8 +113,8 @@
     <!-- 新增咨询师 -->
     <el-dialog title="新增咨询师" :visible.sync="dialogFormVisible">
       <el-form :model="form" inline="true" label-width="90px" size="small">
-        <el-form-item label="姓名"
-          ><el-input
+        <el-form-item label="姓名">
+          <el-input
             v-model="form.name"
             placeholder="请输入姓名"
             autocomplete="off"
@@ -123,13 +128,13 @@
         </el-form-item>
       </el-form>
       <el-form :model="form" inline="true" label-width="90px" size="small">
-        <el-form-item label="年龄"
-          ><el-input
+        <el-form-item label="年龄">
+          <el-input
             v-model="form.age"
             placeholder="请输入年龄"
             autocomplete="off"
-          ></el-input
-        ></el-form-item>
+          ></el-input>
+        </el-form-item>
         <el-form-item label="身份证号码">
           <el-input
             v-model="form.idNumber"
@@ -160,7 +165,7 @@
             <el-option
               v-for="item in monitorList"
               :key="item.monitorId"
-              :label="item.monitorName"
+              :label="item.name"
               :value="item.monitorId"
             ></el-option>
           </el-select>
@@ -209,9 +214,11 @@
       </el-form>
       <div slot="footer" class="dialog-footer">
         <el-button @click="dialogFormVisible = false" size="small"
-          >取 消</el-button
-        >
-        <el-button type="primary" @click="saveAdd" size="small">确 定</el-button>
+        >取 消
+        </el-button>
+        <el-button type="primary" @click="saveAdd" size="small"
+        >确 定
+        </el-button>
       </div>
     </el-dialog>
 
@@ -235,272 +242,173 @@
       <el-form :model="editform" label-width="90px" size="small">
         <el-form-item label="周值班安排">
           <el-checkbox-group v-model="editform.schedule">
-            <el-checkbox label="周一"><el-tag type="success">周一</el-tag></el-checkbox>
-            <el-checkbox label="周二"><el-tag type="success">周二</el-tag></el-checkbox>
-            <el-checkbox label="周三" name="schedule"><el-tag type="success">周三</el-tag></el-checkbox>
-            <el-checkbox label="周四" name="schedule"><el-tag type="success">周四</el-tag></el-checkbox>
-            <el-checkbox label="周五" name="schedule"><el-tag type="success">周五</el-tag></el-checkbox>
-            <el-checkbox label="周六" name="schedule"><el-tag type="success">周六</el-tag></el-checkbox>
-            <el-checkbox label="周日" name="schedule"><el-tag type="success">周日</el-tag></el-checkbox>
+            <el-checkbox
+              v-for="(item, index) in totalWeek"
+              :label="item.name"
+              :key="index"
+            >{{ item.name }}
+            </el-checkbox
+            >
+            <!-- <el-checkbox label="Mon"
+            >
+              <el-tag type="success">周一</el-tag>
+            </el-checkbox
+            >
+            <el-checkbox label="Tue"
+            >
+              <el-tag type="success">周二</el-tag>
+            </el-checkbox
+            >
+            <el-checkbox label="Wed" name="schedule"
+            >
+              <el-tag type="success">周三</el-tag>
+            </el-checkbox
+            >
+            <el-checkbox label="Thu" name="schedule"
+            >
+              <el-tag type="success">周四</el-tag>
+            </el-checkbox
+            >
+            <el-checkbox label="Fri" name="schedule"
+            >
+              <el-tag type="success">周五</el-tag>
+            </el-checkbox
+            >
+            <el-checkbox label="Sat" name="schedule"
+            >
+              <el-tag type="success">周六</el-tag>
+            </el-checkbox
+            >
+            <el-checkbox label="Sun" name="schedule"
+            >
+              <el-tag type="success">周日</el-tag>
+            </el-checkbox
+            > -->
           </el-checkbox-group>
         </el-form-item>
       </el-form>
 
       <div slot="footer">
         <el-button @click="dialogVisible = false" size="small">取 消</el-button>
-        <el-button type="primary" @click="saveFlag = true" size="small"
-          >确 定</el-button
-        >
+        <el-button type="primary" @click="saveEdit" size="small"
+        >确 定
+        </el-button>
       </div>
     </el-dialog>
   </div>
 </template>
 
 <script>
-import {consultantAdmin} from '@/api/admin'
+import { con_add, con_edit, con_info } from '@/api/admin'
+import qs from 'qs'
 
 export default {
-  name: "consultantManage",
+  name: 'consultantManage',
   data() {
     return {
-      flag: "false",
-      saveFlag: false,
+      totalWeek: [
+        { name: 'Mon' },
+        { name: 'Tue' },
+        { name: 'Wed' },
+        { name: 'Thu' },
+        { name: 'Fri' },
+        { name: 'Sat' },
+        { name: 'Sun' }
+      ],
+      flag: 'false',
       page: 1,
       limit: 7,
       total: 12,
-      inputValue: "",
+      inputValue: '',
       dataValue: '',
-      list: [
-        {
-          name: "咨询师A",
-          role: "咨询师",
-          monitor: "督导1",
-          sum: 128,
-          time: "34:12:50",
-          rate: 3,
-          schedule: "周一、周三、周五",
-        },
-        {
-          name: "咨询师A",
-          role: "咨询师",
-          monitor: "督导1",
-          sum: 128,
-          time: "34:12:50",
-          rate: 3,
-          schedule: "周一、周三、周五",
-        },
-        {
-          name: "咨询师A",
-          role: "咨询师",
-          monitor: "督导1",
-          sum: 128,
-          time: "34:12:50",
-          rate: 3,
-          schedule: "周一、周三、周五",
-        },
-        {
-          name: "咨询师A",
-          role: "咨询师",
-          monitor: "督导1",
-          sum: 128,
-          time: "34:12:50",
-          rate: 3,
-          schedule: "周一、周三、周五",
-        },
-        {
-          name: "咨询师A",
-          role: "咨询师",
-          monitor: "督导1",
-          sum: 128,
-          time: "34:12:50",
-          rate: 3,
-          schedule: "周一、周三、周五",
-        },
-        {
-          name: "咨询师A",
-          role: "咨询师",
-          monitor: "督导1",
-          sum: 128,
-          time: "34:12:50",
-          rate: 3,
-          schedule: "周一、周三、周五",
-        },
-        {
-          name: "咨询师A",
-          role: "咨询师",
-          monitor: "督导1",
-          sum: 128,
-          time: "34:12:50",
-          rate: 3,
-          schedule: "周一、周三、周五",
-        },
-        {
-          name: "咨询师A",
-          role: "咨询师",
-          monitor: "督导1",
-          sum: 128,
-          time: "34:12:50",
-          rate: 3,
-          schedule: "周一、周三、周五",
-        },
-        {
-          name: "咨询师A",
-          role: "咨询师",
-          monitor: "督导1",
-          sum: 128,
-          time: "34:12:50",
-          rate: 3,
-          schedule: "周一、周三、周五",
-        },
-        {
-          name: "咨询师A",
-          role: "咨询师",
-          monitor: "督导1",
-          sum: 128,
-          time: "34:12:50",
-          rate: 3,
-          schedule: "周一、周三、周五",
-        },
-        {
-          name: "咨询师A",
-          role: "咨询师",
-          monitor: "督导1",
-          sum: 128,
-          time: "34:12:50",
-          rate: 3,
-          schedule: "周一、周三、周五",
-        },
-        {
-          name: "咨询师A",
-          role: "咨询师",
-          monitor: "督导1",
-          sum: 128,
-          time: "34:12:50",
-          rate: 3,
-          schedule: "周一、周三、周五",
-        },
-      ],
-      isShowBtn: false,
+      list: [],
       dialogFormVisible: false,
       dialogVisible: false,
       form: {
-        name: "",
-        gender: "",
-        age: "",
-        idNumber: "",
-        phone: "",
-        email: "",
-        monitorId: "",
-        userName: "",
-        pwd: "",
-        company: "",
-        rank: "",
+        name: '',
+        gender: '',
+        age: '',
+        idNumber: '',
+        phone: '',
+        email: '',
+        monitorId: '',
+        userName: '',
+        pwd: '',
+        company: '',
+        rank: ''
       },
       editform: {
-        name: "",
-        monitor: "",
-        schedule: [],
+        id: '',
+        name: '',
+        monitor: '',
+        schedule: []
       },
       // 选择督导框
-      monitorList: [
-          {
-            monitorName:"督导A",
-            monitorId:1,
-          },
-          {
-            monitorName:"督导B",
-            monitorId:2,
-          }
-        ],
-    };
+      monitorList: ''
+    }
   },
 
   mounted() {
-    // this.init_List();
+    this.search()
   },
   methods: {
     handleSizeChange(val) {
-      console.log(`每页 ${val} 条`);
+      console.log(`每页 ${val} 条`)
     },
     handleCurrentChange(val) {
-      console.log(`当前页: ${val}`);
+      console.log(`当前页: ${val}`)
     },
-    // init_List(){
-    //   consultantAdmin(getToken())
-    //     .then((response) => {
-    //       that.list = response.list;
-    //       that.total = response.total;
-    //     })
-    //     .catch((error) => {
-    //       console.log(error);
-    //     });
-    // },
-    search(){
+    search() {
       console.log('搜索')
       var that = this
-      consultantAdmin({
-        name: this.inputValue,
-      }).then((response) => {
-        that.list = response.list
-        that.total = response.total
-      }).catch((error) => {
-        console.log(error)
-      })
+      con_info({ name: this.inputValue })
+        .then((response) => {
+          that.list = response.list
+          that.total = response.total
+          that.monitorList = response.monitorList
+        })
+        .catch((error) => {
+          console.log(error)
+        })
     },
     addConsultant() {
-      this.dialogFormVisible = true;
-      this.form = {
-        name: "",
-        gender: "",
-        age: "",
-        idNumber: "",
-        phone: "",
-        email: "",
-        monitorId: "",
-        userName: "",
-        pwd: "",
-        company: "",
-        rank: "",
-      };
-      this.isShowBtn = false;
+      this.dialogFormVisible = true
     },
-    editConsultant(name) {
-      this.dialogVisible = true;
-      if ((this.saveFlag = true)) {
-        console.log("保存修改");
-        this.dialogVisible = false;
-        this.saveFlag = false;
-      // var that = this;
-      // consultantManage({
-      //   editform: this.editform,
-      //   name: name
-      // })
-      //   .then(() => {
-      //     that.$message.success("修改成功！");
-      //     that.init_List();
-      //   })
-      //   .catch((error) => {
-      //     console.log(error);
-      //   });
-      }
+    editConsultant(row) {
+      this.editform.id = row.id
+      this.dialogVisible = true
     },
-    saveAdd(){
-      console.log("保存添加");
-      this.dialogFormVisible = false;
-      // var that = this;
-      // consultantManage({
-      //   form: this.form,
-      // })
-      //   .then(() => {
-      //     that.$message.success("添加成功！");
-      //     that.init_List();
-      //   })
-      //   .catch((error) => {
-      //     console.log(error);
-      //   });
+    saveEdit() {
+      this.dialogVisible = false
+      var that = this
+      // 所有的list类型的都要进行这个格式转换，否则后端取值异常
+      this.editform.schedule = qs.stringify(this.editform.schedule, { arrayFormat: 'indices' })
+      con_edit(this.editform)
+        .then(() => {
+          that.$message.success('修改成功！')
+          that.search()
+        })
+        .catch((error) => {
+          console.log(error)
+        })
     },
-  },
-};
+
+    saveAdd() {
+      console.log('保存添加')
+      this.dialogFormVisible = false
+      var that = this
+      console.log(typeof this.form)
+      con_add(this.form)
+        .then(() => {
+          that.$message.success('添加成功！')
+          that.search()
+        })
+        .catch((error) => {
+          console.log(error)
+        })
+    }
+  }
+}
 </script>
 
 <style>

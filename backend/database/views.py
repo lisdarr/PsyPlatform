@@ -60,11 +60,12 @@ def checkUser(username, password):
 
 
 def getDashboardConsultant(token):
+    print(token)
     try:
+        Consultant.objects.get(u_ticket=token)
         user_info = Consultant.objects.get(u_ticket=token)
     except Consultant.DoesNotExist:
         return '', 'Consultant err'
-
     try:
         today_info = ConToday.objects.get(con_id=user_info.con_id)
     except ConToday.DoesNotExist:
@@ -106,7 +107,7 @@ def getDashboardConsultant(token):
         'squareUrl': user_info.icon,
         'consultNum': user_info.totel_num,
         'consultTodayNum': today_info.today_num,
-        'consultTodayTime': today_info.today_dur,
+        'consultTodayTime': convert.timeChange(today_info.today_dur),
         'callNum': today_info.now_num,
         'calendar': calendar,
     }
@@ -162,7 +163,7 @@ def getDashboardDirector(token):
     list = []
     for consult in consults:
         try:
-            today = ConToday.objects.get(con_id=consult.con_id)
+            today = ConToday.objects.get(con_id=consult.con_id, state=1)
             data = {
                 'name': consult.username,
                 'state': today.state
@@ -276,29 +277,29 @@ def getConsultantManage(username):
     if consults.count() == 0:
         return '', 'Consultant: Not Exist!'
     for consult in consults:
-        records = ConDirRecord.objects.filter(con_id=consult.con_id)
-        monitor_list = []
-        for r in records:
-            if r.dir_id in monitor_list:
-                continue
-            monitor_list.append(r.dir_id)
-            monitor = Director.objects.get(dir_id=r.dir_id).username
-            sches = ConSchedule.objects.filter(con_id=consult.con_id)
-            weekday = ''
-            for sche in sches:
-                weekday += sche.weekday
+        monitor = Director.objects.get(dir_id=consult.dir_id).username
+        sches = ConSchedule.objects.filter(con_id=consult.con_id)
+        weekday = []
+        for sche in sches:
+            weekday.append(sche.weekday)
+        if consult.totel_dur is None:
+            dur = 0
+        else:
+            dur = consult.totel_dur
 
-            data = {
-                'name': consult.username,
-                'monitor': monitor,
-                'sum': consult.totel_num,
-                'time': convert.timeChange(consult.totel_dur),
-                'rate': consult.av_score,
-                'schedule': weekday
-            }
-            list.append(data)
+        data = {
+            'id': consult.con_id,
+            'name': consult.username,
+            'monitor': monitor,
+            'sum': consult.totel_num,
+            'time': convert.timeChange(dur),
+            'rate': consult.av_score,
+            'schedule': ",".join(weekday)
+        }
+        list.append(data)
+    monitorList = getDirectorList()
 
-    return list, ''
+    return list, monitorList, ''
 
 
 def getMonitorAdmin(name):
@@ -307,6 +308,7 @@ def getMonitorAdmin(name):
     else:
         directors = Director.objects.filter(username=name)
     list = []
+    qualList = []
     if directors.count() == 0:
         return []
     for director in directors:
@@ -323,17 +325,22 @@ def getMonitorAdmin(name):
             weekday += sche.weekday
         sum = director.qualnum
         time = director.duration
-
+        qual = {
+            "qualName": director.qual,
+            "qualId": director.qualnum
+        }
         data = {
+            'id': director.dir_id,
             'name': director.username,
             'consultant': consol,
             'sum': sum,
             'time': convert.timeChange(time),
             'schedule': weekday
         }
+        qualList.append(qual)
         list.append(data)
 
-    return list
+    return list, qualList
 
 
 def getUserAdmin(username):
@@ -508,14 +515,9 @@ def getDirectorList():
 
     directorList = []
     for dirctor in dirctors:
-        try:
-            state = DirToday.objects.get(dir_id=dirctor.dir_id).state
-        except DirToday.DoesNotExist:
-            state = 'NULL'
-
         data = {
             'name': dirctor.username,
-            'state': state
+            'monitorId': dirctor.dir_id
         }
 
         directorList.append(data)
@@ -531,13 +533,9 @@ def getConsultantList():
 
     consultantList = []
     for consultant in consultants:
-        try:
-            state = ConToday.objects.get(con_id=consultant.con_id).state
-        except:
-            state = 0
         data = {
             'name': consultant.username,
-            'state': state
+            'consultantId': consultant.con_id
         }
         consultantList.append(data)
 
@@ -641,6 +639,7 @@ def addConsultantShcedule(addForm):
 
 
 def addConsultantItem(form):
+    print(form)
     name = form["name"]
     gender = form["gender"]
     age = form["age"]
@@ -656,19 +655,20 @@ def addConsultantItem(form):
     Consultant.objects.create(name=name, sex=gender, age=age,
                               identity=identity, tele=phone, email=email,
                               dir_id=dir_id, username=username, password=password,
-                              unit=company, title=title)
+                              unit=company, title=title, totel_num=0, totel_dur=0, av_score=0)
 
 
-def editConsultantItem(form, name):
+def editConsultantItem(form):
     editName = form['name']
     dir_id = form['monitor']
     schedules = form['schedule']
-    scheduleList = schedules.split(",")
+    print(schedules)
+    scheduleList = schedules.split("&")
+    con_id = form['id']
     err1 = ''
     err2 = ''
-
     try:
-        consultant = Consultant.objects.get(username=name)
+        consultant = Consultant.objects.get(con_id=con_id)
         if editName != '':
             consultant.username = editName
 
@@ -681,7 +681,9 @@ def editConsultantItem(form, name):
         except ConSchedule.DoesNotExist:
             err1 = "This is the first time to set its schedule."
         for sche in scheduleList:
-            ConSchedule.objects.create(con_id=consultant.con_id, weekday=sche)
+            day = sche.split("=")
+            print(day)
+            ConSchedule.objects.create(con_id=consultant.con_id, weekday=day[1])
     except Consultant.DoesNotExist:
         err2 = "No such consultant please register first"
 
@@ -708,14 +710,15 @@ def addDirectorItem(form):
                             number=0, duration=0)
 
 
-def editDirectorItem(form, name):
+def editDirectorItem(form):
     editName = form['name']
     schedules = form['schedule']
-    scheduleList = schedules.split(",")
+    scheduleList = schedules.split("&")
+    dir_id = form['id']
     msg = ''
 
     try:
-        director = Director.objects.get(username=name)
+        director = Director.objects.get(dir_id=dir_id)
         if editName != '':
             director.username = editName
 
@@ -727,7 +730,8 @@ def editDirectorItem(form, name):
             msg = 'This is the first time to set the schedule of director.'
 
         for schedule in scheduleList:
-            DirSchedule.objects.create(dir_id=director.dir_id, weekday=schedule)
+            day = schedule.split("=")
+            DirSchedule.objects.create(dir_id=director.dir_id, weekday=day[1])
 
         return msg, ''
     except Director.DoesNotExist:

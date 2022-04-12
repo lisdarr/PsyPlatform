@@ -1,79 +1,145 @@
 <template>
-  <div>
-    <div
-      style="border: #304156; width: 10%;height: 700px; border-style: solid; margin-top: 20px; margin-left: 20px; float: left"
-    >
-      <!--      需要监听通信列表-->
-      <div
-        v-for="(conversation, index) in conversations"
-        :key="index"
-        class="userList"
-        :class=" {active:index===findIndex} "
-        @click="navigateToChat(index, conversation)"
-      >
-        <div style="float: left;margin-left: 5px;margin-top: 5px">
-          <el-avatar shape="circle" :size="50" :src="conversation.avatar"/>
-        </div>
-        <div style="float: left; color: white;margin-top:18px;margin-left: 5px">
-          {{ conversation.name }}
-        </div>
+  <div class="root-style">
+    <!--      监听到没有conversations的时候，显示默认背景图-->
+    <div v-if="!this.conversations.length">
+      <div style="text-align: center; padding-top: 100px">
+        <img src="~@/assets/chat.png" width="300">
+        <p>努力做好每一次咨询!</p>
+      </div>
+    </div>
+    <!--      监听到有conversations的时候，显示会话列表-->
+    <div v-else>
+      <!--      会话列表-->
+      <div class="conversations">
         <div
-          v-if="conversation.unread"
-          style="float: left; color: white; background-color: red; border-radius: 50%; width: 17px; height: 17px; text-align: center; margin-top: 1px"
+          v-for="(conversation, index) in conversations"
+          :key="index"
+          class="userList"
+          :class=" {active:index===findIndex} "
+          @click="navigateToChat(index, conversation)"
         >
-          {{ conversation.unread }}
-        </div>
-      </div>
-
-    </div>
-    <div
-      style="border: #304156; width: 20%;height: 700px; border-style: solid; border-left-style: none; margin-top: 20px; float: left;background-color: #304156; color: white"
-    >
-      <div class="el-icon-phone-outline" style="font-size: 50px; float: left;margin-top: 20px"/>
-      <div style="margin-top: 40px; margin-left: 70px; font-weight: bold; font-size: 20px">正在咨询中...</div>
-      <div style="margin-top: 60px; margin-left: 5px; font-weight: bold; font-size: 20px">已咨询时间：</div>
-      <div style="margin-top: 30px; font-size: 50px; margin-left: 70px">{{ consultTime }}</div>
-      <div style="margin-top: 310px; margin-left: 20px">
-        <el-link style="font-size: 35px;padding-left: 30px">
-          请求督导
-        </el-link>
-      </div>
-      <el-divider/>
-      <div style="margin-left: 20px">
-        <el-link style="font-size: 35px;padding-left: 30px">
-          结束咨询
-        </el-link>
-      </div>
-    </div>
-    <div
-      style="border: #304156; width: 60%;height: 700px; border-style: solid; border-left-style: none; margin-top: 20px; float: left;"
-    >
-      <div class="message-container">
-        <div class="scroll-view" ref="scrollView">
-          <div v-for="(message, index) in messages" :key="index">
-            <div
-              v-if="index === 0 || messages[index].timestamp - messages[index-1].timestamp > 5 * 60 * 1000"
-              class="time-lag"
-            >
-              {{ formatDate(message.timestamp) }}
-            </div>
-            <ChatMessage
-              :message="message"
-              :to="friend"
-              :current-user="currentUser"
-              :type="type"
-              @showImageFullScreen="showImageFullScreen"
-            />
+          <div style="float: left;margin-left: 5px;margin-top: 5px">
+            <el-avatar shape="circle" :size="50" :src="conversation.data.avatar"/>
+          </div>
+          <div style="float: left; color: white;margin-top:18px;margin-left: 5px">
+            {{ conversation.data.name }}
+          </div>
+          <div
+            v-if="conversation.unread"
+            style="float: left; color: white; background-color: red; border-radius: 50%; width: 17px; height: 17px; text-align: center; margin-top: 1px"
+          >
+            {{ conversation.unread }}
           </div>
         </div>
-        <send-box :to="friend" :type="type" @onSent="scrollToBottom"/>
-        <!--      放大查看图片-->
-        <!--        <div>-->
-        <!--          <img src="image.url" alt="[图片]">-->
-        <!--        </div>-->
       </div>
-      <!--      接收消息区：12-18 ，根据{{ this.$route.query.id }}-->
-      <!--      chatmessage区：输入框和发送部分-->
+      <div class="single-conversation">
+        <div v-if="!this.$route.query.id">
+          <div style="text-align: center; padding-top: 100px">
+            <img src="~@/assets/chat.png" width="300">
+            <p>努力做好每一次咨询!</p>
+          </div>
+        </div>
+        <div v-else>
+          <div class="timer">
+            <div class="el-icon-phone-outline" style="font-size: 50px; float: left;margin-top: 20px"/>
+            <div style="margin-top: 40px; margin-left: 70px; font-weight: bold; font-size: 20px">正在咨询中...</div>
+            <div style="margin-top: 60px; margin-left: 5px; font-weight: bold; font-size: 20px">已咨询时间：</div>
+            <div style="margin-top: 30px; font-size: 45px; margin-left: 20px">{{
+                this.consultTime[this.$route.query.id]
+              }}
+            </div>
+            <div style="margin-top: 290px; margin-left: 20px">
+              <el-button
+                type="text"
+                style="font-size: 25px;padding-left: 10px"
+              >
+                请求督导中...
+              </el-button>
+            </div>
+            <el-divider/>
+            <div style="margin-left: 20px">
+              <el-button
+                type="text"
+                style="font-size: 35px;padding-left: 15px"
+                @click="dialogFormVisible = true"
+              >
+                结束咨询
+              </el-button>
+              <el-dialog title="本次咨询已结束，请您填写评价" :visible.sync="dialogFormVisible" width="400px">
+                <el-form ref="form" :model="form" :rules="rules">
+                  <el-form-item label="咨询类型" :label-width="formLabelWidth">
+                    <el-select v-model="form.type" placeholder="请选择咨询类型">
+                      <el-option label="类型1" value="类型1"/>
+                      <el-option label="类型2" value="类型2"/>
+                    </el-select>
+                  </el-form-item>
+                  <el-form-item label="评价" :label-width="formLabelWidth">
+                    <el-input
+                      v-model="form.content"
+                      autocomplete="off"
+                      type="textarea"
+                      :rows="3"
+                      placeholder="请输入评价内容"
+                    />
+                  </el-form-item>
+                </el-form>
+                <div slot="footer" class="dialog-footer">
+                  <el-button @click="dialogFormVisible = false">点错了，继续咨询</el-button>
+                  <el-button type="primary" @click="removeConversation('form')">确 定</el-button>
+                </div>
+              </el-dialog>
+            </div>
+          </div>
+          <div class="dir-chat-space">
+            <div class="message-container">
+              <div ref="scrollView" class="scroll-view">
+                <div v-for="(message, index) in messages" :key="index">
+                  <div
+                    v-if="index === 0 || messages[index].timestamp - messages[index-1].timestamp > 5 * 60 * 1000"
+                    class="time-lag"
+                  >
+                    {{ formatDate(message.timestamp) }}
+                  </div>
+                  <ChatMessage
+                    :message="message"
+                    :to="friend"
+                    :current-user="currentUser"
+                    :type="type"
+                    @showImageFullScreen="showImageFullScreen"
+                  />
+                </div>
+              </div>
+              <send-box :to="friend" :type="type" @onSent="scrollToBottom"/>
+              <!--      放大查看图片-->
+              <!--        <div>-->
+              <!--          <img src="image.url" alt="[图片]">-->
+              <!--        </div>-->
+            </div>
+          </div>
+          <!--          右侧消息同步区-->
+          <div class="syn-chat-space">
+            <div class="message-container">
+              <div ref="scrollViewside" class="scroll-view-side">
+                <div v-for="(message, index) in synchat" :key="index">
+                  <div
+                    v-if="index === 0 || synchat[index].timestamp - synchat[index-1].timestamp > 5 * 60 * 1000"
+                    class="time-lag"
+                  >
+                    {{ formatDate(message.timestamp) }}
+                  </div>
+                  <ChatMessage
+                    :message="message"
+                    :to="user"
+                    :current-user="friend"
+                    :type="type"
+                    @showImageFullScreen="showImageFullScreen"
+                  />
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
     </div>
   </div>
 </template>
@@ -82,6 +148,7 @@
 
 import ChatMessage from '@/views/ChatConsult/ChatMessage'
 import SendBox from '@/views/ChatConsult/SendBox'
+import { chatHistory } from '@/api/chat'
 
 export default {
   name: 'ChatDirector',
@@ -92,64 +159,27 @@ export default {
   data() {
     return {
       // 记录了咨询师现有全部会话
-      conversations: [
-        {
-          name: '张咨询',
-          userId: '001',
-          avatar: 'https://cube.elemecdn.com/9/c2/f0ee8a3c7c9638a54940382568c9dpng.png',
-          unread: 1,
-          type: 'private'
-        },
-        {
-          name: '李咨询',
-          userId: '002',
-          avatar: 'https://cube.elemecdn.com/9/c2/f0ee8a3c7c9638a54940382568c9dpng.png',
-          unread: 3,
-          type: 'private'
-        }
-      ],
-      consultTime: '12:30',
+      conversations: [],
+      // 计时器相关
+      consultTime: {},
+      initTime: {},
+      timerChat: {},
       // 用于判断用户栏指向，对选择对用户栏进行高亮
-      findIndex: 0,
+      findIndex: -1,
       // 通讯需要的数据
       // 聊天记录:当前用户在该聊天窗口发生的全部聊天记录
-      messages: [
-        {
-          // 该条消息的id
-          messageId: 'b0203bf0af5b11ec886bc306fa6c2977',
-          // 发送该消息的用户id，之后用于判断消息置于左侧还是右侧
-          senderId: '3bb179af-bcc5-4fe0-9dac-c05688484649',
-          // 该条消息时间戳
-          timestamp: 1648556887398,
-          // 该条消息的类型
-          type: 'text',
-          payload: {
-            text: '你好哇！！！'
-          }
-        },
-        {
-          messageId: 'febebdf0af5f11ecaaef5b30370e2287',
-          senderId: 'fdee46b0-4b01-4590-bdba-6586d7617f95',
-          // 如果是当前用户发送的消息，则没有这个字段
-          receiverId: '3bb179af-bcc5-4fe0-9dac-c05688484649',
-          timestamp: 1648558737286,
-          type: 'text',
-          payload: {
-            text: '一切都会好的！！！'
-          }
-        }
-      ],
+      messages: [],
       // 聊天对象信息
       friend: {
-        avatar: '/IM/user/Avatar-3.png',
-        name: 'Tracy',
-        uuid: 'fdee46b0-4b01-4590-bdba-6586d7617f95'
+        avatar: 'https://i03piccdn.sogoucdn.com/0354d6ffc3ecbe11',
+        name: '王咨询师',
+        uuid: 'consult1'
       },
       // 当前用户信息
       currentUser: {
-        avatar: '/IM/user/Avatar-2.png',
-        name: 'Wallace',
-        uuid: '3bb179af-bcc5-4fe0-9dac-c05688484649'
+        avatar: 'https://images.pexels.com/photos/4491461/pexels-photo-4491461.jpeg?cs=srgb&dl=pexels-karolina-grabowska-4491461.jpg&fm=jpg',
+        name: '周导',
+        uuid: 'director1'
       },
       // 控制图片，show：为true时放大查看
       image: {
@@ -157,14 +187,66 @@ export default {
         url: 'blob:https://localhost:8080/cf9c0c42-5f04-427f-806d-c250b3ceb2f2'
       },
       // private表示私聊
-      type: 'private'
+      type: 'private',
+      // 请求督导会话框
+      dialogVisible: false,
+      //  评价框相关
+      dialogFormVisible: false,
+      form: {
+        type: [],
+        content: ''
+      },
+      formLabelWidth: '120px',
+      rules: {
+        type: [
+          { required: true, message: '请选择咨询类型', trigger: 'change' }
+        ]
+      },
+      synchat: [],
+      user: {
+        avatar: require('@/assets/test.png'),
+        name: 'cymm',
+        uuid: 'user1'
+      },
+      //  控制消息同步刷新
+      timer: ''
     }
   },
-  mounted() {
-    this.init_chat()
+  beforeMount() {
+    console.log('聊天页根目录重新挂载')
+    const self = this
+    const user = this.currentUser
+    // 建立会话连接，user包含用户名+头像+用户id
+    if (this.goEasy.getConnectionStatus() === 'disconnected') {
+      this.service.connect(user)
+    }
+    // 加载会话列表
+    this.goEasy.im.latestConversations({
+      onSuccess: function(res) {
+        const content = res.content
+        if (content.conversations !== self.conversations) {
+          const oldcon = new Set(self.conversations)
+          const minuscon = content.conversations.filter(x => !oldcon.has(x))
+          console.log('开启计时器')
+          var d = new Date()
+          self.initTime[minuscon[0].userId] = d.getTime()
+          console.log(self.initTime[minuscon[0].userId])
+        }
+        self.conversations = content.conversations
+      },
+      onFailed: function(error) {
+        console.log('失败获取最新会话列表, code:' + error.code + ' content:' + error.content)
+      }
+    })
+    this.scrollToBottom()
+    this.initialPrivateListeners()
+    if (this.messages.length !== 0) {
+      this.markMessageAsRead(this.friend.uuid)
+    }
   },
   methods: {
     navigateToChat(index, conversation) {
+      console.log(this.$store.getters.synmessages)
       this.findIndex = index
       const id = conversation.userId
       this.$router.push({
@@ -173,16 +255,36 @@ export default {
           id: id
         }
       })
+      // 得到对话人的id
+      const friendId = this.$route.query.id
+      this.type = this.GoEasy.IM_SCENE.PRIVATE
+      // 对话人的基本信息，包括name, avatar, uuid;
+      // 之后随不同id取不同用户信息
+      // this.friend = this.service.findFriendById(friendId)
+      // 和该对话人的全部聊天记录
+      this.messages = this.service.getPrivateMessages(friendId)
+      console.log('开始获取同步消息')
+      this.timer = setInterval(this.getHistory, 800)
+      this.scrollToBottom()
+      if (!this.timer[id]) {
+        this.timerChat[id] = setInterval(this.timeComputed, 1000)
+      }
     },
-    init_chat() {
-      var that = this
-      this.$axios.get(
-        // 后端接口
-        '/chatList'
-      ).then((response) => {
-        // userList是当前收到的信息列表，包括发送方姓名、头像和未读消息数
-        that.conversations = response.data.conversations
-      })
+    timeComputed() {
+      var d = new Date()
+      const id = this.friend.uuid
+      const timeminus = (d.getTime() - this.initTime[id]) / 1000
+      const hour = parseInt(timeminus / 3600)
+      const minite = parseInt((timeminus % 3600) / 60)
+      const second = Math.round(timeminus - hour * 3600 - minite * 60)
+      const alltime = this.toZero(hour) + ':' + this.toZero(minite) + ':' + this.toZero(second)
+      this.$set(this.consultTime, id, alltime)
+      // this.consultTime[id] = this.toZero(hour) + ':' + this.toZero(minite) + ':' + this.toZero(second)
+      console.log(this.consultTime)
+      // alert(this.consultTime[this.$route.query.id])
+    },
+    toZero(timeNumber) {
+      return timeNumber < 10 ? ('0' + timeNumber) : timeNumber
     },
     showImageFullScreen(message) {
       this.image.url = message.payload.url
@@ -190,9 +292,79 @@ export default {
     },
     scrollToBottom() {
       this.$nextTick(() => {
+        console.log('触发下滑器')
         this.$refs.scrollView.scrollTo(0, this.$refs.scrollView.scrollHeight)
+        this.$refs.scrollViewside.scrollTo(0, this.$refs.scrollViewside.scrollHeight)
+      })
+    },
+    initialPrivateListeners() {
+      // 传入监听器，收到一条私聊消息总是滚到到页面底部
+      this.service.onNewPrivateMessageReceive = (friendId, message) => {
+        // this.getHistory()
+        if (friendId === this.friend.uuid) {
+          this.markMessageAsRead(friendId)
+          this.scrollToBottom()
+        }
+      }
+    },
+    markMessageAsRead(friendId) {
+      this.goEasy.im.markPrivateMessageAsRead({
+        userId: friendId,
+        onSuccess: function() {
+          console.log('标记为已读成功')
+        },
+        onFailed: function(error) {
+          console.log('标记为已读失败', error)
+        }
+      })
+    },
+    removeConversation(formName) {
+      this.$refs[formName].validate((valid) => {
+        if (valid) {
+          console.log('success submit!!')
+        } else {
+          console.log('error submit!!')
+          return false
+        }
+      })
+      this.dialogFormVisible = false
+      const self = this
+      self.showLoading = true
+      clearInterval(this.timer[this.$route.query.id])
+      // 把当前计时器相关数据上传数据库后，清空
+      var d = new Date()
+      this.timerChat[this.$route.query.id] = ''
+      this.consultTime[this.$route.query.id] = ''
+      this.initTime[this.$route.query.id] = d.getTime()
+      this.goEasy.im.removePrivateConversation({
+        userId: this.$route.query.id,
+        onSuccess: function() {
+          self.showLoading = false
+        },
+        onFailed: function(error) {
+          console.log(error)
+        }
+      })
+    },
+    getHistory() {
+      chatHistory({
+        appkey: 'BC-a9e0b1b27564446d942734742f8cbf07',
+        userAId: 'user1',
+        userBId: 'consult1',
+        limit: 30
+      }).then((response) => {
+        console.log(response.content)
+        this.synchat = response.content
+        this.$refs.scrollViewside.scrollTo(0, this.$refs.scrollViewside.scrollHeight)
+        // console.log(response.data.code)
+      }).catch((error) => {
+        console.log('出错！')
+        console.log(error)
       })
     }
+  },
+  beforeDestroy() {
+    clearInterval(this.timer)
   }
 }
 </script>
@@ -232,9 +404,80 @@ export default {
   -webkit-overflow-scrolling: touch;
 }
 
+.message-container .scroll-view-side {
+  height: 100%;
+  padding-left: 0.1rem;
+  padding-right: 0.1rem;
+  box-sizing: border-box;
+  overflow-y: auto;
+  /*使用具有回弹效果的滚动, 当手指从触摸屏上移开，内容会继续保持一段时间的滚动效果*/
+  -webkit-overflow-scrolling: touch;
+}
+
 .message-container .scroll-view .time-lag {
   font-size: 18px;
   text-align: center;
   color: #304156;
+}
+
+.message-container .scroll-view-side .time-lag {
+  font-size: 18px;
+  text-align: center;
+  color: #304156;
+}
+
+.root-style {
+  border: #304156;
+  width: 95%;
+  height: 700px;
+  border-style: solid;
+  border-left-style: solid;
+  margin: 20px;
+  float: left;
+}
+
+.conversations {
+  width: 15%;
+  border: #304156;
+  height: 694px;
+  border-style: none;
+  float: left;
+}
+
+.single-conversation {
+  width: 85%;
+  border: #304156;
+  height: 694px;
+  border-style: solid;
+  border-bottom-style: none;
+  border-right-style: none;
+  border-top-style: none;
+  float: left;
+}
+
+.timer {
+  border: #304156;
+  width: 20%;
+  height: 694px;
+  border-style: solid;
+  border-left-style: none;
+  float: left;
+  background-color: #304156;
+  color: white
+}
+
+.dir-chat-space {
+  border: #304156;
+  width: 45%;
+  border-right-style: solid;
+  height: 694px;
+  float: left;
+}
+
+.syn-chat-space {
+  border: #304156;
+  width: 35%;
+  height: 694px;
+  float: left;
 }
 </style>

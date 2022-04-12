@@ -71,12 +71,13 @@ def info(request):
         dict_data = request.GET
         name = dict_data.get('name', '')
 
-        data, err = getConsultantManage(name)
+        data, monitorList, err = getConsultantManage(name)
         if err != '':
             msg = err
         else:
             msg = "Success!"
         res = {
+            'monitorList': monitorList,
             'list': data,
             'total': len(data),
             'msg': msg,
@@ -90,22 +91,38 @@ def info(request):
 
 def add(request):
     if request.method == 'POST':
-        form = request.POST.get("Form")
-        if type(form) == str:
-            form = json.loads(form)
+        form = {
+            'name': request.POST.get("name"),
+            'gender': request.POST.get("gender"),
+            'age': request.POST.get("age"),
+            'idNumber': request.POST.get("idNumber"),
+            'phone': request.POST.get("phone"),
+            'monitorId': request.POST.get("monitorId"),
+            'userName': request.POST.get("userName"),
+            'pwd': request.POST.get("pwd"),
+            'company': request.POST.get("company"),
+            'rank': request.POST.get("rank"),
+            'email': request.POST.get("email")
+        }
         addConsultantItem(form)
-        return HttpResponse(status=200)
+        res = {
+            'msg': "Success!",
+            'status': 200
+        }
+        return HttpResponse(json.dumps(res, ensure_ascii=False ), status=200)
     else:
         return HttpResponse(status=400)
 
 
 def edit(request):
     if request.method == 'POST':
-        editForm = request.POST.get("editForm")
-        if type(editForm) == str:
-            editForm = json.loads(editForm)
-        name = request.POST.get("name")
-        err1, err2 = editConsultantItem(editForm, name)
+        editForm = {
+            'name': request.POST.get("name"),
+            'monitor': request.POST.get("monitor"),
+            'id': request.POST.get("id"),
+            'schedule': request.POST.get("schedule")
+        }
+        err1, err2 = editConsultantItem(editForm)
 
         if err2 != '':
             msg = {

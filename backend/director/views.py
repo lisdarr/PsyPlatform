@@ -73,10 +73,11 @@ def info(request):
         dict_data = request.GET
         name = dict_data.get('name', '')
 
-        data = getMonitorAdmin(name)
+        data, qualList = getMonitorAdmin(name)
 
         msg = {
             'list': data,
+            'qualList': qualList,
             'total': len(data),
             'msg': 'Success',
             'status': 200
@@ -89,10 +90,20 @@ def info(request):
 
 def add(request):
     if request.method == 'POST':
-        form = request.POST.get("Form")
-        if type(form) == str:
-            form = json.loads(form)
-
+        form = {
+            'name': request.POST.get("name"),
+            'gender': request.POST.get("gender"),
+            'age': request.POST.get("age"),
+            'idNumber': request.POST.get("idNumber"),
+            'phone': request.POST.get("phone"),
+            'email': request.POST.get("email"),
+            'userName': request.POST.get("userName"),
+            'pwd': request.POST.get("pwd"),
+            'company': request.POST.get("company"),
+            'rank': request.POST.get("rank"),
+            'qualId': request.POST.get("qualId"),
+            'certId': request.POST.get("certId"),
+        }
         addDirectorItem(form)
         return HttpResponse(status=200)
     else:
@@ -101,11 +112,12 @@ def add(request):
 
 def edit(request):
     if request.method == 'POST':
-        name = request.POST.get("name")
-        editForm = request.POST.get("editForm")
-        if type(editForm) == str:
-            editForm = json.loads(editForm)
-        msg, err = editDirectorItem(editForm, name)
+        editForm = {
+            'name': request.POST.get("name"),
+            'id': request.POST.get("id"),
+            'schedule': request.POST.get("schedule")
+        }
+        msg, err = editDirectorItem(editForm)
 
         if err != '':
             msg = {

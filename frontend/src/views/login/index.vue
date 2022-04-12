@@ -81,8 +81,8 @@ export default {
     }
     return {
       loginForm: {
-        username: 'admin',
-        password: '111111'
+        username: '',
+        password: ''
       },
       loginRules: {
         username: [{ required: true, trigger: 'blur', validator: validateUsername }],
@@ -123,7 +123,13 @@ export default {
           this.$store.dispatch('user/login', this.loginForm).then(() => {
             console.log('登录成功了')
             // 登录成功，进行路由跳转
-            this.$router.push({ path: '/DashboardConsult' })
+            if (this.loginForm.username === '王咨询师') {
+              this.$router.push({ path: '/DashboardConsult' })
+            } else if (this.loginForm.username === '周导') {
+              this.$router.push({ path: '/DashboardDirector' })
+            } else {
+              this.$router.push({ path: '/DashboardAdmin' })
+            }
             // loading效果结束
             this.loading = false
           }).catch(() => {
