@@ -147,9 +147,7 @@ export default {
       console.log("保存");
       this.dialogFormVisible = false;
       var that = this;
-      addSchedule({
-        addForm: this.addForm,
-      })
+      addSchedule( this.addForm)
         .then(() => {
           that.$message.success("保存成功！");
           that.init_Schedule();

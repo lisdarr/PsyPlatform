@@ -309,7 +309,7 @@ export default {
       totalWeek: [
         { name: 'Mon' },
         { name: 'Tue' },
-        { name: 'Wen' },
+        { name: 'Wed' },
         { name: 'Thu' },
         { name: 'Fri' },
         { name: 'Sat' },

@@ -35,7 +35,7 @@ service.interceptors.request.use(
   error => {
     // do something with request error
     console.log(error) // for debug
-    return Promise.reject(error)
+    return Promise.reject(error).catch((err) =>{console.log(err)})
   }
 )
 // 响应拦截器
@@ -75,7 +75,7 @@ service.interceptors.response.use(
           })
         })
       }
-      return Promise.reject(new Error(res.message || 'Error'))
+      return Promise.reject(new Error(res.message || 'Error')).catch((err) =>{console.log(err)})
     } else {
       // 服务器响应成功后干什么
       console.log('服务器响应成功')
@@ -89,7 +89,7 @@ service.interceptors.response.use(
       type: 'error',
       duration: 5 * 1000
     })
-    return Promise.reject(error)
+    return Promise.reject(error).catch((err) =>{console.log(err)})
   }
 )
 

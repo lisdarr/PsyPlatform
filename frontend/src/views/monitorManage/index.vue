@@ -223,25 +223,25 @@
         </el-form-item>
         <el-form-item label="周值班安排">
           <el-checkbox-group v-model="editform.schedule">
-            <el-checkbox label="周一"
+            <el-checkbox label="Mon"
               ><el-tag type="success">周一</el-tag></el-checkbox
             >
-            <el-checkbox label="周二"
+            <el-checkbox label="Tue"
               ><el-tag type="success">周二</el-tag></el-checkbox
             >
-            <el-checkbox label="周三"
+            <el-checkbox label="Wed"
               ><el-tag type="success">周三</el-tag></el-checkbox
             >
-            <el-checkbox label="周四"
+            <el-checkbox label="Thu"
               ><el-tag type="success">周四</el-tag></el-checkbox
             >
-            <el-checkbox label="周五"
+            <el-checkbox label="Fri"
               ><el-tag type="success">周五</el-tag></el-checkbox
             >
-            <el-checkbox label="周六"
+            <el-checkbox label="Sat"
               ><el-tag type="success">周六</el-tag></el-checkbox
             >
-            <el-checkbox label="周日"
+            <el-checkbox label="Sun"
               ><el-tag type="success">周日</el-tag></el-checkbox
             >
           </el-checkbox-group>

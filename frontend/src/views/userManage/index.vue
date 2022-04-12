@@ -77,7 +77,7 @@
       ></el-table-column>
       <el-table-column prop="operate" label="操作" align="center">
         <template slot-scope="scope">
-          <el-button type="danger" plain size="mini" @click="stopUse(scope.row)"
+          <el-button type="danger" plain size="mini" @click="stopUse(scope.row.name)"
             >禁用
           </el-button>
         </template>
@@ -135,7 +135,7 @@ export default {
           console.log(error);
         });
     },
-    stopUse(row) {
+    stopUse(name) {
       this.$confirm("确定永久禁用该账号吗?", "提示", {
         confirmButtonText: "确定",
         cancelButtonText: "取消",
@@ -143,10 +143,10 @@ export default {
       })
         .then(() => {
           visitor_ban({
-            name: row.name,
+            name: name,
           })
             .then(() => {
-              that.search()
+              this.search();
               this.$message({
                 type: "success",
                 message: "已禁用!",
@@ -156,12 +156,12 @@ export default {
               console.log(error);
             });
         })
-        .catch(() => {
+        .catch((error) => {
           this.$message({
             type: "info",
             message: "已取消操作",
           });
-          // console.log(error);
+          console.log(error);
         });
     },
   },
