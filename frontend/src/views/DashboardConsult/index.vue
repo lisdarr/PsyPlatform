@@ -81,8 +81,19 @@
             </el-table-column>
             <el-table-column prop="comment" label="咨询评价" width="180"/>
             <el-table-column label="操作" width="300">
-              <el-button size="mini" type="primary">查看详情</el-button>
-              <el-button size="mini" type="success">导出记录</el-button>
+              <template slot-scope="scope">
+                <el-button size="mini" type="primary" @click="forDetails(scope.$index)" style="margin-right: 10px">
+                  查看详情
+                </el-button>
+                <el-dialog title="咨询记录" :visible.sync="dialogTableVisible">
+                  <el-table :data="gridData">
+                    <el-table-column property="date" label="日期" width="120"></el-table-column>
+                    <el-table-column property="name" label="姓名" width="100"></el-table-column>
+                    <el-table-column property="address" label="消息"></el-table-column>
+                  </el-table>
+                </el-dialog>
+                <el-button size="mini" type="success" @click="exportHistory(scope.$index)">导出记录</el-button>
+              </template>
             </el-table-column>
           </el-table>
         </el-card>
@@ -96,7 +107,8 @@
 import { mapGetters } from 'vuex'
 import Calendar from '@/components/Calendar'
 import { getToken } from '@/utils/auth'
-import { dashboardConsultant } from '@/api/consultant'
+import { dashboardConsultant, getDetails } from '@/api/consultant'
+import { saveAs } from 'file-saver'
 
 // export default {
 //   name: 'Dashboard',
@@ -126,7 +138,9 @@ export default {
         avatar: 'https://cube.elemecdn.com/9/c2/f0ee8a3c7c9638a54940382568c9dpng.png',
         name: 'Tracy',
         uuid: 'fdee46b0-4b01-4590-bdba-6586d7617f95'
-      }
+      },
+      dialogTableVisible: false,
+      gridData: []
     }
   },
   computed: {
@@ -169,6 +183,19 @@ export default {
         that.calendarData = data.calendarData
       }).catch(error => {
         console.log(error)
+      })
+    },
+    forDetails(index) {
+      getDetails(index).then(response => {
+        this.dialogTableVisible = true
+        this.gridData = response.content
+      })
+    },
+    exportHistory(index) {
+      getDetails(index).then(response => {
+        this.gridData = response.content
+        const str = new Blob([JSON.stringify(this.gridData)], { type: 'text/plain;charset=utf-8' })
+        saveAs(str, `咨询记录.txt`)
       })
     }
   },

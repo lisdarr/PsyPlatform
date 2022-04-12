@@ -97,8 +97,19 @@
             <el-table-column prop="time" label="咨询时长" width="300"/>
             <el-table-column prop="date" label="咨询日期" width="300"/>
             <el-table-column label="操作" width="300">
-              <el-button size="mini" type="primary">查看详情</el-button>
-              <el-button size="mini" type="success">导出记录</el-button>
+              <template slot-scope="scope">
+                <el-button size="mini" type="primary" @click="forDetails(scope.$index)" style="margin-right: 10px">
+                  查看详情
+                </el-button>
+                <el-dialog title="咨询记录" :visible.sync="dialogTableVisible">
+                  <el-table :data="gridData">
+                    <el-table-column property="date" label="日期" width="120"></el-table-column>
+                    <el-table-column property="name" label="姓名" width="100"></el-table-column>
+                    <el-table-column property="address" label="消息"></el-table-column>
+                  </el-table>
+                </el-dialog>
+                <el-button size="mini" type="success" @click="exportHistory(scope.$index)">导出记录</el-button>
+              </template>
             </el-table-column>
           </el-table>
         </div>
@@ -111,6 +122,8 @@
 import Calendar from '@/components/Calendar'
 import { dashboardDirector } from '@/api/director'
 import { getToken } from '@/utils/auth'
+import { saveAs } from 'file-saver'
+import { getDetails } from '@/api/consultant'
 
 export default {
   name: 'DashboardDirector',
@@ -124,7 +137,9 @@ export default {
       consultTodayTime: null,
       squareUrl: 'https://images.pexels.com/photos/4491461/pexels-photo-4491461.jpeg?cs=srgb&dl=pexels-karolina-grabowska-4491461.jpg&fm=jpg',
       tableData: [],
-      calendarData: []
+      calendarData: [],
+      dialogTableVisible: false,
+      gridData: []
     }
   },
   methods: {
@@ -142,6 +157,19 @@ export default {
         that.consultTodayTime = response.today_time
         that.tableData = response.tableData
         that.calendarData = response.calendarData
+      })
+    },
+    forDetails(index) {
+      getDetails(index).then(response => {
+        this.dialogTableVisible = true
+        this.gridData = response.content
+      })
+    },
+    exportHistory(index) {
+      getDetails(index).then(response => {
+        this.gridData = response.content
+        const str = new Blob([JSON.stringify(this.gridData)], { type: 'text/plain;charset=utf-8' })
+        saveAs(str, `咨询记录.txt`)
       })
     }
   },

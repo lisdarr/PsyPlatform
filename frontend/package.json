@@ -28,6 +28,7 @@
     "dr-vue-echarts": "^1.0.14",
     "echarts": "^5.3.1",
     "element-ui": "2.13.2",
+    "file-saver": "^2.0.5",
     "goeasy": "^2.2.7",
     "jquery": "^3.6.0",
     "js-cookie": "2.2.0",
