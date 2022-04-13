@@ -39,33 +39,35 @@ Page({
 			startTime:"04-08 16:23",
 			status:"",
 			counselor:{
-				avatar: "../../static/images/male.png",
-				name:"gyy"
+				avatar: "https://i03piccdn.sogoucdn.com/0354d6ffc3ecbe11",
+				name:"王咨询师"
 			},
 			duration:"6:23",
 			evaluate:3,
 		},
 		{
 			startTime:"04-08 16:22",
-			status:"WAITING",
+			status:"",
 			counselor:{
-				avatar: "../../static/images/femal.png",
-				name:"cy"
+				avatar: "https://i03piccdn.sogoucdn.com/0354d6ffc3ecbe11",
+				name:"王咨询师"
 			},
 			duration:"4:23",
 			evaluate:4,
 		},
 		{
 			startTime:"04-07 15:21",
-			status:"WAITING",
+			status:"",
 			counselor:{
-				avatar: "../../static/images/male.png",
-				name:"xsh"
+				avatar: "https://i03piccdn.sogoucdn.com/0354d6ffc3ecbe11",
+				name:"王咨询师"
 			},
 			duration:"3:23",
 			evaluate:1,
 		}
 	],
+
+	startTime:" ",
 
 
 	//默认为false展示输入框, 为true时显示录音按钮
@@ -114,6 +116,27 @@ Page({
     that.setData({
       hiddenkey:true
 	})
+
+	var stime = this.data.startTime;
+	let a = {
+		startTime: stime,
+		status:"",
+		counselor:{
+			avatar: this.data.friend.avatar,
+			name: this.data.friend.name
+		},
+		duration:"2:33",
+		evaluate: 0,
+	};
+
+	let old = this.data.historyMessages;
+	old.push(a);
+
+	that.setData({
+		historyMessages: old
+	});
+
+	console.log(this.data.historyMessages)
 
 	let start = that.data.starIndex;
 	let index = that.data.historyMessages.length-1;
@@ -411,25 +434,10 @@ Page({
 		});
 		
 		var stime = app.formatDate(lastMessageTimeStamp);
-		let a = {
+		this.setData({
 			startTime: stime,
-			status:"",
-			counselor:{
-				avatar: this.data.friend.avatar,
-				name: this.data.friend.name
-			},
-			duration:"34:23:34",
-			evaluate: 0,
-		};
-
-		let old = this.data.historyMessages;
-		old.push(a);
-
-		self.setData({
-			historyMessages: old
 		});
 
-		console.log(this.data.historyMessages)
 	},
     renderMessages(messages){
         messages.forEach((message,index)=>{

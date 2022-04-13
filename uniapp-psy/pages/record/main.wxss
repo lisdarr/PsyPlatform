@@ -85,8 +85,8 @@
   height: 20rpx;
   background-color: #16a800;
   border-radius: 50%;
-  right: 3rpx;
-  bottom: 35rpx;
+  right: -25rpx;
+  bottom: 40rpx;
 }
 .r-point {
   position: absolute;
@@ -95,8 +95,8 @@
   height: 20rpx;
   background-color: #ec0505;
   border-radius: 50%;
-  right: 3rpx;
-  bottom: 35rpx;
+  right: -25rpx;
+  bottom: 40rpx;
 }
 
 .name{

@@ -1,9 +1,9 @@
 {
   "pages":[
     "pages/saveInfo/main",
+    "pages/index/main",
     "pages/record/main",
     "pages/counselor/main",
-    "pages/index/main",
     "pages/chat/main",
     "pages/informed_consent/main"
     

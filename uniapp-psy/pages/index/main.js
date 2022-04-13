@@ -17,28 +17,28 @@ Page({
         startTime:"04-08 16:23",
         status:"",
         counselor:{
-          avatar: "../../static/images/male.png",
-          name:"gyy"
+          avatar: "https://i03piccdn.sogoucdn.com/0354d6ffc3ecbe11",
+          name:"王咨询师"
         },
         duration:"6:23",
         evaluate:3,
       },
       {
         startTime:"04-08 16:22",
-        status:"WAITING",
+        status:"",
         counselor:{
-          avatar: "../../static/images/femal.png",
-          name:"cy"
+          avatar: "https://i03piccdn.sogoucdn.com/0354d6ffc3ecbe11",
+          name:"王咨询师"
         },
         duration:"4:23",
         evaluate:4,
       },
       {
         startTime:"04-07 15:21",
-        status:"WAITING",
+        status:"",
         counselor:{
-          avatar: "../../static/images/male.png",
-          name:"xsh"
+          avatar: "https://i03piccdn.sogoucdn.com/0354d6ffc3ecbe11",
+          name:"王咨询师"
         },
         duration:"3:23",
         evaluate:1,
