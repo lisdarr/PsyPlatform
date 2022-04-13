@@ -41,26 +41,26 @@
       <el-table-column
         prop="name"
         label="咨询人"
-        width="80px"
+        width="100px"
         align="center"
       ></el-table-column>
       <el-table-column
         prop="time"
         label="咨询时长"
-        width="100px"
+        width="150px"
         align="center"
       ></el-table-column>
       <el-table-column
         prop="date"
         label="咨询日期"
-        width="180px"
+        width="200px"
         align="center"
         sortable
       ></el-table-column>
       <el-table-column
         prop="rate"
         label="咨询评级"
-        width="180px"
+        width="200px"
         align="center"
       >
         <template slot-scope="scope">
@@ -75,13 +75,13 @@
       <el-table-column
         prop="eva"
         label="咨询评价"
-        width="180px"
+        width="200px"
         align="center"
       ></el-table-column>
       <el-table-column
         prop="assit"
         label="督导求助"
-        width="80px"
+        width="150px"
         align="center"
       ></el-table-column>
       <!-- <el-table-column prop="operate" label="操作" align="center">
@@ -232,6 +232,9 @@ export default {
       inputValue: '',
       dataValue: '',
     }
+  },
+  mounted(){
+    this.search();
   },
   methods: {
     handleSizeChange(val) {
