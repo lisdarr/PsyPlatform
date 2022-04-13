@@ -744,3 +744,18 @@ def banVisitor(name):
         return ''
     except Visitor.DoesNotExist:
         return 'No such visitor, please register first.'
+
+
+def consultantEdit(id):
+    meetingID = VisitorConRecord.objects.get(vis_con_id=id).record
+    records = Record.objects.filter(im_id=meetingID)
+    content = []
+    for record in records:
+        data = {
+            "name": record.user_name,
+            "timestamp": datetime.timestamp(record.create_time),
+            "payload": {"text": record.msg_text}
+        }
+        content.append(data)
+
+    return content

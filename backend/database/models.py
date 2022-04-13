@@ -6,6 +6,8 @@
 #   * Remove `managed = False` lines if you wish to allow Django to create, modify, and delete the table
 # Feel free to rename the models, but don't rename db_table values or field names.
 from django.db import models
+
+
 class ConDirRecord(models.Model):
     con_dir_id = models.AutoField(primary_key=True)
     con_id = models.IntegerField(blank=True, null=True)
@@ -15,20 +17,22 @@ class ConDirRecord(models.Model):
     record = models.CharField(max_length=254, blank=True, null=True)
 
     class Meta:
-        managed = True
+        managed = False
         db_table = 'con_dir_record'
 
 
 class ConSchedule(models.Model):
+    id = models.BigAutoField(primary_key=True)
     con_id = models.IntegerField(blank=True, null=True)
     weekday = models.CharField(max_length=255)
 
     class Meta:
-        managed = True
+        managed = False
         db_table = 'con_schedule'
 
 
 class ConToday(models.Model):
+    id = models.BigAutoField(primary_key=True)
     con_id = models.IntegerField(blank=True, null=True)
     state = models.IntegerField(blank=True, null=True)
     today_num = models.IntegerField(blank=True, null=True)
@@ -36,7 +40,7 @@ class ConToday(models.Model):
     now_num = models.IntegerField(blank=True, null=True)
 
     class Meta:
-        managed = True
+        managed = False
         db_table = 'con_today'
 
 
@@ -60,27 +64,29 @@ class Consultant(models.Model):
     u_ticket = models.CharField(max_length=254, blank=True, null=True)
 
     class Meta:
-        managed = True
+        managed = False
         db_table = 'consultant'
 
 
 class DirSchedule(models.Model):
+    id = models.BigAutoField(primary_key=True)
     dir_id = models.IntegerField(blank=True, null=True)
     weekday = models.CharField(max_length=254, blank=True, null=True)
 
     class Meta:
-        managed = True
+        managed = False
         db_table = 'dir_schedule'
 
 
 class DirToday(models.Model):
+    id = models.BigAutoField(primary_key=True)
     dir_id = models.IntegerField(blank=True, null=True)
     today_num = models.IntegerField(blank=True, null=True)
     today_dur = models.BigIntegerField(blank=True, null=True)
     state = models.IntegerField(blank=True, null=True)
 
     class Meta:
-        managed = True
+        managed = False
         db_table = 'dir_today'
 
 
@@ -104,26 +110,49 @@ class Director(models.Model):
     u_ticket = models.CharField(max_length=254, blank=True, null=True)
 
     class Meta:
-        managed = True
+        managed = False
         db_table = 'director'
+
+
+class DjangoMigrations(models.Model):
+    id = models.BigAutoField(primary_key=True)
+    app = models.CharField(max_length=255)
+    name = models.CharField(max_length=255)
+    applied = models.DateTimeField()
+
+    class Meta:
+        managed = False
+        db_table = 'django_migrations'
+
+
+class Record(models.Model):
+    id = models.IntegerField(primary_key=True)
+    msg_text = models.CharField(max_length=254, db_collation='utf8_general_ci', blank=True, null=True)
+    create_time = models.DateTimeField(blank=True, null=True)
+    user_name = models.CharField(max_length=254, db_collation='utf8_general_ci', blank=True, null=True)
+    im_id = models.IntegerField(blank=True, null=True)
+
+    class Meta:
+        managed = False
+        db_table = 'record'
 
 
 class Visitor(models.Model):
     vis_id = models.AutoField(primary_key=True)
-    password = models.CharField(max_length=254, blank=True, null=True)
-    name = models.CharField(max_length=254, blank=True, null=True)
-    tele = models.CharField(max_length=254, blank=True, null=True)
-    emer_name = models.CharField(max_length=254, blank=True, null=True)
-    emer_tele = models.CharField(max_length=254, blank=True, null=True)
+    password = models.CharField(max_length=254, db_collation='utf8mb4_general_ci', blank=True, null=True)
+    name = models.CharField(max_length=254, db_collation='utf8mb4_general_ci', blank=True, null=True)
+    tele = models.CharField(max_length=254, db_collation='utf8mb4_general_ci', blank=True, null=True)
+    emer_name = models.CharField(max_length=254, db_collation='utf8mb4_general_ci', blank=True, null=True)
+    emer_tele = models.CharField(max_length=254, db_collation='utf8mb4_general_ci', blank=True, null=True)
     ban = models.IntegerField(blank=True, null=True)
     type = models.IntegerField(blank=True, null=True)
-    icon = models.CharField(max_length=254, blank=True, null=True)
-    u_ticket = models.CharField(max_length=254, blank=True, null=True)
-    gender = models.CharField(max_length=254, blank=True, null=True)
+    icon = models.CharField(max_length=254, db_collation='utf8mb4_general_ci', blank=True, null=True)
+    u_ticket = models.CharField(max_length=254, db_collation='utf8mb4_general_ci', blank=True, null=True)
+    gender = models.CharField(max_length=254, db_collation='utf8mb4_general_ci', blank=True, null=True)
     date = models.DateTimeField(blank=True, null=True)
 
     class Meta:
-        managed = True
+        managed = False
         db_table = 'visitor'
 
 
@@ -134,11 +163,11 @@ class VisitorConRecord(models.Model):
     his_state = models.IntegerField(blank=True, null=True)
     stime = models.DateTimeField(blank=True, null=True)
     duration = models.BigIntegerField(blank=True, null=True)
-    record = models.CharField(max_length=254, blank=True, null=True)
+    record = models.CharField(max_length=254)
     v2c_score = models.FloatField(blank=True, null=True)
     v2c_comm = models.CharField(max_length=254, blank=True, null=True)
     c2v_score = models.FloatField(blank=True, null=True)
 
     class Meta:
-        managed = True
+        managed = False
         db_table = 'visitor_con_record'

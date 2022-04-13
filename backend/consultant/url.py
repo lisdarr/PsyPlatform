@@ -7,5 +7,6 @@ urlpatterns = [
     path('record/', record),
     path('info/', info),
     path('add/', add),
-    path('edit/', edit)
+    path('edit/', edit),
+    path('details/',)
 ]

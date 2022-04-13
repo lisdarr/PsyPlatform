@@ -139,3 +139,19 @@ def edit(request):
         return HttpResponse(json.dumps(msg, ensure_ascii=False), status=200)
     else:
         return HttpResponse(status=400)
+
+
+def details(request):
+    if request.method == "GET":
+        id = request.GET.get("id")
+
+        content = consultantEdit(id)
+
+        res = {
+            "content": content,
+            "status": 200
+        }
+
+        return HttpResponse(json.dumps(res, ensure_ascii=False), status=200)
+    else:
+        return HttpResponse(status=400)
