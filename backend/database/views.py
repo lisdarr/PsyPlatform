@@ -160,7 +160,7 @@ def getDashboardDirector(token):
     except DirSchedule.DoesNotExist:
         return '', 'DirSchedule err'
 
-    list = []
+    conlist = []
     for consult in consults:
         try:
             today = ConToday.objects.get(con_id=consult.con_id, state=1)
@@ -168,7 +168,7 @@ def getDashboardDirector(token):
                 'name': consult.username,
                 'state': today.state
             }
-            list.append(data)
+            conlist.append(data)
         except:
             data = {}
 
@@ -191,7 +191,7 @@ def getDashboardDirector(token):
             calendarData.append(i)
 
     res = {
-        'consultList': list,
+        'consultList': conlist,
         'consultNum': today_info.today_num,
         'directorName': user_info.username,
         'today_num': today_info.today_num,
@@ -747,7 +747,7 @@ def banVisitor(name):
 
 
 def consultantEdit(id):
-    meetingID = VisitorConRecord.objects.get(vis_con_id=id).record
+    meetingID = VisitorConRecord.objects.get(vis_con_id=1).record
     records = Record.objects.filter(im_id=meetingID)
     content = []
     for record in records:
