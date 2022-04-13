@@ -249,41 +249,6 @@
             >{{ item.name }}
             </el-checkbox
             >
-            <!-- <el-checkbox label="Mon"
-            >
-              <el-tag type="success">周一</el-tag>
-            </el-checkbox
-            >
-            <el-checkbox label="Tue"
-            >
-              <el-tag type="success">周二</el-tag>
-            </el-checkbox
-            >
-            <el-checkbox label="Wed" name="schedule"
-            >
-              <el-tag type="success">周三</el-tag>
-            </el-checkbox
-            >
-            <el-checkbox label="Thu" name="schedule"
-            >
-              <el-tag type="success">周四</el-tag>
-            </el-checkbox
-            >
-            <el-checkbox label="Fri" name="schedule"
-            >
-              <el-tag type="success">周五</el-tag>
-            </el-checkbox
-            >
-            <el-checkbox label="Sat" name="schedule"
-            >
-              <el-tag type="success">周六</el-tag>
-            </el-checkbox
-            >
-            <el-checkbox label="Sun" name="schedule"
-            >
-              <el-tag type="success">周日</el-tag>
-            </el-checkbox
-            > -->
           </el-checkbox-group>
         </el-form-item>
       </el-form>

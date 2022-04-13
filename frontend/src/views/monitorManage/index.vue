@@ -76,7 +76,7 @@
             plain
             icon="el-icon-edit"
             size="small"
-            @click="editMonitor(scope.row.name)"
+            @click="editMonitor(scope.row)"
             >修改</el-button
           >
         </template>
@@ -250,7 +250,7 @@
 
       <div slot="footer">
         <el-button @click="dialogVisible = false" size="small">取 消</el-button>
-        <el-button type="primary" @click="saveFlag = true" size="small"
+        <el-button type="primary" @click="saveEdit" size="small"
           >确 定</el-button
         >
       </div>
@@ -260,19 +260,18 @@
 
 <script>
 import { dir_edit, dir_info, dir_add } from "@/api/admin";
+import qs from 'qs'
 
 export default {
   name: "monitorManage",
   data() {
     return {
       flag: "false",
-      saveFlag: false,
       page: 1,
       limit: 7,
       total: 12,
       inputValue: "",
       list: "",
-      isShowBtn: false,
       dialogFormVisible: false,
       dialogVisible: false,
       form: {
@@ -290,6 +289,7 @@ export default {
         certId: "",
       },
       editform: {
+        id: "",
         name: "",
         schedule: [],
       },
@@ -315,9 +315,9 @@ export default {
         .then((response) => {
           that.list = response.list;
           that.total = response.total;
-          console.log(that.total)
+          // console.log(that.total);
           that.qualList = response.qualList;
-          console.log(that.qualList)
+          // console.log(that.qualList);
         })
         .catch((error) => {
           console.log(error);
@@ -325,42 +325,24 @@ export default {
     },
     addMonitor() {
       this.dialogFormVisible = true;
-      this.form = {
-        name: "",
-        gender: "",
-        age: "",
-        idNumber: "",
-        phone: "",
-        email: "",
-        monitorId: "",
-        userName: "",
-        pwd: "",
-        company: "",
-        rank: "",
-        qual: "",
-        qualId: "",
-        certId: "",
-      };
     },
-    editMonitor(name) {
+    editMonitor(row) {
+      this.editform.id = row.id;
       this.dialogVisible = true;
-      if ((this.saveFlag = true)) {
-        console.log("保存修改");
-        this.dialogVisible = false;
-        this.saveFlag = false;
-        var that = this;
-        dir_edit({
-          editform: this.editform,
-          name: name,
+    },
+    saveEdit(){
+      this.dialogVisible = false
+      var that = this
+      // 所有的list类型的都要进行这个格式转换，否则后端取值异常
+      this.editform.schedule = qs.stringify(this.editform.schedule, { arrayFormat: 'indices' })
+      dir_edit(this.editform)
+        .then(() => {
+          that.$message.success('修改成功！')
+          that.search()
         })
-          .then(() => {
-            that.$message.success("修改成功！");
-            that.init_List();
-          })
-          .catch((error) => {
-            console.log(error);
-          });
-      }
+        .catch((error) => {
+          console.log(error)
+        })
     },
     saveAdd() {
       console.log("保存添加");
@@ -369,7 +351,7 @@ export default {
       dir_add(this.form)
         .then(() => {
           that.$message.success("添加成功！");
-          that.init_List();
+          that.search();
         })
         .catch((error) => {
           console.log(error);
