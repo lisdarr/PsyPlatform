@@ -194,9 +194,12 @@ def scheduleQuery(request):
 
 def addSchedule(request):
     if request.method == 'POST':
-        addForm = request.POST.get('addForm')
-        if type(addForm) == str:
-            addForm = json.loads(addForm)
+        addForm = {
+            'consultantId': request.POST.get('consultantId'),
+            'monitorId': request.POST.get('monitorId'),
+            'dateValue': request.POST.get('dateValue')
+        }
+
         msg = addConsultantShcedule(addForm)
 
         if msg != '':

@@ -64,7 +64,7 @@ def ban(request):
 
         err = banVisitor(name)
 
-        if err != 0:
+        if err != '':
             res = {
                 'msg': err,
                 'status': 500
@@ -74,7 +74,7 @@ def ban(request):
 
         res = {
             'msg': "Success!",
-            "stauts": 200
+            "status": 200
         }
 
         return HttpResponse(json.dumps(res, ensure_ascii=False), status=200)

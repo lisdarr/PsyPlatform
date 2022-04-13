@@ -84,7 +84,7 @@ def getDashboardConsultant(token):
 
     tableData = []
     try:
-        records = VisitorConRecord.objects.filter(con_id=user_info.con_id).order_by('stime')[:5]
+        records = VisitorConRecord.objects.filter(con_id=user_info.con_id).order_by('-stime')[:5]
         for record in records:
             try:
                 name = Visitor.objects.get(vis_id=record.vis_id).name
@@ -173,7 +173,7 @@ def getDashboardDirector(token):
             data = {}
 
     tableData = []
-    records = ConDirRecord.objects.filter(dir_id=user_info.dir_id).order_by('stime')[0:5]
+    records = ConDirRecord.objects.filter(dir_id=user_info.dir_id).order_by('-stime')[0:5]
     for record in records:
         consult = Consultant.objects.get(con_id=record.con_id)
         data = {
@@ -253,7 +253,7 @@ def getRecordAdmin(username, begin_date, end_date):
                 'time': record.duration,
                 'date': record.stime.strftime(("%Y-%m-%d %H:%M:%S")),
                 'rate': record.v2c_score,
-                'eva': record.record,
+                'eva': record.v2c_comm,
                 'assit': 'No Record'
             }
             list.append(ele)
@@ -320,9 +320,9 @@ def getMonitorAdmin(name):
                 coList.append(username)
         consol = ",".join(coList)
         sches = DirSchedule.objects.filter(dir_id=director.dir_id)
-        weekday = ''
+        weekdayList = []
         for sche in sches:
-            weekday += sche.weekday
+            weekdayList.append(sche.weekday)
         sum = director.qualnum
         time = director.duration
         qual = {
@@ -335,7 +335,7 @@ def getMonitorAdmin(name):
             'consultant': consol,
             'sum': sum,
             'time': convert.timeChange(time),
-            'schedule': weekday
+            'schedule': ",".join(weekdayList)
         }
         qualList.append(qual)
         list.append(data)
@@ -468,7 +468,7 @@ def getDashboardAdmin(token):
         list = [key, value]
         myChartData.append(list)
 
-    consultants = Consultant.objects.all().order_by('totel_num')[:4]
+    consultants = Consultant.objects.all().order_by('-totel_num')[:4]
     sumList = []
 
     for consult in consultants:
@@ -480,7 +480,7 @@ def getDashboardAdmin(token):
         sumList.append(data)
 
     rateList = []
-    consultants = Consultant.objects.all().order_by('av_score')[:4]
+    consultants = Consultant.objects.all().order_by('-av_score')[:4]
 
     for consult in consultants:
         data = {
@@ -497,7 +497,7 @@ def getDashboardAdmin(token):
         'consultNum': consultNum,
         'chatNum': chatNum,
         'consultTodayNum': consultTodayNum,
-        'consultTodayTime': consultTodayTime,
+        'consultTodayTime': convert.timeChange(consultTodayTime),
         'myChartData': myChartData,
         'weekChartData': weekChartData,
         'sumList': sumList,
@@ -554,7 +554,7 @@ def getScheduleEvent():
         'Sun': 0
     }
     for record in records:
-        dict[record.weekday] = dict.get(record.weekday) + 1
+        dict[record.weekday] = dict[record.weekday] + 1
 
     thisWeek = convert.getThisWeekDict()
     events = []
@@ -606,32 +606,28 @@ def addConsultantShcedule(addForm):
     consultantId = addForm['consultantId']
     monitorId = addForm['monitorId']
     dateValue = addForm['dateValue']
-    dateList = dateValue.split(",")
     err = ''
-
+    date = datetime.strptime(dateValue, "%Y-%m-%d")
     if monitorId != '':
         try:
             monitor = Director.objects.get(dir_id=monitorId)
-            for date in dateList:
-                date = datetime.strptime(date, "%Y-%m-%d")
-                weekday = convert.getWeekDay(date)
-                try:
-                    DirSchedule.objects.get(dir_id=monitor.dir_id, weekday=weekday)
-                except DirSchedule.DoesNotExist:
-                    DirSchedule.objects.create(dir_id=monitor.dir_id, weekday=weekday)
+            # date = datetime.strptime("2022-04-17", "%Y-%m-%d")
+            weekday = convert.getWeekDay(date)
+            try:
+                DirSchedule.objects.get(dir_id=monitor.dir_id, weekday=weekday)
+            except DirSchedule.DoesNotExist:
+                DirSchedule.objects.create(dir_id=monitor.dir_id, weekday=weekday)
         except Director.DoesNotExist:
             err += "No Such monitor please register first"
 
     if consultantId != '':
         try:
             consultant = Consultant.objects.get(con_id=consultantId)
-            for date in dateList:
-                date = datetime.strptime(date, "%Y-%m-%d")
-                weekday = convert.getWeekDay(date)
-                try:
-                    ConSchedule.objects.get(con_id=consultant.con_id, weekday=weekday)
-                except ConSchedule.DoesNotExist:
-                    ConSchedule.objects.create(con_id=consultant.con_id, weekday=weekday)
+            weekday = convert.getWeekDay(date)
+            try:
+                ConSchedule.objects.get(con_id=consultant.con_id, weekday=weekday)
+            except ConSchedule.DoesNotExist:
+                ConSchedule.objects.create(con_id=consultant.con_id, weekday=weekday)
         except Consultant.DoesNotExist:
             err += "No Such consultant please register first"
 
@@ -682,7 +678,6 @@ def editConsultantItem(form):
             err1 = "This is the first time to set its schedule."
         for sche in scheduleList:
             day = sche.split("=")
-            print(day)
             ConSchedule.objects.create(con_id=consultant.con_id, weekday=day[1])
     except Consultant.DoesNotExist:
         err2 = "No such consultant please register first"
