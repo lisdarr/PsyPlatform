@@ -7,7 +7,7 @@
     <view class="userinfo-name">
     <open-data type="userNickName" class="userinfo-name"></open-data>
     </view>
-    <image src="/static/images/edit.png" class="userinfo-edit"></image>
+    <image src="/static/images/edit.png" class="userinfo-edit" bindtap="change"></image>
     </view>
 </view>
 

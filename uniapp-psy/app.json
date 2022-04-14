@@ -2,6 +2,7 @@
   "pages":[
     "pages/saveInfo/main",
     "pages/index/main",
+    "pages/changeInfo/main",
     "pages/record/main",
     "pages/counselor/main",
     "pages/chat/main",

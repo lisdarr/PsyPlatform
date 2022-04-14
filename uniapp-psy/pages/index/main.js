@@ -81,10 +81,6 @@ Page({
       console.log("没有历史记录")
     }
   },
-
-
-  
-  
   getUserProfile(e) {
     wx.getUserProfile({
       desc: '展示用户信息', // 声明获取用户个人信息后的用途，后续会展示在弹窗中，请谨慎填写
@@ -102,5 +98,10 @@ Page({
     wx.switchTab({
       url: '/pages/informed_consent/main',
     });
-}
+},
+  change: function(){
+    wx.navigateTo({
+      url: '/pages/changeInfo/main',
+    })
+  }
 });
