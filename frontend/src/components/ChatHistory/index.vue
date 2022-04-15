@@ -36,7 +36,13 @@ export default {
           message['date'] = this.formatDate(resdata[data].timestamp)
           message['name'] = resdata[data].name
           // 需要针对不同的文件形式进行判断
-          message['message'] = resdata[data].payload.text
+          if (resdata[data].payload.text !== undefined) {
+            message['message'] = resdata[data].payload.text
+          } else if (resdata[data].payload.image !== undefined) {
+            message['message'] = resdata[data].payload.image
+          } else if (resdata[data].payload.record !== undefined) {
+            message['message'] = resdata[data].payload.record
+          }
           this.gridData.push(message)
         }
         console.log(this.gridData)
@@ -62,7 +68,11 @@ export default {
           message['date'] = this.formatDate(resdata[data].timestamp)
           message['name'] = resdata[data].name
           // 需要针对不同的文件形式进行判断
-          message['message'] = resdata[data].payload.text
+          if (resdata[data].payload.text !== undefined) {
+            message['message'] = resdata[data].payload.text
+          } else {
+            message['message'] = '非文字类记录请前往系统查看详情'
+          }
           this.gridData.push(message)
         }
         let str = '日期, 发送人, 消息\n'

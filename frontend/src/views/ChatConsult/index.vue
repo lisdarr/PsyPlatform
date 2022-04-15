@@ -169,9 +169,8 @@ export default {
       friend: {},
       // 当前用户信息
       currentUser: {
-        avatar: 'https://i03piccdn.sogoucdn.com/0354d6ffc3ecbe11',
-        name: '王咨询师',
-        uuid: 'consult1'
+        avatar: this.$store.getters.avatar,
+        name: this.$store.getters.name
       },
       // 控制图片，show：为true时放大查看
       image: {
@@ -197,13 +196,19 @@ export default {
     }
   },
   beforeMount() {
-    console.log('聊天页根目录重新挂载')
-    const self = this
+    if (this.$store.getters.roles[0] === 'Consultant') {
+      this.currentUser.uuid = 'consult' + this.$store.getters.id
+    } else if (this.$store.getters.roles[0] === 'Director') {
+      this.currentUser.uuid = 'director' + this.$store.getters.id
+    }
     const user = this.currentUser
+    console.log(this.$store.getters.avatar)
+    console.log(this.currentUser)
     // 建立会话连接，user包含用户名+头像+用户id
     if (this.goEasy.getConnectionStatus() === 'disconnected') {
       this.service.connect(user)
     }
+    const self = this
     // 加载会话列表
     this.goEasy.im.latestConversations({
       onSuccess: function(res) {
