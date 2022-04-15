@@ -123,7 +123,7 @@ export default {
           this.$store.dispatch('user/login', this.loginForm).then(() => {
             console.log('登录成功了')
             // 登录成功，进行路由跳转
-            if (this.loginForm.username === '王咨询师') {
+            if (this.loginForm.username === '王咨询师' || this.loginForm.username === 'zixun') {
               this.$router.push({ path: '/DashboardConsult' })
             } else if (this.loginForm.username === '周导') {
               this.$router.push({ path: '/DashboardDirector' })

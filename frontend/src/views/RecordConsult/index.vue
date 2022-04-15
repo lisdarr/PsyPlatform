@@ -18,28 +18,19 @@
     <el-table :data="tableData.slice((currentPage-1)*pageSize, currentPage*pageSize)"
               style="width: 100%; margin-left: 12px; padding-top: 15px"
     >
-      <el-table-column prop="name" label="咨询人" width="180"/>
-      <el-table-column prop="time" label="咨询时长" width="180"/>
+      <el-table-column prop="id" label="编号" width="100"/>
+      <el-table-column prop="name" label="咨询人" width="100"/>
+      <el-table-column prop="time" label="咨询时长" width="120"/>
       <el-table-column prop="date" label="咨询日期" width="180" sortable/>
       <el-table-column prop="rate" label="咨询评级" width="180">
         <template slot-scope="scope">
           <el-rate v-model="scope.row.rate" :allow-half="true" disabled text-color="#ff9900"/>
         </template>
       </el-table-column>
-      <el-table-column prop="comment" label="咨询评价" width="380"/>
+      <el-table-column prop="comment" label="咨询评价" width="300"/>
       <el-table-column label="操作" width="300">
         <template slot-scope="scope">
-          <el-button size="mini" type="primary" @click="forDetails(scope.$index)" style="margin-right: 10px">
-            查看详情
-          </el-button>
-          <el-dialog title="咨询记录" :visible.sync="dialogTableVisible">
-            <el-table :data="gridData">
-              <el-table-column property="date" label="日期" width="120"></el-table-column>
-              <el-table-column property="name" label="姓名" width="100"></el-table-column>
-              <el-table-column property="address" label="消息"></el-table-column>
-            </el-table>
-          </el-dialog>
-          <el-button size="mini" type="success" @click="exportHistory(scope.$index)">导出记录</el-button>
+          <ChatHistory :id="scope.row.id"></ChatHistory>
         </template>
       </el-table-column>
     </el-table>
@@ -57,11 +48,12 @@
 </template>
 
 <script>
-import { getDetails, recordConsultant } from '@/api/consultant'
-import { saveAs } from 'file-saver'
+import { recordConsultant } from '@/api/consultant'
+import ChatHistory from '@/components/ChatHistory'
 
 export default {
   name: 'RecordConsult',
+  components: { ChatHistory },
   data() {
     return {
       tableData: [],
@@ -69,9 +61,7 @@ export default {
       dataValue: '',
       currentPage: 1,
       pageSize: 10,
-      totalSize: null,
-      dialogTableVisible: false,
-      gridData: []
+      totalSize: null
     }
   },
   mounted() {
@@ -95,19 +85,6 @@ export default {
         that.totalSize = response.totalSize
       }).catch((error) => {
         console.log(error)
-      })
-    },
-    forDetails(index) {
-      getDetails(index).then(response => {
-        this.dialogTableVisible = true
-        this.gridData = response.content
-      })
-    },
-    exportHistory(index) {
-      getDetails(index).then(response => {
-        this.gridData = response.content
-        const str = new Blob([JSON.stringify(this.gridData)], { type: 'text/plain;charset=utf-8' })
-        saveAs(str, `咨询记录.txt`)
       })
     }
   }

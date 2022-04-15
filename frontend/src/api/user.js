@@ -23,3 +23,10 @@ export function logout() {
     method: 'post'
   })
 }
+
+export function getAllUser() {
+  return request({
+    url: '/admin/getUser/',
+    method: 'GET'
+  })
+}
