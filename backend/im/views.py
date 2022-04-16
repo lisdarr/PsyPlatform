@@ -7,16 +7,23 @@ import datetime
 
 def details(request):
     if request.method == "GET":
-        id = request.GET.get("id")
+        id = request.GET.get("id", '')
 
-        content = consultantEdit(id)
+        content, err = consultantEdit(id)
+        if err != '':
+            msg = err
+            status = 500
+        else:
+            msg = "Success!"
+            status = 200
 
         res = {
             "content": content,
-            "status": 200
+            "msg": msg,
+            "status": status
         }
 
-        return HttpResponse(json.dumps(res, ensure_ascii=False), status=200)
+        return HttpResponse(json.dumps(res, ensure_ascii=False), status=status)
     else:
         res = {
             "msg": "Wrong request method",

@@ -843,7 +843,12 @@ def banVisitor(name):
 
 
 def consultantEdit(id):
-    meetingID = VisitorConRecord.objects.get(vis_con_id=id).record
+    if id == '':
+        return '', "id is None."
+    try:
+        meetingID = VisitorConRecord.objects.get(vis_con_id=id).record
+    except VisitorConRecord.DoesNotExist:
+        return '', "Doesn't have such record."
     records = Record.objects.filter(im_id=meetingID)
     content = []
     for record in records:
@@ -854,7 +859,7 @@ def consultantEdit(id):
         }
         content.append(data)
 
-    return content
+    return content, ''
 
 
 def changeState(token):
