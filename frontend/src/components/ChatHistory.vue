@@ -15,20 +15,20 @@
 </template>
 
 <script>
-import { getDetails } from '@/api/consultant'
+import { getDetails } from '@/api/im'
 
 export default {
   name: 'ChatHistory',
+  props: ['id'],
   data() {
     return {
       dialogTableVisible: false,
       gridData: []
     }
   },
-  props: ['id'],
   methods: {
-    forDetails(index) {
-      getDetails(index).then(response => {
+    forDetails(id) {
+      getDetails(id).then(response => {
         this.dialogTableVisible = true
         const resdata = response.content
         for (const data in resdata) {

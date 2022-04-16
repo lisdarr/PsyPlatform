@@ -133,6 +133,7 @@
 
 import ChatMessage from '@/views/ChatConsult/ChatMessage'
 import SendBox from '@/views/ChatConsult/SendBox'
+import { AllDir, AllUser } from '@/api/im'
 
 export default {
   name: 'ChatConsult',
@@ -167,6 +168,9 @@ export default {
         }
       ],
       friend: {},
+      users: [],
+      // 存储进行通话的用户id
+      friendsid: [],
       // 当前用户信息
       currentUser: {
         avatar: this.$store.getters.avatar,
@@ -192,7 +196,8 @@ export default {
         type: [
           { required: true, message: '请选择咨询类型', trigger: 'change' }
         ]
-      }
+      },
+      RecordHistory: []
     }
   },
   beforeMount() {
@@ -202,8 +207,18 @@ export default {
       this.currentUser.uuid = 'director' + this.$store.getters.id
     }
     const user = this.currentUser
-    console.log(this.$store.getters.avatar)
-    console.log(this.currentUser)
+    // 把全部在线督导加入friends列表，用于判断是否要新生成一个record记录
+    AllDir().then(response => {
+      this.friends = response.content
+    }).catch(error => {
+      console.log(error)
+    })
+    // 获取全部用户信息，用于查找
+    AllUser().then(response => {
+      this.users = response.content
+    }).catch(error => {
+      console.log(error)
+    })
     // 建立会话连接，user包含用户名+头像+用户id
     if (this.goEasy.getConnectionStatus() === 'disconnected') {
       this.service.connect(user)
@@ -290,16 +305,37 @@ export default {
       console.log('监听到新消息')
       // 传入监听器，收到一条私聊消息总是滚到到页面底部
       this.service.onNewPrivateMessageReceive = (friendId, message) => {
-        // if (self.friend.uuid === 'user1') {
-        //   self.$store.dispatch('history/setMessages', self.messages)
-        //   const test = { 'messages in store:': self.$store.getters.messages }
-        //   console.log(test)
-        // }
+        // 存储该条消息进RecordHistory
+        const tmpMessage = {}
+        const tmpUser = self.findUserById(friendId)
+        // 如果通话列表中没有该条消息的发送人，则说明该条咨询为新的咨询，需要创建新的record_id
+        // 并把该条消息的发送人存入通信列表中，把该用户信息添加record字段（生命期仅限于该次咨询，咨询结束后删除该字段）
+        if (!self.friendsid.includes(friendId)) {
+          self.friendsid.push(friendId)
+          tmpUser.record_id = self.genRecordId()
+        }
+        tmpMessage.recordid = tmpUser.record_id
+        tmpMessage.sendername = tmpUser.name
+        tmpMessage.timestamp = message.timestamp
+        tmpMessage.type = message.type
+        tmpMessage.content = self.getContent(message)
+        self.RecordHistory.push(tmpMessage)
         if (friendId === self.friend.uuid) {
           this.markMessageAsRead(friendId)
           this.scrollToBottom()
         }
       }
+    },
+    getContent(message) {
+      // eslint-disable-next-line no-prototype-builtins
+      if (message.payload.hasOwnProperty('text')) {
+        return message.payload.text
+      } else {
+        return message.payload.url
+      }
+    },
+    genRecordId() {
+      return Math.random().toString().slice(-6)
     },
     markMessageAsRead(friendId) {
       this.goEasy.im.markPrivateMessageAsRead({
@@ -366,6 +402,10 @@ export default {
           console.log(error)
         }
       })
+    },
+    findUserById(userId) {
+      var user = this.users.find(user => (user.uuid === userId))
+      return user
     }
   }
 }

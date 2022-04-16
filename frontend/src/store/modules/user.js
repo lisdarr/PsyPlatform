@@ -78,7 +78,7 @@ const actions = {
         }
         const name = data.name
         const roles = data.role
-        const avatar = data.avatar
+        const avatar = data.avator
         const id = data.id
         if (!roles || roles.length <= 0) {
           reject('getInfo: roles must be a non-null array!')

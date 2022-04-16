@@ -7,6 +7,7 @@ import datetime
 
 def details(request):
     if request.method == "GET":
+        print(request.GET)
         id = request.GET.get("id", '')
 
         content, err = consultantEdit(id)

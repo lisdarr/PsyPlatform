@@ -24,9 +24,3 @@ export function logout() {
   })
 }
 
-export function getAllUser() {
-  return request({
-    url: '/admin/getUser/',
-    method: 'GET'
-  })
-}
