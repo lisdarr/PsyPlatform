@@ -75,13 +75,13 @@
               </el-button>
               <el-dialog title="本次咨询已结束，请您填写评价" :visible.sync="dialogFormVisible" width="400px">
                 <el-form ref="form" :model="form" :rules="rules">
-                  <el-form-item label="咨询类型" :label-width="formLabelWidth">
+                  <el-form-item label="咨询类型" :label-width="formLabelWidth" prop="type">
                     <el-select v-model="form.type" placeholder="请选择咨询类型">
                       <el-option label="类型1" value="类型1"/>
                       <el-option label="类型2" value="类型2"/>
                     </el-select>
                   </el-form-item>
-                  <el-form-item label="评价" :label-width="formLabelWidth">
+                  <el-form-item label="评价" :label-width="formLabelWidth" prop="contents">
                     <el-input
                       v-model="form.content"
                       autocomplete="off"
@@ -117,7 +117,7 @@
                   />
                 </div>
               </div>
-              <send-box :to="friend" :type="type" @onSent="scrollToBottom"/>
+              <send-box :to="friend" :type="type" :chatNums="chatNums" @onSent="scrollToBottom"/>
               <div>
                 <img :src="image.url" alt="[图片]">
               </div>
@@ -133,7 +133,7 @@
 
 import ChatMessage from '@/views/ChatConsult/ChatMessage'
 import SendBox from '@/views/ChatConsult/SendBox'
-import { AllDir, AllUser } from '@/api/im'
+import { askForDir, getUserList, SaveCurrentRecord, SendCurrentRecord } from '@/api/im'
 
 export default {
   name: 'ChatConsult',
@@ -167,10 +167,6 @@ export default {
           uuid: 'director1'
         }
       ],
-      friend: {},
-      users: [],
-      // 存储进行通话的用户id
-      friendsid: [],
       // 当前用户信息
       currentUser: {
         avatar: this.$store.getters.avatar,
@@ -194,35 +190,36 @@ export default {
       formLabelWidth: '120px',
       rules: {
         type: [
-          { required: true, message: '请选择咨询类型', trigger: 'change' }
+          { required: true, message: '请至少选择一种类型', trigger: 'change' }
+        ],
+        content: [
+          { required: true, message: '请填写评价信息', trigger: 'blur' }
         ]
       },
-      RecordHistory: []
+      // 用于记录每个用户发送的消息数量，根据该数量取聊天记录
+      chatNums: {},
+      SingleRecord: {},
+      recordId: '',
+      RecordInfo: {},
+      users: []
     }
   },
   beforeMount() {
-    if (this.$store.getters.roles[0] === 'Consultant') {
-      this.currentUser.uuid = 'consult' + this.$store.getters.id
-    } else if (this.$store.getters.roles[0] === 'Director') {
-      this.currentUser.uuid = 'director' + this.$store.getters.id
+    this.currentUser.uuid = 'consult' + this.$store.getters.id
+    // if (this.$store.getters.roles[0] === 'Consultant') {
+    //   this.currentUser.uuid = 'consult' + this.$store.getters.id
+    // } else if (this.$store.getters.roles[0] === 'Director') {
+    //   this.currentUser.uuid = 'director' + this.$store.getters.id
+    // }
+    // 建立会话连接，user包含用户名+头像+用户id
+    if (this.goEasy.getConnectionStatus() === 'disconnected') {
+      this.service.connect(this.currentUser)
     }
-    const user = this.currentUser
-    // 把全部在线督导加入friends列表，用于判断是否要新生成一个record记录
-    AllDir().then(response => {
-      this.friends = response.content
-    }).catch(error => {
-      console.log(error)
-    })
-    // 获取全部用户信息，用于查找
-    AllUser().then(response => {
+    getUserList().then(response => {
       this.users = response.content
     }).catch(error => {
       console.log(error)
     })
-    // 建立会话连接，user包含用户名+头像+用户id
-    if (this.goEasy.getConnectionStatus() === 'disconnected') {
-      this.service.connect(user)
-    }
     const self = this
     // 加载会话列表
     this.goEasy.im.latestConversations({
@@ -263,12 +260,13 @@ export default {
       this.type = this.GoEasy.IM_SCENE.PRIVATE
       // 对话人的基本信息，包括name, avatar, uuid;
       // 之后随不同id取不同用户信息
-      // this.friend = this.service.findFriendById(friendId)
-      if (id === 'user1') {
-        this.friend = this.friends[0]
-      } else {
-        this.friend = this.friends[1]
-      }
+      this.friend = this.findUserById(id)
+      console.log(this.friend)
+      // if (id === 'user1') {
+      //   this.friend = this.friends[0]
+      // } else {
+      //   this.friend = this.friends[1]
+      // }
       // 和该对话人的全部聊天记录
       this.messages = this.service.getPrivateMessages(id)
       if (!this.timer[id]) {
@@ -305,21 +303,11 @@ export default {
       console.log('监听到新消息')
       // 传入监听器，收到一条私聊消息总是滚到到页面底部
       this.service.onNewPrivateMessageReceive = (friendId, message) => {
-        // 存储该条消息进RecordHistory
-        const tmpMessage = {}
-        const tmpUser = self.findUserById(friendId)
-        // 如果通话列表中没有该条消息的发送人，则说明该条咨询为新的咨询，需要创建新的record_id
-        // 并把该条消息的发送人存入通信列表中，把该用户信息添加record字段（生命期仅限于该次咨询，咨询结束后删除该字段）
-        if (!self.friendsid.includes(friendId)) {
-          self.friendsid.push(friendId)
-          tmpUser.record_id = self.genRecordId()
+        if (friendId in self.chatNums) {
+          self.chatNums[friendId] += 1
+        } else {
+          self.chatNums[friendId] === 0
         }
-        tmpMessage.recordid = tmpUser.record_id
-        tmpMessage.sendername = tmpUser.name
-        tmpMessage.timestamp = message.timestamp
-        tmpMessage.type = message.type
-        tmpMessage.content = self.getContent(message)
-        self.RecordHistory.push(tmpMessage)
         if (friendId === self.friend.uuid) {
           this.markMessageAsRead(friendId)
           this.scrollToBottom()
@@ -349,17 +337,28 @@ export default {
       })
     },
     ToDir() {
-      const dir_conversation = {
-        type: 'private',
-        userId: 'director1',
-        unread: 0, // 未读消息条数
-        // 私聊好友Data信息，来源于发送私聊消息时的to.data和发送方im.connect时传入的data
-        data: {
-          'avatar': 'https://images.pexels.com/photos/4491461/pexels-photo-4491461.jpeg?cs=srgb&dl=pexels-karolina-grabowska-4491461.jpg&fm=jpg',
-          'name': '周导'
-        },
-        lastMessage: {}
-      }
+      const dir_conversation = {}
+      askForDir(this.$store.getters.id).then(response => {
+        dir_conversation.data.avatar = response.avatar
+        dir_conversation.name = response.name
+      }).catch(error => {
+        console.log(error)
+      })
+      dir_conversation.userId = this.currentUser
+      dir_conversation.type = 'private'
+      dir_conversation.unread = 0
+      dir_conversation.lastMessage = {}
+      // dir_conversation = {
+      //   type: 'private',
+      //   userId: 'director1',
+      //   unread: 0, // 未读消息条数
+      //   // 私聊好友Data信息，来源于发送私聊消息时的to.data和发送方im.connect时传入的data
+      //   data: {
+      //     'avatar': 'https://images.pexels.com/photos/4491461/pexels-photo-4491461.jpeg?cs=srgb&dl=pexels-karolina-grabowska-4491461.jpg&fm=jpg',
+      //     'name': '周导'
+      //   },
+      //   lastMessage: {}
+      // }
       this.dialogVisible = false
       this.conversations.push(dir_conversation)
       this.$router.push({
@@ -383,18 +382,55 @@ export default {
           return false
         }
       })
+      // 生成本次咨询的id
+      this.recordId = this.genRecordId()
+      var d = new Date()
+      // 保存本次咨询相关信息RecordInfo
+      this.RecordInfo.id = this.recordId
+      var userinfo = this.findUserById(this.$route.query.id)
+      this.RecordInfo.name = userinfo.name
+      this.RecordInfo.time = this.consultTime[this.$route.query.id]
+      this.RecordInfo.date = d.getTime()
+      // 评级和评价由用户返回
+      // 咨询师返回咨询类型和评价信息
+      this.RecordInfo.RecordType = this.form.type
+      this.RecordInfo.Recordcontent = this.form.content
+      SaveCurrentRecord(this.RecordInfo).then(response => {
+        console.log(response.msg)
+      }).catch(error => {
+        console.log(error)
+      })
       this.dialogFormVisible = false
-      console.log(this.form.type)
       const self = this
       self.showLoading = true
       clearInterval(this.timer[this.$route.query.id])
       // 把当前计时器相关数据上传数据库后，清空
-      var d = new Date()
       this.timer[this.$route.query.id] = ''
       this.consultTime[this.$route.query.id] = ''
       this.initTime[this.$route.query.id] = d.getTime()
+      // 保存此次咨询的聊天记录到本地
+      this.goEasy.im.history({
+        userId: self.$route.query.id, // 对方userId
+        lastTimestamp: Date.now(), // 查询发送时间小于（不包含）该时间的历史消息，可用于分页和分批拉取聊天记录，默认为当前时间
+        limit: self.chatNums[self.$route.query.id],
+        onSuccess(result) {
+          for (var item of result.content) {
+            self.SingleRecord.record_id = self.recordId
+            var senderr = self.findUserById(item.senderId)
+            self.SingleRecord.senderName = senderr.name
+            self.SingleRecord.timestamp = item.timestamp
+            self.SingleRecord.type = item.type
+            self.SingleRecord.content = self.getContent(item)
+          }
+          SendCurrentRecord(self.SingleRecord).then(response => {
+            console.log(response.msg)
+          }).catch(error => {
+            console.log(error)
+          })
+        }
+      })
       this.goEasy.im.removePrivateConversation({
-        userId: this.$route.query.id,
+        userId: self.$route.query.id,
         onSuccess: function() {
           self.showLoading = false
         },
