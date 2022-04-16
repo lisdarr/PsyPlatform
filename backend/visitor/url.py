@@ -6,5 +6,7 @@ urlpatterns = [
     # path('dashboard/', dashboard),
     path('record/', record),
     path('info/', info),
-    path('ban/', ban)
+    path('ban/', ban),
+    path('weChat/add/', add),
+    path('weChat/conversation/', historyConversation)
 ]

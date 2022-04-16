@@ -22,4 +22,5 @@ urlpatterns = [
     path('consultant/', include('consultant.url')),
     path('director/', include('director.url')),
     path('visitor/', include('visitor.url')),
+    path('im/', include('visitor.url'))
 ]

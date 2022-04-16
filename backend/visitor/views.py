@@ -36,7 +36,11 @@ def record(request):
         }
         return HttpResponse(json.dumps(res, ensure_ascii=False), status=200)
     else:
-        return HttpResponse(status=400)
+        res = {
+            "msg": "Wrong request method",
+            "status": 400
+        }
+        return HttpResponse(json.dumps(res, ensure_ascii=False), status=400)
 
 
 def info(request):
@@ -55,7 +59,11 @@ def info(request):
 
         return HttpResponse(json.dumps(msg, ensure_ascii=False), status=200)
     else:
-        return HttpResponse(status=400)
+        res = {
+            "msg": "Wrong request method",
+            "status": 400
+        }
+        return HttpResponse(json.dumps(res, ensure_ascii=False), status=400)
 
 
 def ban(request):
@@ -79,4 +87,61 @@ def ban(request):
 
         return HttpResponse(json.dumps(res, ensure_ascii=False), status=200)
     else:
-        return HttpResponse(status=400)
+        res = {
+            "msg": "Wrong request method",
+            "status": 400
+        }
+        return HttpResponse(json.dumps(res, ensure_ascii=False), status=400)
+
+
+def add(request):
+    if request.method == 'POST':
+        form = {
+            "uu_id": request.POST.get("uu_id"),
+            "evaluate": request.POST.get("evaluate"),
+            "con_id": request.POST.get("con_id")
+        }
+
+        addTalkingRecord(form)
+
+        res = {
+            "msg": "Success!",
+            "status": 200
+        }
+
+        return HttpResponse(json.dumps(res, ensure_ascii=False), status=200)
+    else:
+        res = {
+            "msg": "Wrong request method",
+            "status": 400
+        }
+        return HttpResponse(json.dumps(res, ensure_ascii=False), status=400)
+
+
+def historyConversation(request):
+    if request.method == "GET":
+        token = request.COOKIES.get('token')
+
+        historyConversation, err = getHistoryConversation(token)
+        if err != '':
+            msg = err
+            status = 500
+        else:
+            msg = "Success!"
+            status = 200
+
+        res = {
+            "msg": msg,
+            "status": status,
+            "historyConversation": historyConversation
+        }
+
+        return HttpResponse(json.dumps(res, ensure_ascii=False), status=status)
+    else:
+        res = {
+            "msg": "Wrong request method",
+            "status": 400
+        }
+        return HttpResponse(json.dumps(res, ensure_ascii=False), status=400)
+
+

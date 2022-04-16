@@ -43,6 +43,7 @@ INSTALLED_APPS = [
     'consultant',
     'director',
     'visitor',
+    'im',
 ]
 
 MIDDLEWARE = [

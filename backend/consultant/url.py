@@ -8,5 +8,5 @@ urlpatterns = [
     path('info/', info),
     path('add/', add),
     path('edit/', edit),
-    path('details/', details)
+    path('weChat/choice/', onlineConsultants),
 ]

@@ -37,8 +37,21 @@ def checkUser(username, password):
         user = Visitor.objects.get(name=username)
     if Consultant.objects.filter(username=username).count() != 0:
         user = Consultant.objects.get(username=username)
+        try:
+            record = ConToday.objects.get(con_id=user.con_id)
+            record.state = 1
+            record.save()
+        except ConToday.DoesNotExist:
+            ConToday.objects.create(con_id=user.con_id, state=1, today_num=0, now_num=0)
     if Director.objects.filter(username=username).count() != 0:
         user = Director.objects.get(username=username)
+        try:
+            record = DirToday.objects.get(con_id=user.con_id)
+            record.state = 1
+            record.save()
+        except ConToday.DoesNotExist:
+            DirToday.objects.create(con_id=user.con_id, state=1, today_num=0, now_num=0)
+
     if user == '':
         return 0
     if check_password(password, user.password):
@@ -60,7 +73,6 @@ def checkUser(username, password):
 
 
 def getDashboardConsultant(token):
-    print(token)
     try:
         Consultant.objects.get(u_ticket=token)
         user_info = Consultant.objects.get(u_ticket=token)
@@ -91,6 +103,7 @@ def getDashboardConsultant(token):
             except Visitor.DoesNotExist:
                 continue
             ele = {
+                'id': record.vis_con_id,
                 'name': name,
                 'time': convert.timeChange(record.duration),
                 'date': record.stime.strftime("%Y-%m-%d %H:%M:%S"),
@@ -133,6 +146,7 @@ def getRecordConsult(username, begin_date, end_date):
         for record in records:
             username = Visitor.objects.get(vis_id=record.vis_id).name
             ele = {
+                'id': record.vis_con_id,
                 'name': username,
                 'time': convert.timeChange(record.duration),
                 'date': record.stime.strftime("%Y-%m-%d %H:%M:%S"),
@@ -177,6 +191,7 @@ def getDashboardDirector(token):
     for record in records:
         consult = Consultant.objects.get(con_id=record.con_id)
         data = {
+            'id': record.con_dir_id,
             'name': consult.username,
             'time': convert.timeChange(record.duration),
             'date': record.stime.strftime("%Y-%m-%d %H:%M:%S"),
@@ -223,6 +238,7 @@ def getRecordDirector(username, begin_date, end_date):
         for record in records:
             username = Consultant.objects.get(con_id=record.con_id).username
             ele = {
+                'id': record.con_dir_id,
                 'name': username,
                 'time': convert.timeChange(record.duration),
                 'date': record.stime.strftime(("%Y-%m-%d %H:%M:%S")),
@@ -249,6 +265,7 @@ def getRecordAdmin(username, begin_date, end_date):
             continue
         for record in records:
             ele = {
+                'id': record.vis_con_id,
                 'name': visitor.name,
                 'time': record.duration,
                 'date': record.stime.strftime(("%Y-%m-%d %H:%M:%S")),
@@ -421,8 +438,8 @@ def getDashboardAdmin(token):
     if admin.count() == 0:
         return '', 'User is not admin'
 
-    consultantList = getConsultantList()
-    directorList = getDirectorList()
+    consultantList = getOnCallConsultantList()
+    directorList = getOnCallDirectorList()
 
     consultNum = ConToday.objects.filter(state=1).count()
     chatNum = DirToday.objects.filter(state=1).count()
@@ -492,8 +509,8 @@ def getDashboardAdmin(token):
         rateList.append(data)
 
     res = {
-        'consultList': consultantList,
-        'monitorList': directorList,
+        'oncallConsult': consultantList,
+        'oncallMonitor': directorList,
         'consultNum': consultNum,
         'chatNum': chatNum,
         'consultTodayNum': consultTodayNum,
@@ -542,6 +559,54 @@ def getConsultantList():
     return consultantList
 
 
+def getOnCallConsultantList():
+    try:
+        consultants = Consultant.objects.all()
+    except Consultant.DoesNotExist:
+        return '', 'Consultant err'
+
+    consultantList = []
+    for consultant in consultants:
+        try:
+            state = ConToday.objects.get(con_id=consultant.con_id).state
+            if state != 1:
+                continue
+            else:
+                data = {
+                    'name': consultant.username,
+                    'consultantId': consultant.con_id
+                }
+                consultantList.append(data)
+        except ConToday.DoesNotExist:
+            continue
+
+    return consultantList
+
+
+def getOnCallDirectorList():
+    try:
+        directors = Director.objects.all()
+    except Director.DoesNotExist:
+        return '', 'Consultant err'
+
+    directorList = []
+    for director in directors:
+        try:
+            state = DirToday.objects.get(dir_id=director.dir_id).state
+            if state != 1:
+                continue
+            else:
+                data = {
+                    'name': director.username,
+                    'monitorId': director.dir_id
+                }
+                directorList.append(data)
+        except DirToday.DoesNotExist:
+            continue
+
+    return directorList
+
+
 def getScheduleEvent():
     records = ConSchedule.objects.all()
     dict = {
@@ -564,6 +629,25 @@ def getScheduleEvent():
             'start': thisWeek.get(k)
         }
         events.append(ele)
+    ddict = {
+        'Mon': 0,
+        'Tue': 0,
+        'Wed': 0,
+        'Thu': 0,
+        'Fri': 0,
+        'Sat': 0,
+        'Sun': 0
+    }
+    drecords = DirSchedule.objects.all()
+    for r in drecords:
+        ddict[r.weekday] = ddict[r.weekday] + 1
+    for k, v in ddict.items():
+        ele = {
+            'title': "督导： " + str(v),
+            'start': thisWeek.get(k)
+        }
+        events.append(ele)
+
     return events
 
 
@@ -635,7 +719,9 @@ def addConsultantShcedule(addForm):
 
 
 def addConsultantItem(form):
-    print(form)
+    err = checkForm(form)
+    if err != '':
+        return err
     name = form["name"]
     gender = form["gender"]
     age = form["age"]
@@ -652,13 +738,20 @@ def addConsultantItem(form):
                               identity=identity, tele=phone, email=email,
                               dir_id=dir_id, username=username, password=password,
                               unit=company, title=title, totel_num=0, totel_dur=0, av_score=0)
+    return ''
+
+
+def checkForm(form):
+    for k, v in form.items():
+        if v == '':
+            return k + " isn't given."
+    return ''
 
 
 def editConsultantItem(form):
     editName = form['name']
     dir_id = form['monitor']
     schedules = form['schedule']
-    print(schedules)
     scheduleList = schedules.split("&")
     con_id = form['id']
     err1 = ''
@@ -686,6 +779,9 @@ def editConsultantItem(form):
 
 
 def addDirectorItem(form):
+    err = checkForm(form)
+    if err != '':
+        return err
     name = form["name"]
     gender = form["gender"]
     age = form["age"]
@@ -703,7 +799,7 @@ def addDirectorItem(form):
                             tele=phone, email=email, username=username,
                             password=password, unit=company, title=title, qual=qual, qualnum=qualNum,
                             number=0, duration=0)
-
+    return ''
 
 def editDirectorItem(form):
     editName = form['name']
@@ -747,7 +843,7 @@ def banVisitor(name):
 
 
 def consultantEdit(id):
-    meetingID = VisitorConRecord.objects.get(vis_con_id=1).record
+    meetingID = VisitorConRecord.objects.get(vis_con_id=id).record
     records = Record.objects.filter(im_id=meetingID)
     content = []
     for record in records:
@@ -759,3 +855,113 @@ def consultantEdit(id):
         content.append(data)
 
     return content
+
+
+def changeState(token):
+    try:
+        consult = Consultant.objects.get(u_ticket=token)
+        try:
+            record = ConToday.objects.get(con_id=consult.con_id)
+            record.state = 0
+            record.save()
+            return "Success!"
+        except ConToday.DoesNotExist:
+            return "Success!"
+    except Consultant.DoesNotExist:
+        try:
+            director = Director.objects.get(u_ticket=token)
+            try:
+                record = DirToday.objects.get(dir_id=director.dir_id)
+                record.state = 0
+                record.save()
+                return "Success!"
+            except DirToday.DoesNotExist:
+                return "Success!"
+        except Director.DoesNotExist:
+            return "Success!"
+
+
+def getAllOnlineConsultant(token):
+    visitor = Visitor.objects.get(u_ticket=token)
+    records = ConToday.objects.filter(state=1)
+    consultList = []
+    for record in records:
+        try:
+            consultant = Consultant.objects.get(con_id=record.con_id)
+            avator = consultant.icon
+            name = consultant.username
+            rate = consultant.av_score
+            try:
+                status = ConToday.objects.get(con_id=consultant.con_id).state
+            except ConToday.DoesNotExist:
+                status = 0
+
+            if VisitorConRecord.objects.filter(con_id=consultant.con_id, vis_id=visitor.vis_id).count() > 0:
+                isConsulted = 1
+            else:
+                isConsulted = 0
+
+            data = {
+                "avator": avator,
+                "name": name,
+                "rate": rate,
+                "status": status,
+                "isConsulted": isConsulted
+            }
+            consultList.append(data)
+        except Consultant.DoesNotExist:
+            continue
+
+    return consultList
+
+
+def addTalkingRecord(form):
+    uu_id = form["uu_id"]
+    evaluate = form["evaluate"]
+    record = "Wait"
+    con_id = form["con_id"]
+    stime = datetime.now()
+
+    if VisitorConRecord.objects.filter(vis_id=uu_id, con_id=con_id).count() > 0:
+        his_state = 1
+    else:
+        his_state = 0
+
+    VisitorConRecord.objects.create(vis_id=uu_id, v2c_score=evaluate, record=record,
+                                    stime=stime, con_id=con_id, his_state=his_state)
+
+
+def getHistoryConversation(token):
+    try:
+        visitor = Visitor.objects.get(u_ticket=token)
+        conversionList = []
+        try:
+            records = VisitorConRecord.objects.filter(vis_id=visitor.vis_id)
+            for record in records:
+                consult = Consultant.objects.get(con_id=record.con_id)
+                consultants = {
+                    "avator": consult.icon,
+                    "name": consult.username
+                }
+                startTime = record.stime
+                try:
+                    state = ConToday.objects.get(con_id=consult.con_id).state
+                except ConToday.DoesNotExist:
+                    state = 0
+
+                duration = record.duration
+                evaluate = record.v2c_score
+                data = {
+                    'consultants': consultants,
+                    "startTime": startTime.strftime("%Y-%m-%d %H:%M:%S"),
+                    "state": state,
+                    "duration": duration,
+                    "evaluate": evaluate
+                }
+                print(data)
+                conversionList.append(data)
+            return conversionList, ''
+        except VisitorConRecord.DoesNotExist:
+            return conversionList, ''
+    except Visitor.DoesNotExist:
+        return '', 'No such Visitor'

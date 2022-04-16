@@ -34,7 +34,11 @@ def dashboard(request):
 
         return HttpResponse(json.dumps(msg, ensure_ascii=False), status=200)
     else:
-        return HttpResponse(status=400)
+        res = {
+            "msg": "Wrong request method",
+            "status": 400
+        }
+        return HttpResponse(json.dumps(res, ensure_ascii=False), status=400)
 
 
 def record(request):
@@ -65,7 +69,11 @@ def record(request):
 
         return HttpResponse(json.dumps(msg, ensure_ascii=False), status=200)
     else:
-        return HttpResponse(status=400)
+        res = {
+            "msg": "Wrong request method",
+            "status": 400
+        }
+        return HttpResponse(json.dumps(res, ensure_ascii=False), status=400)
 
 
 def info(request):
@@ -85,29 +93,41 @@ def info(request):
 
         return HttpResponse(json.dumps(msg, ensure_ascii=False), status=200)
     else:
-        return HttpResponse(status=400)
+        res = {
+            "msg": "Wrong request method",
+            "status": 400
+        }
+        return HttpResponse(json.dumps(res, ensure_ascii=False), status=400)
 
 
 def add(request):
     if request.method == 'POST':
         form = {
-            'name': request.POST.get("name"),
-            'gender': request.POST.get("gender"),
-            'age': request.POST.get("age"),
-            'idNumber': request.POST.get("idNumber"),
-            'phone': request.POST.get("phone"),
-            'email': request.POST.get("email"),
-            'userName': request.POST.get("userName"),
-            'pwd': request.POST.get("pwd"),
-            'company': request.POST.get("company"),
-            'rank': request.POST.get("rank"),
-            'qualId': request.POST.get("qualId"),
-            'certId': request.POST.get("certId"),
+            'name': request.POST.get("name", ''),
+            'gender': request.POST.get("gender", ''),
+            'age': request.POST.get("age", ''),
+            'idNumber': request.POST.get("idNumber", ''),
+            'phone': request.POST.get("phone", ''),
+            'email': request.POST.get("email", ''),
+            'userName': request.POST.get("userName", ''),
+            'pwd': request.POST.get("pwd", ''),
+            'company': request.POST.get("company", ''),
+            'rank': request.POST.get("rank", ''),
+            'qualId': request.POST.get("qualId", ''),
+            'certId': request.POST.get("certId", ''),
         }
-        addDirectorItem(form)
-        return HttpResponse(status=200)
+        err = addDirectorItem(form)
+        res = {
+           "status": 200,
+           "msg": "Success!"
+        }
+        return HttpResponse(json.dumps(res, ensure_ascii=False), status=200)
     else:
-        return HttpResponse(status=400)
+        res = {
+            "msg": "Wrong request method",
+            "status": 400
+        }
+        return HttpResponse(json.dumps(res, ensure_ascii=False), status=400)
 
 
 def edit(request):
@@ -133,4 +153,8 @@ def edit(request):
 
         return HttpResponse(json.dumps(msg, ensure_ascii=False), status=200)
     else:
-        return HttpResponse(status=400)
+        res = {
+            "msg": "Wrong request method",
+            "status": 400
+        }
+        return HttpResponse(json.dumps(res, ensure_ascii=False), status=400)

@@ -32,7 +32,11 @@ def dashboard(request):
         return HttpResponse(json.dumps(msg, ensure_ascii=False), status=200)
 
     else:
-        return HttpResponse(status=400)
+        res = {
+            "msg": "Wrong request method",
+            "status": 400
+        }
+        return HttpResponse(json.dumps(res, ensure_ascii=False), status=400)
 
 
 def record(request):
@@ -63,7 +67,11 @@ def record(request):
 
         return HttpResponse(json.dumps(msg, ensure_ascii=False), status=200)
     else:
-        return HttpResponse(status=400)
+        res = {
+            "msg": "Wrong request method",
+            "status": 400
+        }
+        return HttpResponse(json.dumps(res, ensure_ascii=False), status=400)
 
 
 def info(request):
@@ -86,32 +94,46 @@ def info(request):
 
         return HttpResponse(json.dumps(res, ensure_ascii=False), status=200)
     else:
-        return HttpResponse(status=400)
+        res = {
+            "msg": "Wrong request method",
+            "status": 400
+        }
+        return HttpResponse(json.dumps(res, ensure_ascii=False), status=400)
 
 
 def add(request):
     if request.method == 'POST':
         form = {
-            'name': request.POST.get("name"),
-            'gender': request.POST.get("gender"),
-            'age': request.POST.get("age"),
-            'idNumber': request.POST.get("idNumber"),
-            'phone': request.POST.get("phone"),
-            'monitorId': request.POST.get("monitorId"),
-            'userName': request.POST.get("userName"),
-            'pwd': request.POST.get("pwd"),
-            'company': request.POST.get("company"),
-            'rank': request.POST.get("rank"),
-            'email': request.POST.get("email")
+            'name': request.POST.get("name", ''),
+            'gender': request.POST.get("gender", ''),
+            'age': request.POST.get("age", ''),
+            'idNumber': request.POST.get("idNumber", ''),
+            'phone': request.POST.get("phone", ''),
+            'monitorId': request.POST.get("monitorId", ''),
+            'userName': request.POST.get("userName", ''),
+            'pwd': request.POST.get("pwd", ''),
+            'company': request.POST.get("company", ''),
+            'rank': request.POST.get("rank", ''),
+            'email': request.POST.get("email", '')
         }
-        addConsultantItem(form)
+        err = addConsultantItem(form)
+        if err != '':
+            msg = err
+            status = 500
+        else:
+            msg = "Success!"
+            status = 200
         res = {
-            'msg': "Success!",
-            'status': 200
+            'msg': msg,
+            'status': status
         }
-        return HttpResponse(json.dumps(res, ensure_ascii=False ), status=200)
+        return HttpResponse(json.dumps(res, ensure_ascii=False), status=status)
     else:
-        return HttpResponse(status=400)
+        res = {
+            "msg": "Wrong request method",
+            "status": 400
+        }
+        return HttpResponse(json.dumps(res, ensure_ascii=False), status=400)
 
 
 def edit(request):
@@ -138,7 +160,11 @@ def edit(request):
 
         return HttpResponse(json.dumps(msg, ensure_ascii=False), status=200)
     else:
-        return HttpResponse(status=400)
+        res = {
+            "msg": "Wrong request method",
+            "status": 400
+        }
+        return HttpResponse(json.dumps(res, ensure_ascii=False), status=400)
 
 
 def details(request):
@@ -154,4 +180,29 @@ def details(request):
 
         return HttpResponse(json.dumps(res, ensure_ascii=False), status=200)
     else:
-        return HttpResponse(status=400)
+        res = {
+            "msg": "Wrong request method",
+            "status": 400
+        }
+        return HttpResponse(json.dumps(res, ensure_ascii=False), status=400)
+
+
+def onlineConsultants(request):
+    if request.method == "GET":
+        token = request.COOKIES.get('token')
+
+        consultList = getAllOnlineConsultant(token)
+
+        res = {
+            "consultList": consultList,
+            "status": 200,
+            "msg": "Success!"
+        }
+
+        return HttpResponse(json.dumps(res, ensure_ascii=False), status=200)
+    else:
+        res = {
+            "msg": "Wrong request method",
+            "status": 400
+        }
+        return HttpResponse(json.dumps(res, ensure_ascii=False), status=400)

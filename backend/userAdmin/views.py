@@ -16,8 +16,11 @@ def register(request):
         msg = 'Register success'
         return HttpResponseRedirect('/user/login/', msg, status=200)
     else:
-        err = 'No Post request'
-        return HttpResponse(err, status=400)
+        res = {
+            "msg": "Wrong request method",
+            "status": 400
+        }
+        return HttpResponse(json.dumps(res, ensure_ascii=False), status=400)
 
 
 def login(request):
@@ -51,19 +54,30 @@ def login(request):
         response = HttpResponse(json.dumps(msg), status=200)
         response.set_cookie('token', token, max_age=900000)
         return response
+    else:
+        res = {
+            "msg": "Wrong request method",
+            "status": 400
+        }
+        return HttpResponse(json.dumps(res, ensure_ascii=False), status=400)
 
 
 def logout(request):
     if request.method == 'POST':
-        msg = {
-            'msg': 'Success!',
+        msg = changeState(request.COOKIES.get('token'))
+        res = {
+            'msg': msg,
             'status': 200
         }
-        response = HttpResponse(json.dumps(msg, ensure_ascii=False), status=200)
+        response = HttpResponse(json.dumps(res, ensure_ascii=False), status=200)
         response.delete_cookie('token')
         return response
     else:
-        return HttpResponse(status=400)
+        res = {
+            "msg": "Wrong request method",
+            "status": 400
+        }
+        return HttpResponse(json.dumps(res, ensure_ascii=False), status=400)
 
 
 def loginInfo(request):
@@ -93,10 +107,6 @@ def loginInfo(request):
             return HttpResponse(json.dumps(msg, ensure_ascii=False), status=200)
     else:
         msg = {
-            'name': '',
-            'avator': '',
-            'role': '',
-            'id': '',
             'msg': 'Request Method error!',
             'status': 400
         }
@@ -118,8 +128,8 @@ def dashboardAdmin(request):
         msg = {
             'status': 200,
             'msg': 'Success!',
-            'consultList': data['consultList'],
-            'monitorList': data['monitorList'],
+            'oncallConsult': data['oncallConsult'],
+            'oncallMonitor': data['oncallMonitor'],
             'consultNum': data['consultNum'],
             'chatNum': data['chatNum'],
             'consultTodayNum': data['consultTodayNum'],
@@ -216,6 +226,9 @@ def addSchedule(request):
 
         return HttpResponse(json.dumps(res, ensure_ascii=False), status=200)
     else:
-        return HttpResponse(status=400)
-
+        res = {
+            "msg": "Wrong request method",
+            "status": 400
+        }
+        return HttpResponse(json.dumps(res, ensure_ascii=False), status=400)
 
