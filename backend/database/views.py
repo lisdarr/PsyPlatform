@@ -7,6 +7,7 @@ from django.utils import timezone
 from utils import constants, convert
 from django.db.models.aggregates import Sum, Count, Avg, Variance, StdDev, Max, Min
 from datetime import datetime
+import logging
 
 
 def registUser(user):
@@ -42,7 +43,7 @@ def checkUser(username, password):
             record.state = 1
             record.save()
         except ConToday.DoesNotExist:
-            ConToday.objects.create(con_id=user.con_id, state=1, today_num=0, now_num=0)
+            logging.warning("Consultant " + username + " is free today.")
     if Director.objects.filter(username=username).count() != 0:
         user = Director.objects.get(username=username)
         try:
@@ -50,7 +51,7 @@ def checkUser(username, password):
             record.state = 1
             record.save()
         except ConToday.DoesNotExist:
-            DirToday.objects.create(con_id=user.con_id, state=1, today_num=0, now_num=0)
+            logging.warning("Director is free today")
 
     if user == '':
         return 0
@@ -99,21 +100,27 @@ def getDashboardConsultant(token):
         user_info = Consultant.objects.get(u_ticket=token)
     except Consultant.DoesNotExist:
         return '', 'Consultant err'
+
     try:
         today_info = ConToday.objects.get(con_id=user_info.con_id)
+        today_num = today_info.today_num
+        today_dur = today_info.today_dur
+        callNum = today_info.now_num
     except ConToday.DoesNotExist:
-        return '', 'ConToday err'
-
-    try:
-        conschedule = ConSchedule.objects.filter(con_id=user_info.con_id)
-    except ConSchedule.DoesNotExist:
-        return '', 'ConSchedule err'
+        today_num = 0
+        today_dur = 0
+        callNum = 0
 
     calendar = []
-    for sch in conschedule:
-        list = convert.get_date(sch.weekday)
-        for i in list:
-            calendar.append(i)
+    try:
+        conschedule = ConSchedule.objects.filter(con_id=user_info.con_id)
+        for sch in conschedule:
+            list = convert.get_date(sch.weekday)
+            for i in list:
+                calendar.append(i)
+
+    except ConSchedule.DoesNotExist:
+        logging.warning("Consultant isn't scheduled")
 
     tableData = []
     try:
@@ -133,16 +140,16 @@ def getDashboardConsultant(token):
             }
             tableData.append(ele)
     except VisitorConRecord.DoesNotExist:
-        return '', 'VisitorConRecord Does Not Exist'
+        logging.warning('VisitorConRecord Does Not Exist')
 
     data = {
         'tableData': tableData,
         'rate': user_info.av_score,
         'squareUrl': user_info.icon,
         'consultNum': user_info.totel_num,
-        'consultTodayNum': today_info.today_num,
-        'consultTodayTime': convert.timeChange(today_info.today_dur),
-        'callNum': today_info.now_num,
+        'consultTodayNum': today_num,
+        'consultTodayTime': convert.timeChange(today_dur),
+        'callNum': callNum,
         'calendar': calendar,
     }
 
@@ -185,53 +192,63 @@ def getDashboardDirector(token):
     except Director.DoesNotExist:
         return '', 'Director No Data'
 
+    conlist = []
     try:
         consults = Consultant.objects.filter(dir_id=user_info.dir_id)
+        for consult in consults:
+            try:
+                today = ConToday.objects.get(con_id=consult.con_id, state=1)
+                data = {
+                    'name': consult.username,
+                    'state': today.state
+                }
+                conlist.append(data)
+            except ConToday.DoesNotExist:
+                continue
     except Consultant.DoesNotExist:
-        return '', 'No consultant'
-
-    try:
-        dirSchedule = DirSchedule.objects.filter(dir_id=user_info.dir_id)
-    except DirSchedule.DoesNotExist:
-        return '', 'DirSchedule err'
-
-    conlist = []
-    for consult in consults:
-        try:
-            today = ConToday.objects.get(con_id=consult.con_id, state=1)
-            data = {
-                'name': consult.username,
-                'state': today.state
-            }
-            conlist.append(data)
-        except:
-            data = {}
-
-    tableData = []
-    records = ConDirRecord.objects.filter(dir_id=user_info.dir_id).order_by('-stime')[0:5]
-    for record in records:
-        consult = Consultant.objects.get(con_id=record.con_id)
-        data = {
-            'id': record.con_dir_id,
-            'name': consult.username,
-            'time': convert.timeChange(record.duration),
-            'date': record.stime.strftime("%Y-%m-%d %H:%M:%S"),
-        }
-        tableData.append(data)
-    today_info = DirToday.objects.get(dir_id=user_info.dir_id)
+        logging.info("The director has no consultant.")
 
     calendarData = []
-    for sch in dirSchedule:
-        list = convert.get_date(sch.weekday)
-        for i in list:
-            calendarData.append(i)
+    try:
+        dirSchedule = DirSchedule.objects.filter(dir_id=user_info.dir_id)
+        for sch in dirSchedule:
+            list = convert.get_date(sch.weekday)
+            for i in list:
+                calendarData.append(i)
+    except DirSchedule.DoesNotExist:
+        logging.info("The director is not scheduled.")
+
+    tableData = []
+    try:
+        records = ConDirRecord.objects.filter(dir_id=user_info.dir_id).order_by('-stime')[0:5]
+        for record in records:
+            consult = Consultant.objects.get(con_id=record.con_id)
+            data = {
+                'id': record.con_dir_id,
+                'name': consult.username,
+                'time': convert.timeChange(record.duration),
+                'date': record.stime.strftime("%Y-%m-%d %H:%M:%S"),
+            }
+            tableData.append(data)
+    except Exception as e:
+        logging.warning(e)
+
+    try:
+        today_info = DirToday.objects.get(dir_id=user_info.dir_id)
+        consultNum = today_info.today_num
+        today_num = today_info.today_num
+        today_time = today_info.today_dur
+    except DirToday.DoesNotExist:
+        consultNum = 0
+        today_num = 0
+        today_time = 0
 
     res = {
         'consultList': conlist,
-        'consultNum': today_info.today_num,
+        'consultNum': consultNum,
         'directorName': user_info.username,
-        'today_num': today_info.today_num,
-        'today_time': convert.timeChange(today_info.today_dur),
+        'today_num': today_num,
+        'today_time': convert.timeChange(today_time),
         'squarUrl': user_info.icon,
         'tableData': tableData,
         'calendarData': calendarData,
