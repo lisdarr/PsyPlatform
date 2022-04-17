@@ -62,6 +62,34 @@ def login(request):
         return HttpResponse(json.dumps(res, ensure_ascii=False), status=400)
 
 
+def wlogin(request):
+    if request.method == 'POST':
+        form = {
+            "name": request.POST['username'],
+            "phon_number": request.POST['phon_number'],
+            "sos_name": request.POST.get('sos_name', ''),
+            "sos_phonnumber": request.POST.get('sos_phonnumber', '')
+        }
+
+        token, msg = wCheckUser(form)
+        res = {
+            "msg": msg,
+            "token": token,
+            "status": 200
+        }
+
+        response = HttpResponse(json.dumps(res), status=200)
+        response.set_cookie('token', token, max_age=900000)
+        return response
+
+    else:
+        res = {
+            "msg": "Wrong request method",
+            "status": 400
+        }
+        return HttpResponse(json.dumps(res, ensure_ascii=False), status=400)
+
+
 def logout(request):
     if request.method == 'POST':
         msg = changeState(request.COOKIES.get('token'))
