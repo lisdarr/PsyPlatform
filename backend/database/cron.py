@@ -1,4 +1,6 @@
 import datetime
+import logging
+
 from .models import *
 from utils.convert import getWeekDay
 
@@ -26,4 +28,4 @@ def fresh_scheToday():
 
         DirToday.objects.bulk_create(dirTodayList)
     except Exception as e:
-        print('发生错误，错误信息为：', e)
+        logging.warning('发生错误，错误信息为：', e)
