@@ -46,7 +46,7 @@ def checkUser(username, password):
     if Director.objects.filter(username=username).count() != 0:
         user = Director.objects.get(username=username)
         try:
-            record = DirToday.objects.get(con_id=user.con_id)
+            record = DirToday.objects.get(con_id=user.dir_id)
             record.state = 1
             record.save()
         except ConToday.DoesNotExist:
@@ -340,7 +340,7 @@ def getMonitorAdmin(name):
         weekdayList = []
         for sche in sches:
             weekdayList.append(sche.weekday)
-        sum = director.qualnum
+        sum = director.number
         time = director.duration
         qual = {
             "qualName": director.qual,
@@ -801,6 +801,7 @@ def addDirectorItem(form):
                             number=0, duration=0)
     return ''
 
+
 def editDirectorItem(form):
     editName = form['name']
     schedules = form['schedule']
@@ -927,13 +928,19 @@ def addTalkingRecord(form):
     con_id = form["con_id"]
     stime = datetime.now()
 
-    if VisitorConRecord.objects.filter(vis_id=uu_id, con_id=con_id).count() > 0:
-        his_state = 1
-    else:
-        his_state = 0
+    try:
+        record = VisitorConRecord.objects.get(vis_id=uu_id, con_id=con_id, v2c_score=-1)
+        record.v2c_score = evaluate
+        record.stime = stime
+        record.save()
+    except VisitorConRecord.DoesNotExist:
+        if VisitorConRecord.objects.filter(vis_id=uu_id, con_id=con_id).count() > 0:
+            his_state = 1
+        else:
+            his_state = 0
 
-    VisitorConRecord.objects.create(vis_id=uu_id, v2c_score=evaluate, record=record,
-                                    stime=stime, con_id=con_id, his_state=his_state)
+        VisitorConRecord.objects.create(vis_id=uu_id, v2c_score=evaluate, record=record,
+                                        stime=stime, con_id=con_id, his_state=his_state)
 
 
 def getHistoryConversation(token):
@@ -970,3 +977,110 @@ def getHistoryConversation(token):
             return conversionList, ''
     except Visitor.DoesNotExist:
         return '', 'No such Visitor'
+
+
+def getUserList():
+    visitors = Visitor.objects.all()
+
+    content = []
+    for visitor in visitors:
+        data = {
+            "avatar": visitor.icon,
+            "name": visitor.name,
+            "uuid": "user-" + str(visitor.vis_id)
+        }
+
+        content.append(data)
+
+    return content
+
+
+def askForDir(token):
+    consultant = Consultant.objects.get(u_ticket=token)
+    director = Director.objects.get(dir_id=consultant.dir_id)
+    content = []
+    data = {
+        "avator": director.icon,
+        "name": director.username,
+        "uuid": "director-" + str(director.dir_id)
+    }
+
+    content.append(data)
+    return content
+
+
+def getIMRecord(id, type):
+    if type == "0":
+        record_id = ConDirRecord.objects.get(con_dir_id=id).record
+    else:
+        record_id = VisitorConRecord.objects.get(vis_con_id=id).record
+
+    records = Record.objects.filter(im_id=record_id)
+    content = []
+    for record in records:
+        data = {
+            "record_id": record.im_id,
+            "sendername": record.user_name,
+            "timestamp": datetime.timestamp(record.create_time),
+            "type": record.type,
+            "content": record.msg_text
+        }
+        content.append(data)
+
+    return content
+
+
+def saveCVRecord(form):
+    vis_name = form["vis_name"]
+    con_name = form["con_name"]
+    duration = form["time"]
+    date = datetime.strptime(form["date"], "%Y-%m-%d %H:%M:%S")
+    id = form["id"]
+    try:
+        consultant = Consultant.objects.get(username=con_name)
+    except Consultant.DoesNotExist:
+        return "No Such Consultant."
+
+    try:
+        visitor = Visitor.objects.get(name=vis_name)
+    except Visitor.DoesNotExist:
+        return "No Such Visitor."
+
+    try:
+        record = VisitorConRecord.objects.get(con_id=consultant.con_id, vis_id=visitor.vis_id, record="Wait")
+        record.record = id
+        record.duration = duration
+        record.stime = date
+        record.save()
+        return ""
+    except VisitorConRecord.DoesNotExist:
+        if VisitorConRecord.objects.filter(vis_id=visitor.vis_id, con_id=consultant.con_id).count() > 0:
+            his_state = 1
+        else:
+            his_state = 0
+        VisitorConRecord.objects.create(con_id=consultant.con_id, record=id, duration=duration,
+                                        stime=date, vis_id=visitor.vis_id, v2c_score=-1, his_state=his_state)
+        return ""
+
+
+def saveCDRecord(form):
+    id = form["id"]
+    con_name = form["con_name"]
+    dir_name = form["dir_name"]
+    time = form["time"]
+    date = datetime.strptime(form["date"], "%Y-%m-%d %H:%M:%S")
+
+    try:
+        consultant = Consultant.objects.get(username=con_name)
+    except Consultant.DoesNotExist:
+        return "No Such Consultant."
+
+    try:
+        director = Director.objects.get(username=dir_name)
+    except Director.DoesNotExist:
+        return "No Such Director."
+
+    ConDirRecord.objects.create(con_id=consultant.con_id, dir_id=director.dir_id,
+                                record=id,stime=date, duration=time)
+
+    return ""
