@@ -468,7 +468,7 @@ def getDashboardAdmin(token):
     consultTodayTime = ConToday.objects.all().aggregate(duration=Sum('today_dur'))['duration']
 
     firstDay = convert.get_past_week()
-    weekchartDatas = VisitorConRecord.objects.filter(stime__gte=firstDay)
+    weekchartDatas = VisitorConRecord.objects.filter(stime__gte=firstDay).order_by("-stime")
 
     chartMap = {}
     weekChartData = []
