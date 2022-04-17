@@ -13,6 +13,7 @@ Page({
         //         name:'cymm',
         //         avatar: "/static/images/Avatar-1.png"
         // },
+        Consultants1:[],
         Consultants:[
             {
                 gender:"男",
@@ -29,7 +30,23 @@ Page({
      * 生命周期函数--监听页面加载
      */
     onLoad: function () {
-      
+        // var that = this;
+        // header = {'cookie':wx.getStorageSync("token")};
+        // wx.request({
+        //   url: 'url',
+        //   method: "GET",
+        //   success: function(res){
+        //       console.log("咨询师 res:"+res);
+        //       that.setData(
+        //         {
+        //             Consultants1: res.data.xxx   根据具体的res.data内容赋值给Consultants1
+        //         }
+        //       )
+        //   },
+        // fail: function() {
+        //   console.log('咨询师获取失败');
+        //   }
+        // })
     },
     
     /**

@@ -52,29 +52,31 @@ Page({
     }
     return;
   },
-  handleProxy1(){
-    wx.request({
-      url: '/user/register/',
-      data:{
-        // user_info:{​
-        //           username: username,​
-        //           password: '12345',​
-        //           role: visitor
-        //       }
-      },
-      method:'post',
-      success: function(res){
-        console.log('submit success');
-      },
-      fail: function() {
-        console.log('submit fail');
-      }
-
-    })
-    wx.switchTab({
-      url: '/pages/index/main',
-    })
-  },
+    handleProxy1(){
+    //     wx.request({
+    //       url: 'http://localhost:8000/admin/weChat/login/',
+    //       method:"POST",
+    //       data:{
+    //         username: username,
+    //         phon_number: phon_number,
+    //         sos_name: sos_name,
+    //         sos_phon_number: sos_phon_number
+    //       },
+    //       success: function(res){
+    //         console.log('注册信息提交成功');
+    //         console.log('注册 res:'+res);
+    //         let gettoken = res.data.data.token;
+    //         wx.setStorageSync("token","gettoken");
+    //         console.log('token:'+token)
+    //       },
+    //       fail: function() {
+    //         console.log('注册信息提交失败');
+    //       }
+    //     })
+        wx.switchTab({
+          url: '/pages/index/main',
+        })
+      },
 
   onLoad() {
     if (wx.getUserProfile) {

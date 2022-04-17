@@ -28,7 +28,11 @@ export default {
   },
   methods: {
     forDetails(id) {
-      getDetails(id).then(response => {
+      var role = this.$store.getters.roles[0] === 'Director' ? '0' : '1'
+      getDetails({
+        id: id,
+        type: role
+      }).then(response => {
         this.dialogTableVisible = true
         const resdata = response.content
         for (const data in resdata) {
@@ -61,7 +65,11 @@ export default {
       return YY + MM + DD + ' ' + hh + mm + ss
     },
     exportHistory(id) {
-      getDetails(id).then(response => {
+      var role = this.$store.getters.roles[0] === 'Director' ? '0' : '1'
+      getDetails({
+        id: id,
+        type: role
+      }).then(response => {
         const resdata = response.content
         for (const data in resdata) {
           const message = {}

@@ -4,20 +4,23 @@ export function getDetails(data) {
   return request({
     url: '/im/details/',
     method: 'GET',
-    params: { id: data }
+    params: {
+      id: data.id,
+      type: data.type
+    }
   })
 }
 
 export function getUserList() {
   return request({
-    url: '/im/getUserList/',
+    url: '/im/userList/',
     method: 'GET'
   })
 }
 
 export function SendCurrentRecord(data) {
   return request({
-    url: '/im/sendCurrentRecord/',
+    url: '/im/eachRecord/get',
     method: 'POST',
     data: data
   })
@@ -33,7 +36,7 @@ export function SendDirRecord(data) {
 
 export function SaveCurrentRecord(data) {
   return request({
-    url: '/im/saveCurrentRecord/',
+    url: '/im/record/save/cv/',
     method: 'POST',
     data: data
   })
@@ -42,7 +45,7 @@ export function SaveCurrentRecord(data) {
 // 这个id是咨询师的id
 export function askForDir(id) {
   return request({
-    url: '/im/askForDir/',
+    url: '/im/director/',
     method: 'GET',
     data: { id: id }
   })

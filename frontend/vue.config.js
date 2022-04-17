@@ -40,31 +40,31 @@ module.exports = {
     // 配置代理跨域
     proxy: {
       '/admin': {
-        target: 'http://127.0.0.1:8000',
+        target: 'http://123.57.45.27:8022/',
         ws: true, // 启用webSocket
         changeOrigin: true // 开启代理跨域
         // pathRewrite: { '^/admin': '' }
       },
       '/consultant': {
-        target: 'http://127.0.0.1:8000',
+        target: 'http://123.57.45.27:8022/',
         ws: true, // 启用webSocket
         changeOrigin: true // 开启代理跨域
         // pathRewrite: { '^/consultant': '' }
       },
       '/director': {
-        target: 'http://127.0.0.1:8000',
+        target: 'http://123.57.45.27:8022/',
         ws: true, // 启用webSocket
         changeOrigin: true // 开启代理跨域
         // pathRewrite: { '^/director': '' }
       },
       '/visitor': {
-        target: 'http://127.0.0.1:8000',
+        target: 'http://123.57.45.27:8022/',
         ws: true, // 启用webSocket
         changeOrigin: true // 开启代理跨域
         // pathRewrite: { '^/visitor': '' }
       },
       '/im': {
-        target: 'http://127.0.0.1:8000',
+        target: 'http://123.57.45.27:8022/',
         ws: true, // 启用webSocket
         changeOrigin: true // 开启代理跨域
         // pathRewrite: { '^/im': '' }
