@@ -63,14 +63,14 @@ Page({
     //         sos_phon_number: sos_phon_number
     //       },
     //       success: function(res){
-    //         console.log('submit success');
-    //         console.log('res:'+res);
+    //         console.log('注册信息提交成功');
+    //         console.log('注册 res:'+res);
     //         let gettoken = res.data.data.token;
     //         wx.setStorageSync("token","gettoken");
     //         console.log('token:'+token)
     //       },
     //       fail: function() {
-    //         console.log('submit fail');
+    //         console.log('注册信息提交失败');
     //       }
     //     })
         wx.switchTab({

@@ -6,6 +6,7 @@ Page({
      */
     data: {
         "type": " ",
+        historyConversation1:[],
         historyConversation: [
             {
                 startTime:"04-08 16:23",
@@ -39,6 +40,25 @@ Page({
             }
         ]
     },
+    // onLoad: function(){
+    //     var that = this;
+    //     header = {'cookie':wx.getStorageSync("token")};
+    //     wx.request({
+    //       url: 'url',
+    //       method: "GET",
+    //       success: function(res){
+    //           console.log("咨询记录 res:"+res);
+    //           that.setData(
+    //             {
+    //                 historyConversation1: res.data.xxx   根据具体的res.data内容赋值给historyConversation1
+    //             }
+    //           )
+    //       },
+    //     fail: function() {
+    //       console.log('咨询记录获取失败');
+    //       }
+    //     })
+    // },
 
     onShow: function(){
         let model = getApp().globalData.model

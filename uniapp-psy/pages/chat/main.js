@@ -25,13 +25,13 @@ Page({
 
     //会话相关
     content: '',
-	friend: null,
-	currentUser: {
-		uuid: "user-1",
-		name: "cymm",
-		avatar: "/static/images/Avatar-1.png"
-	},
-	avatarUrl:'',
+  	friend: null,
+  	currentUser: {
+	  	uuid: "user-1",
+  		name: "cymm",
+  		avatar: "/static/images/Avatar-1.png"
+  	},
+  	avatarUrl:'',
 
 	messages: [],
 	historyMessages: [
@@ -115,47 +115,65 @@ Page({
     console.log("点击提交前，hiddenkey的值是",that.data.hiddenkey)
     that.setData({
       hiddenkey:true
-	})
+		})
+		
+		// wx.request({
+		// 	url: 'url',
+		// 	method:"POST",
+    //   header = {'cookie':wx.getStorageSync("token")},
+    //   data:{
+		// 	  "uu_id": this.currentUser.uuid,​
+		// 		"evalutae":this.starIndex,
+    //     // 这个页面貌似没有咨询师id？​下面这行要改成对应的选择的咨询师id
+    //     "con_id":5
+    //   },
+		//   success: function(res){
+		// 	  console.log('添加咨询记录成功')
+	  // 	},
+		//   fail: function(){
+		// 		console.log('添加咨询记录失败')
+		// 	}
+		// })
+	  
+  	var stime = this.data.startTime;
+  	let a = {
+  		startTime: stime,
+  		status:"",
+	  	counselor:{
+	  		avatar: this.data.friend.avatar,
+  			name: this.data.friend.name
+	  	},
+	  	duration:"2:33",
+	  	evaluate: 0,
+	  };
 
-	var stime = this.data.startTime;
-	let a = {
-		startTime: stime,
-		status:"",
-		counselor:{
-			avatar: this.data.friend.avatar,
-			name: this.data.friend.name
-		},
-		duration:"2:33",
-		evaluate: 0,
-	};
+  	let old = this.data.historyMessages;
+  	old.push(a);
 
-	let old = this.data.historyMessages;
-	old.push(a);
+  	that.setData({
+	  	historyMessages: old
+  	});
 
-	that.setData({
-		historyMessages: old
-	});
+  	console.log(this.data.historyMessages)
 
-	console.log(this.data.historyMessages)
+  	let start = that.data.starIndex;
+	  let index = that.data.historyMessages.length-1;
+  	let list = that.data.historyMessages;
+   	list[index].evaluate = start;
 
-	let start = that.data.starIndex;
-	let index = that.data.historyMessages.length-1;
-	let list = that.data.historyMessages;
-	list[index].evaluate = start;
+  	that.setData({
+  		historyMessages:list
+  	});
 
-	that.setData({
-		historyMessages:list
-	});
-
-	var model = JSON.stringify(that.data.historyMessages);
-	getApp().globalData.model = model;
-	wx.switchTab({
-		url: '/pages/index/main',
-	  })
+	  var model = JSON.stringify(that.data.historyMessages);
+	  getApp().globalData.model = model;
+  	wx.switchTab({
+  		url: '/pages/index/main',
+	    })
 	
-	console.log(model)
-	console.log("点击提交后，starIndex的值是",start)
-	console.log(that.data.historyMessages[0])
+	  console.log(model)
+  	console.log("点击提交后，starIndex的值是",start)
+  	console.log(that.data.historyMessages[0])
 	
   },
 
