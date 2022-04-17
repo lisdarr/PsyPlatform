@@ -5,6 +5,7 @@ import GoEasy from './static/lib/goeasy-2.2.7.min';
 App({
   data:{
     model: null,
+    token: null
   },
 
   onLaunch: function () {
