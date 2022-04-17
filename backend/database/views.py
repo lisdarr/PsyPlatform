@@ -340,7 +340,7 @@ def getMonitorAdmin(name):
         weekdayList = []
         for sche in sches:
             weekdayList.append(sche.weekday)
-        sum = director.qualnum
+        sum = director.number
         time = director.duration
         qual = {
             "qualName": director.qual,
