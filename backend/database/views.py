@@ -1042,14 +1042,13 @@ def getUserList():
 
         content.append(data)
     directors = Director.objects.all()
-    content = []
     for director in directors:
         data = {
             "avatar": director.icon,
             "name": director.name,
             "uuid": "director-" + str(director.dir_id)
         }
-        print(data)
+
         content.append(data)
     return content
 
@@ -1092,17 +1091,19 @@ def getIMRecord(id, type):
 def saveCVRecord(form):
     vis_name = form["vis_name"]
     con_name = form["con_name"]
-    duration = form["time"]
+    duration = convert.time2int(form["time"])
     date = datetime.strptime(form["date"], "%Y-%m-%d %H:%M:%S")
     id = form["id"]
     try:
         consultant = Consultant.objects.get(username=con_name)
     except Consultant.DoesNotExist:
+        logging.warning("No Such Consultant.")
         return "No Such Consultant."
 
     try:
         visitor = Visitor.objects.get(name=vis_name)
     except Visitor.DoesNotExist:
+        logging.warning("No Such Visitor.")
         return "No Such Visitor."
 
     try:
@@ -1126,17 +1127,19 @@ def saveCDRecord(form):
     id = form["id"]
     con_name = form["con_name"]
     dir_name = form["dir_name"]
-    time = form["time"]
+    time = convert.time2int(form["time"])
     date = datetime.strptime(form["date"], "%Y-%m-%d %H:%M:%S")
 
     try:
         consultant = Consultant.objects.get(username=con_name)
     except Consultant.DoesNotExist:
+        logging.warning("No Such Consultant.")
         return "No Such Consultant."
 
     try:
         director = Director.objects.get(username=dir_name)
     except Director.DoesNotExist:
+        logging.warning("No Such Director.")
         return "No Such Director."
 
     ConDirRecord.objects.create(con_id=consultant.con_id, dir_id=director.dir_id,

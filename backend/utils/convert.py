@@ -91,3 +91,12 @@ def getThisWeekDict():
         dict[week_dict.get(i + 1)] = day.strftime("%Y-%m-%d")
 
     return dict
+
+
+def time2int(str):
+    time = str.split(":")
+    time1 = int(time[0])
+    time2 = int(time[1])
+    time3 = int(time[2])
+
+    return time1 * 60 * 60 + time2 * 60 + time3
