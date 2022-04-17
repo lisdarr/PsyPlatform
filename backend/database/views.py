@@ -47,7 +47,7 @@ def checkUser(username, password):
     if Director.objects.filter(username=username).count() != 0:
         user = Director.objects.get(username=username)
         try:
-            record = DirToday.objects.get(con_id=user.dir_id)
+            record = DirToday.objects.get(dir_id=user.dir_id)
             record.state = 1
             record.save()
         except ConToday.DoesNotExist:
