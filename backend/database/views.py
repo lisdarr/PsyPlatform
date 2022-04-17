@@ -1041,7 +1041,16 @@ def getUserList():
         }
 
         content.append(data)
-
+    directors = Director.objects.all()
+    content = []
+    for director in directors:
+        data = {
+            "avatar": director.icon,
+            "name": director.name,
+            "uuid": "director-" + str(director.dir_id)
+        }
+        print(data)
+        content.append(data)
     return content
 
 
