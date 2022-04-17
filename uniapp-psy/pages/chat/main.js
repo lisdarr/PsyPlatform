@@ -27,7 +27,7 @@ Page({
     content: '',
 	friend: null,
 	currentUser: {
-		uuid: "user1",
+		uuid: "user-1",
 		name: "cymm",
 		avatar: "/static/images/Avatar-1.png"
 	},
