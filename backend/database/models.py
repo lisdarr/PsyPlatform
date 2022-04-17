@@ -131,6 +131,7 @@ class Record(models.Model):
     create_time = models.DateTimeField(blank=True, null=True)
     user_name = models.CharField(max_length=254, db_collation='utf8_general_ci', blank=True, null=True)
     im_id = models.IntegerField(blank=True, null=True)
+    type = models.IntegerField(blank=True, null=True)
 
     class Meta:
         managed = False
