@@ -201,11 +201,12 @@ export default {
       SingleRecord: {},
       recordId: '',
       RecordInfo: {},
-      users: []
+      users: [],
+      friend: {}
     }
   },
   beforeMount() {
-    this.currentUser.uuid = 'consult' + this.$store.getters.id
+    this.currentUser.uuid = 'consult-' + this.$store.getters.id
     // if (this.$store.getters.roles[0] === 'Consultant') {
     //   this.currentUser.uuid = 'consult' + this.$store.getters.id
     // } else if (this.$store.getters.roles[0] === 'Director') {
@@ -217,6 +218,7 @@ export default {
     }
     getUserList().then(response => {
       this.users = response.content
+      console.log(this.users)
     }).catch(error => {
       console.log(error)
     })
@@ -224,17 +226,18 @@ export default {
     // 加载会话列表
     this.goEasy.im.latestConversations({
       onSuccess: function(res) {
-        const content = res.content
+        const newconversations = res.content.conversations
         // 开始新的通话，启动新计时器
-        if (content.conversations !== self.conversations) {
+        if (newconversations.length !== self.conversations.length) {
           const oldcon = new Set(self.conversations)
-          const minuscon = content.conversations.filter(x => !oldcon.has(x))
+          const minuscon = newconversations.filter(x => !oldcon.has(x))
           console.log('开启计时器')
           var d = new Date()
           self.initTime[minuscon[0].userId] = d.getTime()
-          console.log(self.initTime[minuscon[0].userId])
+          // console.log(self.initTime[minuscon[0].userId])
         }
-        self.conversations = content.conversations
+        self.conversations = newconversations
+        console.log(self.conversations)
       },
       onFailed: function(error) {
         console.log('失败获取最新会话列表, code:' + error.code + ' content:' + error.content)
@@ -337,17 +340,22 @@ export default {
       })
     },
     ToDir() {
-      const dir_conversation = {}
+      var dir_conversation = {}
       askForDir(this.$store.getters.id).then(response => {
-        dir_conversation.data.avatar = response.avatar
-        dir_conversation.name = response.name
+        dir_conversation = {
+          type: 'private',
+          userId: response.content[0].uuid,
+          unread: 0, // 未读消息条数
+          data: {
+            'avatar': response.content[0].avator,
+            'name': response.content[0].name
+          },
+          lastMessage: {}
+        }
+        this.conversations.push(dir_conversation)
       }).catch(error => {
         console.log(error)
       })
-      dir_conversation.userId = this.currentUser
-      dir_conversation.type = 'private'
-      dir_conversation.unread = 0
-      dir_conversation.lastMessage = {}
       // dir_conversation = {
       //   type: 'private',
       //   userId: 'director1',
@@ -360,13 +368,13 @@ export default {
       //   lastMessage: {}
       // }
       this.dialogVisible = false
-      this.conversations.push(dir_conversation)
       this.$router.push({
         name: 'ChatConsult',
         query: {
           id: dir_conversation.userId
         }
       })
+      console.log(this.dirinfo)
       var d = new Date()
       this.initTime[dir_conversation.userId] = d.getTime()
       if (!this.timer[dir_conversation.userId]) {
@@ -388,13 +396,14 @@ export default {
       // 保存本次咨询相关信息RecordInfo
       this.RecordInfo.id = this.recordId
       var userinfo = this.findUserById(this.$route.query.id)
-      this.RecordInfo.name = userinfo.name
+      this.RecordInfo.vis_name = userinfo.name
       this.RecordInfo.time = this.consultTime[this.$route.query.id]
-      this.RecordInfo.date = d.getTime()
+      this.RecordInfo.date = this.formatDate(d.getTime())
+      this.RecordInfo.con_name = this.$store.getters.name
       // 评级和评价由用户返回
       // 咨询师返回咨询类型和评价信息
-      this.RecordInfo.RecordType = this.form.type
-      this.RecordInfo.Recordcontent = this.form.content
+      // this.RecordInfo.RecordType = this.form.type
+      // this.RecordInfo.Recordcontent = this.form.content
       SaveCurrentRecord(this.RecordInfo).then(response => {
         console.log(response.msg)
       }).catch(error => {
@@ -442,6 +451,17 @@ export default {
     findUserById(userId) {
       var user = this.users.find(user => (user.uuid === userId))
       return user
+    },
+    // 时间戳转换为标准格式 yyyy-MM-dd HH:mm:ss
+    formatDate(timestamp) {
+      var date = new Date(timestamp)
+      var YY = date.getFullYear() + '-'
+      var MM = (date.getMonth() + 1 < 10 ? '0' + (date.getMonth() + 1) : date.getMonth() + 1) + '-'
+      var DD = (date.getDate() < 10 ? '0' + (date.getDate()) : date.getDate())
+      var hh = (date.getHours() < 10 ? '0' + date.getHours() : date.getHours()) + ':'
+      var mm = (date.getMinutes() < 10 ? '0' + date.getMinutes() : date.getMinutes()) + ':'
+      var ss = (date.getSeconds() < 10 ? '0' + date.getSeconds() : date.getSeconds())
+      return YY + MM + DD + ' ' + hh + mm + ss
     }
   }
 }
