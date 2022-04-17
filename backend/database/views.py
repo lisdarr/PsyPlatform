@@ -864,13 +864,20 @@ def banVisitor(name):
         return 'No such visitor, please register first.'
 
 
-def consultantEdit(id):
+def getDetails(id, type):
     if id == '':
         return '', "id is None."
-    try:
-        meetingID = VisitorConRecord.objects.get(vis_con_id=id).record
-    except VisitorConRecord.DoesNotExist:
-        return '', "Doesn't have such record."
+    if type == "0":
+        try:
+            meetingID = ConDirRecord.objects.get(con_dir_id=id).record
+        except ConDirRecord.DoesNotExist:
+            return '', "Doesn't have such record."
+    else:
+        try:
+            meetingID = VisitorConRecord.objects.get(vis_con_id=id).record
+        except VisitorConRecord.DoesNotExist:
+            return '', "Doesn't have such record."
+
     records = Record.objects.filter(im_id=meetingID)
     content = []
     for record in records:
