@@ -12,11 +12,11 @@
         </div>
         <el-alert title="排班信息" type="success" :closable="false"></el-alert>
         <el-form :model="form" label-width="80px">
-          <el-form-item label="咨询师：">
-            {{ form.consultantName }}
-          </el-form-item>
           <el-form-item label="督导：">
             {{ form.monitorName }}
+          </el-form-item>
+          <el-form-item label="咨询师：">
+            {{ form.consultantName }}
           </el-form-item>
         </el-form>
       </el-col>

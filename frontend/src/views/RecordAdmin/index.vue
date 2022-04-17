@@ -41,26 +41,26 @@
       <el-table-column
         prop="name"
         label="咨询人"
-        width="100px"
+        width="80px"
         align="center"
       ></el-table-column>
       <el-table-column
         prop="time"
         label="咨询时长"
-        width="150px"
+        width="100px"
         align="center"
       ></el-table-column>
       <el-table-column
         prop="date"
         label="咨询日期"
-        width="200px"
+        width="180px"
         align="center"
         sortable
       ></el-table-column>
       <el-table-column
         prop="rate"
         label="咨询评级"
-        width="200px"
+        width="160px"
         align="center"
       >
         <template slot-scope="scope">
@@ -75,23 +75,22 @@
       <el-table-column
         prop="eva"
         label="咨询评价"
-        width="200px"
+        width="180px"
         align="center"
       ></el-table-column>
       <el-table-column
         prop="assit"
         label="督导求助"
-        width="150px"
+        width="90px"
         align="center"
       ></el-table-column>
-      <!-- <el-table-column prop="operate" label="操作" align="center">
+      <el-table-column prop="operate" label="操作" align="center">
         <template slot-scope="scope">
-          <el-button
-            type="info"
+          <!-- <el-button
+            type="primary"
             plain
             icon="el-icon-info"
             size="mini"
-            @click="scope.$index, scope.row"
             >查看详情
           </el-button>
           <el-button
@@ -99,11 +98,11 @@
             type="success"
             plain
             icon="el-icon-download"
-            @click="handleDelete(scope.$index, scope.row)"
             >导出记录
-          </el-button>
+          </el-button> -->
+          <ChatHistory :id="scope.row.id"></ChatHistory>
         </template>
-      </el-table-column> -->
+      </el-table-column>
     </el-table>
     <el-pagination
       style="margin-top: 20px; text-align: center"
@@ -122,9 +121,11 @@
 
 <script>
 import {record} from '@/api/admin';
+import ChatHistory from '@/components/ChatHistory'
 
 export default {
   name: 'RecordAdmin',
+  components: { ChatHistory },
   data() {
     return {
       page: 1,
