@@ -23,7 +23,7 @@
         >
       </div>
       <div class="addbtn">
-        <el-button type="primary" @click="addMonitor" size="small"
+        <el-button type="primary" @click="dialogFormVisible = true" size="small"
           >新增督导
         </el-button>
       </div>
@@ -39,12 +39,12 @@
         width="80px"
         align="center"
       ></el-table-column>
-      <el-table-column
+      <!-- <el-table-column
         prop="role"
         label="身份"
         width="80px"
         align="center"
-      ></el-table-column>
+      ></el-table-column> -->
       <el-table-column
         prop="consultant"
         label="绑定咨询师"
@@ -97,122 +97,142 @@
 
     <!-- 新增督导 -->
     <el-dialog title="新增督导" :visible.sync="dialogFormVisible">
-      <el-form :model="form" inline="true" label-width="100px" size="small">
-        <el-form-item label="姓名"
-          ><el-input
-            v-model="form.name"
-            placeholder="请输入姓名"
-            autocomplete="off"
-          ></el-input>
-        </el-form-item>
-        <el-form-item label="性别">
-          <el-radio-group v-model="form.gender">
-            <el-radio label="男"></el-radio>
-            <el-radio label="女"></el-radio>
-          </el-radio-group>
+      <el-form
+        ref="form"
+        :model="form"
+        :rules="addRule"
+        label-width="100px"
+        size="small"
+      >
+        <el-row>
+          <el-col :span="12"
+            ><el-form-item label="姓名" prop="name"
+              ><el-input
+                v-model="form.name"
+                placeholder="请输入姓名"
+                autocomplete="off"
+              ></el-input> </el-form-item
+          ></el-col>
+          <el-col :span="12"
+            ><el-form-item label="性别" prop="gender">
+              <el-radio-group v-model="form.gender">
+                <el-radio label="男"></el-radio>
+                <el-radio label="女"></el-radio>
+              </el-radio-group> </el-form-item
+          ></el-col>
+        </el-row>
+        <el-row>
+          <el-col :span="12"
+            ><el-form-item label="年龄" prop="age"
+              ><el-input
+                v-model="form.age"
+                placeholder="请输入年龄"
+                autocomplete="off"
+              ></el-input></el-form-item
+          ></el-col>
+          <el-col :span="12"
+            ><el-form-item label="身份证号码" prop="idNumber">
+              <el-input
+                v-model="form.idNumber"
+                placeholder="请输入身份证号码"
+                autocomplete="off"
+              ></el-input> </el-form-item
+          ></el-col>
+        </el-row>
+        <el-row>
+          <el-col :span="12"
+            ><el-form-item label="电话" prop="phone">
+              <el-input
+                v-model="form.phone"
+                placeholder="请输入联系电话"
+                autocomplete="false"
+              ></el-input> </el-form-item
+          ></el-col>
+          <el-col :span="12"
+            ><el-form-item label="邮箱" prop="email">
+              <el-input
+                v-model="form.email"
+                placeholder="请输入邮箱地址"
+                autocomplete="false"
+              ></el-input> </el-form-item
+          ></el-col>
+        </el-row>
+        <el-row>
+          <el-col :span="12"
+            ><el-form-item label="用户名" prop="userName">
+              <el-input
+                v-model="form.userName"
+                placeholder="请输入用户名"
+                autocomplete="false"
+              ></el-input> </el-form-item
+          ></el-col>
+          <el-col :span="12"
+            ><el-form-item label="密码" prop="pwd">
+              <el-input
+                v-model="form.pwd"
+                :type="[flag ? 'text' : 'password']"
+                style="border: 1px solid #fff; width: 170px"
+                placeholder="请输入密码"
+              >
+                <i
+                  slot="suffix"
+                  :class="[flag ? 'el-icon-lock' : 'el-icon-view']"
+                  style="margin-top: 8px; font-size: 14px"
+                  autocomplete="false"
+                  @click="flag = !flag"
+                />
+              </el-input> </el-form-item
+          ></el-col>
+        </el-row>
+        <el-row>
+          <el-col :span="12"
+            ><el-form-item label="工作单位" prop="company">
+              <el-input
+                v-model="form.company"
+                placeholder="请输入工作单位"
+                autocomplete="false"
+              ></el-input> </el-form-item
+          ></el-col>
+          <el-col :span="12"
+            ><el-form-item label="职称" prop="rank">
+              <el-input
+                v-model="form.rank"
+                placeholder="请输入个人职称"
+                autocomplete="false"
+              ></el-input> </el-form-item
+          ></el-col>
+        </el-row>
+        <el-row>
+          <el-col :span="12"
+            ><el-form-item label="督导资质" prop="qualId">
+              <el-select v-model="form.qualId" placeholder="请选择督导资质">
+                <el-option
+                  v-for="item in qualList"
+                  :key="item.qualId"
+                  :label="item.qualName"
+                  :value="item.qualId"
+                >
+                </el-option>
+              </el-select> </el-form-item
+          ></el-col>
+          <el-col :span="12"
+            ><el-form-item label="资质编号" prop="certId">
+              <el-input
+                v-model="form.certId"
+                placeholder="请输入资质编号"
+                autocomplete="false"
+              ></el-input> </el-form-item
+          ></el-col>
+        </el-row>
+        <el-form-item style="text-align: center">
+          <el-button size="small" @click="dialogFormVisible = false"
+            >取 消
+          </el-button>
+          <el-button size="small" type="primary" @click="saveAdd(form)"
+            >确 定
+          </el-button>
         </el-form-item>
       </el-form>
-      <el-form :model="form" inline="true" label-width="100px" size="small">
-        <el-form-item label="年龄"
-          ><el-input
-            v-model="form.age"
-            placeholder="请输入年龄"
-            autocomplete="off"
-          ></el-input
-        ></el-form-item>
-        <el-form-item label="身份证号码">
-          <el-input
-            v-model="form.idNumber"
-            placeholder="请输入身份证号码"
-            autocomplete="off"
-          ></el-input>
-        </el-form-item>
-      </el-form>
-      <el-form :model="form" inline="true" label-width="100px" size="small">
-        <el-form-item label="电话">
-          <el-input
-            v-model="form.phone"
-            placeholder="请输入联系电话"
-            autocomplete="false"
-          ></el-input>
-        </el-form-item>
-        <el-form-item label="邮箱">
-          <el-input
-            v-model="form.email"
-            placeholder="请输入邮箱地址"
-            autocomplete="false"
-          ></el-input>
-        </el-form-item>
-      </el-form>
-      <el-form :model="form" inline="true" label-width="100px" size="small">
-        <el-form-item label="用户名">
-          <el-input
-            v-model="form.userName"
-            placeholder="请输入用户名"
-            autocomplete="false"
-          ></el-input>
-        </el-form-item>
-        <el-form-item label="密码">
-          <el-input
-            v-model="form.pwd"
-            :type="[flag ? 'text' : 'password']"
-            style="border: 1px solid #fff; width: 170px"
-            placeholder="请输入密码"
-          >
-            <i
-              slot="suffix"
-              :class="[flag ? 'el-icon-lock' : 'el-icon-view']"
-              style="margin-top: 8px; font-size: 14px"
-              autocomplete="false"
-              @click="flag = !flag"
-            />
-          </el-input>
-        </el-form-item>
-      </el-form>
-      <el-form :model="form" inline="true" label-width="100px" size="small">
-        <el-form-item label="工作单位">
-          <el-input
-            v-model="form.company"
-            placeholder="请输入工作单位"
-            autocomplete="false"
-          ></el-input>
-        </el-form-item>
-        <el-form-item label="职称">
-          <el-input
-            v-model="form.rank"
-            placeholder="请输入个人职称"
-            autocomplete="false"
-          ></el-input>
-        </el-form-item>
-      </el-form>
-      <el-form :model="form" inline="true" label-width="100px" size="small">
-        <el-form-item label="督导资质">
-          <el-select v-model="form.qualId" placeholder="请选择督导资质">
-            <el-option
-              v-for="item in qualList"
-              :key="item.qualId"
-              :label="item.qualName"
-              :value="item.qualId"
-            >
-            </el-option>
-          </el-select>
-        </el-form-item>
-        <el-form-item label="资质编号">
-          <el-input
-            v-model="form.certId"
-            placeholder="请输入资质编号"
-            autocomplete="false"
-          ></el-input>
-        </el-form-item>
-      </el-form>
-      <div slot="footer" class="dialog-footer">
-        <el-button @click="dialogFormVisible = false" size="small"
-          >取 消</el-button
-        >
-        <el-button type="primary" @click="saveAdd" size="small"
-          >确 定</el-button
-        >
-      </div>
     </el-dialog>
 
     <!-- 修改督导信息 -->
@@ -260,7 +280,7 @@
 
 <script>
 import { dir_edit, dir_info, dir_add } from "@/api/admin";
-import qs from 'qs'
+import qs from "qs";
 
 export default {
   name: "monitorManage",
@@ -271,7 +291,7 @@ export default {
       limit: 7,
       total: 12,
       inputValue: "",
-      list: "",
+      list: [],
       dialogFormVisible: false,
       dialogVisible: false,
       form: {
@@ -294,6 +314,46 @@ export default {
         schedule: [],
       },
       qualList: "",
+      addRule: {
+        name: [
+          { required: true, message: "请输入用户名", trigger: "blur" },
+          {
+            min: 3,
+            max: 10,
+            message: "用户名长度在3~10个字符",
+            trigger: "blur",
+          },
+        ],
+        gender: [{ required: true, message: "请选择性别", trigger: "change" }],
+        age: [{ required: true, message: "请输入年龄", trigger: "blur" }],
+        idNumber: [
+          { required: true, message: "请输入身份证号码", trigger: "blur" },
+          { min: 18, max: 18, message: "身份证号码为18位", trigger: "blur" },
+        ],
+        phone: [
+          { required: true, message: "请输入电话号码", trigger: "blur" },
+          { min: 11, max: 11, message: "电话号码为11位", trigger: "blur" },
+        ],
+        email: [{ required: true, message: "请输入邮箱", trigger: "blur" }],
+        userName: [
+          { required: true, message: "请输入昵称", trigger: "blur" },
+          { min: 3, max: 10, message: "昵称长度在3~10个字符", trigger: "blur" },
+        ],
+        pwd: [
+          { required: true, message: "请输入密码", trigger: "blur" },
+          { min: 6, max: 15, message: "密码长度在6~15个字符", trigger: "blur" },
+        ],
+        company: [
+          { required: true, message: "请输入工作单位", trigger: "blur" },
+        ],
+        rank: [{ required: true, message: "请输入职称", trigger: "blur" }],
+        qualId: [
+          { required: true, message: "请选择督导资质", trigger: "change" },
+        ],
+        certId: [
+          { required: true, message: "请输入资质编号", trigger: "blur" },
+        ],
+      },
     };
   },
   mounted() {
@@ -307,7 +367,6 @@ export default {
       console.log(`当前页: ${val}`);
     },
     search() {
-      // console.log("搜索");
       var that = this;
       dir_info({
         name: this.inputValue,
@@ -323,39 +382,48 @@ export default {
           console.log(error);
         });
     },
-    addMonitor() {
-      this.dialogFormVisible = true;
-    },
     editMonitor(row) {
       this.editform.id = row.id;
       this.dialogVisible = true;
     },
-    saveEdit(){
-      this.dialogVisible = false
-      var that = this
+    saveEdit() {
+      this.dialogVisible = false;
+      var that = this;
       // 所有的list类型的都要进行这个格式转换，否则后端取值异常
-      this.editform.schedule = qs.stringify(this.editform.schedule, { arrayFormat: 'indices' })
+      this.editform.schedule = qs.stringify(this.editform.schedule, {
+        arrayFormat: "indices",
+      });
       dir_edit(this.editform)
         .then(() => {
-          that.$message.success('修改成功！')
-          that.search()
-        })
-        .catch((error) => {
-          console.log(error)
-        })
-    },
-    saveAdd() {
-      console.log("保存添加");
-      this.dialogFormVisible = false;
-      var that = this;
-      dir_add(this.form)
-        .then(() => {
-          that.$message.success("添加成功！");
+          that.$message.success("修改成功！");
           that.search();
         })
         .catch((error) => {
           console.log(error);
         });
+    },
+    saveAdd(form) {
+      this.$refs.form.validate(async (success) => {
+        if (success) {
+          this.dialogFormVisible = false;
+          var that = this;
+          dir_add(form)
+            .then((response) => {
+              if (response.status == 500) {
+                that.$message.error("保存失败！");
+              } else {
+                that.$message.success("添加成功！");
+                that.search();
+              }
+            })
+            .catch((error) => {
+              console.log(error);
+            });
+        } else {
+          console.log("error submit!!");
+          return false;
+        }
+      });
     },
   },
 };
