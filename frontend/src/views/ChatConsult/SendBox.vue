@@ -46,7 +46,7 @@ const appData = require('@/assets/emojis.json')
 export default {
   name: 'SendBox',
   components: {},
-  props: ['to', 'type'],
+  props: ['to', 'type', 'chatNums'],
   data() {
     return {
       audio: {
@@ -121,9 +121,11 @@ export default {
       //   const test = { 'messages in store:': this.$store.getters.synmessages }
       //   console.log(test)
       // }
+      var self = this
       this.goEasy.im.sendMessage({
         message: message,
         onSuccess: function(message) {
+          self.chatNums[message.to.id] += 1
           console.log('发送成功.', message)
         },
         onFailed: function(error) {

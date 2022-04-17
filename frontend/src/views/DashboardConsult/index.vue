@@ -100,7 +100,6 @@ import Calendar from '@/components/Calendar'
 import { getToken } from '@/utils/auth'
 import { dashboardConsultant } from '@/api/consultant'
 import ChatHistory from '@/components/ChatHistory'
-
 // export default {
 //   name: 'Dashboard',
 //   computed: {

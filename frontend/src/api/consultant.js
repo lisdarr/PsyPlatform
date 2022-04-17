@@ -16,11 +16,3 @@ export function recordConsultant(data) {
   })
 }
 
-export function getDetails(data) {
-  return request({
-    url: '/consultant/details',
-    method: 'GET',
-    param: data
-  })
-}
-

@@ -1,7 +1,7 @@
 <template>
   <div class="login-container">
     <!-- el-form组件：elementUI插件里面的一个组件，展示表单元素；model收集表单数据；rules：表单验证规则 -->
-    <el-form ref="loginForm" :model="loginForm" :rules="loginRules" class="login-form" auto-complete="on"
+    <el-form ref="loginForm" :model="loginForm" class="login-form" auto-complete="on"
              label-position="left"
     >
 
@@ -59,6 +59,7 @@
 </template>
 
 <script>
+
 import { validUsername } from '@/utils/validate'
 
 export default {
@@ -123,13 +124,7 @@ export default {
           this.$store.dispatch('user/login', this.loginForm).then(() => {
             console.log('登录成功了')
             // 登录成功，进行路由跳转
-            if (this.loginForm.username === '王咨询师' || this.loginForm.username === 'zixun') {
-              this.$router.push({ path: '/DashboardConsult' })
-            } else if (this.loginForm.username === '周导') {
-              this.$router.push({ path: '/DashboardDirector' })
-            } else {
-              this.$router.push({ path: '/DashboardAdmin' })
-            }
+            this.$router.push({ path: '/' })
             // loading效果结束
             this.loading = false
           }).catch(() => {

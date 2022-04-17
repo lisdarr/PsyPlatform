@@ -20,9 +20,7 @@
 <script>
 export default {
   name: 'Calendar',
-  props: {
-    calendarData: []
-  },
+  props: ['calendarData'],
   data() {
     return {}
   }
