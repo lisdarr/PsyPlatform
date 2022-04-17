@@ -970,3 +970,21 @@ def getHistoryConversation(token):
             return conversionList, ''
     except Visitor.DoesNotExist:
         return '', 'No such Visitor'
+
+
+def getUserList():
+    visitors = Visitor.objects.all()
+
+    content = []
+    for visitor in visitors:
+        data = {
+            "avatar": visitor.icon,
+            "name": visitor.name,
+            "uuid": "user-"+str(visitor.vis_id)
+        }
+
+        content.append(data)
+
+    return content
+
+
