@@ -486,6 +486,11 @@ def getDashboardAdmin(token):
         list = [key, value]
         weekChartData.append(list)
 
+    def takeFirst(elem):
+        return elem[0]
+
+    weekChartData.sort(key=takeFirst)
+
     firstHour = convert.get_last_day()
     hourChartDatas = VisitorConRecord.objects.filter(stime__gte=firstHour)
     myChartData = []
