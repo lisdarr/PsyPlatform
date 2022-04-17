@@ -89,7 +89,7 @@ def wCheckUser(form):
         return ticket, "Successfully login!"
     except Visitor.DoesNotExist:
         Visitor.objects.create(name=name, tele=phon_number,
-                               emer_name=sos_name, emer_tele=sos_phonnumber)
+                               emer_name=sos_name, emer_tele=sos_phonnumber, date=datetime.now())
         return ticket, "This is a new User"
 
 
@@ -288,7 +288,7 @@ def getRecordAdmin(username, begin_date, end_date):
             ele = {
                 'id': record.vis_con_id,
                 'name': visitor.name,
-                'time': record.duration,
+                'time': convert.timeChange(record.duration),
                 'date': record.stime.strftime(("%Y-%m-%d %H:%M:%S")),
                 'rate': record.v2c_score,
                 'eva': record.v2c_comm,
