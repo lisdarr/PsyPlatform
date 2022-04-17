@@ -55,21 +55,42 @@ def checkUser(username, password):
     if user == '':
         return 0
     if check_password(password, user.password):
-        ticket = ''
-        for i in range(15):
-            s = 'abcdefghijklmnopqrstuvwxyz'
-            ticket += random.choice(s)
-
-        now_time = int(time.time())
-
-        ticket = 'TK' + ticket + str(now_time)
-
+        ticket = getToken()
         user.u_ticket = ticket
         user.save()
 
         return ticket
     else:
         return -1
+
+
+def getToken():
+    ticket = ''
+    for i in range(15):
+        s = 'abcdefghijklmnopqrstuvwxyz'
+        ticket += random.choice(s)
+
+    now_time = int(time.time())
+
+    ticket = 'TK' + ticket + str(now_time)
+    return ticket
+
+
+def wCheckUser(form):
+    name = form["name"]
+    phon_number = form["phon_number"]
+    sos_name = form["sos_name"]
+    sos_phonnumber = form["sos_phonnumber"]
+    ticket = getToken()
+    try:
+        user = Visitor.objects.get(name=name, tele=phon_number)
+        user.u_ticket = ticket
+        user.save()
+        return ticket, "Successfully login!"
+    except Visitor.DoesNotExist:
+        Visitor.objects.create(name=name, tele=phon_number,
+                               emer_name=sos_name, emer_tele=sos_phonnumber, date=datetime.now())
+        return ticket, "This is a new User"
 
 
 def getDashboardConsultant(token):
@@ -267,7 +288,7 @@ def getRecordAdmin(username, begin_date, end_date):
             ele = {
                 'id': record.vis_con_id,
                 'name': visitor.name,
-                'time': record.duration,
+                'time': convert.timeChange(record.duration),
                 'date': record.stime.strftime(("%Y-%m-%d %H:%M:%S")),
                 'rate': record.v2c_score,
                 'eva': record.v2c_comm,
@@ -843,13 +864,20 @@ def banVisitor(name):
         return 'No such visitor, please register first.'
 
 
-def consultantEdit(id):
+def getDetails(id, type):
     if id == '':
         return '', "id is None."
-    try:
-        meetingID = VisitorConRecord.objects.get(vis_con_id=id).record
-    except VisitorConRecord.DoesNotExist:
-        return '', "Doesn't have such record."
+    if type == "0":
+        try:
+            meetingID = ConDirRecord.objects.get(con_dir_id=id).record
+        except ConDirRecord.DoesNotExist:
+            return '', "Doesn't have such record."
+    else:
+        try:
+            meetingID = VisitorConRecord.objects.get(vis_con_id=id).record
+        except VisitorConRecord.DoesNotExist:
+            return '', "Doesn't have such record."
+
     records = Record.objects.filter(im_id=meetingID)
     content = []
     for record in records:
@@ -1081,6 +1109,6 @@ def saveCDRecord(form):
         return "No Such Director."
 
     ConDirRecord.objects.create(con_id=consultant.con_id, dir_id=director.dir_id,
-                                record=id,stime=date, duration=time)
+                                record=id, stime=date, duration=time)
 
     return ""

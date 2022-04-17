@@ -4,6 +4,7 @@ from .views import *
 
 urlpatterns = [
     path('login/', login),
+    path('weChat/login/', wlogin),
     path('register/', register),
     path('info/', loginInfo),
     path('logout/', logout),

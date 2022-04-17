@@ -8,8 +8,8 @@ import datetime
 def details(request):
     if request.method == "GET":
         id = request.GET.get("id", '')
-
-        content, err = consultantEdit(id)
+        type = request.GET.get("type", '')
+        content, err = getDetails(id, type)
         if err != '':
             msg = err
             status = 500
