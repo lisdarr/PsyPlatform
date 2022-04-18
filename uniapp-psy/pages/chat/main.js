@@ -116,24 +116,30 @@ Page({
     that.setData({
       hiddenkey:true
 		})
-		
-		// wx.request({
-		// 	url: 'url',
-		// 	method:"POST",
-    //   header = {'cookie':wx.getStorageSync("token")},
-    //   data:{
-		// 	  "uu_id": this.currentUser.uuid,​
-		// 		"evalutae":this.starIndex,
-    //     // 这个页面貌似没有咨询师id？​下面这行要改成对应的选择的咨询师id
-    //     "con_id":5
-    //   },
-		//   success: function(res){
-		// 	  console.log('添加咨询记录成功')
-	  // 	},
-		//   fail: function(){
-		// 		console.log('添加咨询记录失败')
-		// 	}
-		// })
+				
+		console.log("全局mycookie:"+app.globalData.mycookie)
+    var cookienow = app.globalData.mycookie;
+		console.log("评价提交时 cookienow："+cookienow)
+		var starnum = this.data.starIndex;
+		var uuid = this.data.currentUser.uuid;
+		console.log("星星数"+starnum);
+		console.log("uuid: "+uuid)
+		wx.request({
+			url: 'http://123.57.45.27:8022/visitor/weChat/add/',
+			method:"POST",
+      header : {'cookie':cookienow},
+      data:{
+			uuid : "uuid",
+			evaluate : "starnum",
+			con_id : 'consult1'
+      },
+		  success: function(res){
+			  console.log('添加咨询记录成功')
+	  	},
+		  fail: function(){
+				console.log('添加咨询记录失败')
+			}
+		})
 	  
   	var stime = this.data.startTime;
   	let a = {
