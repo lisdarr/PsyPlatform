@@ -72,7 +72,7 @@ Page({
             console.log('注册 globalData.token :'+res.data.token);
             console.log('注册 res.header :'+res.header["Set-Cookie"]);
             app.globalData.mycookie = res.header["Set-Cookie"];
-            console.log(app.globalData.mycookie)
+            console.log('存下来的cookie'+app.globalData.mycookie)
           },
           fail: function() {
             console.log('注册信息提交失败');
