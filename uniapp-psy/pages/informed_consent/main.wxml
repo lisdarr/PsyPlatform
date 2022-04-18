@@ -11,5 +11,5 @@
 </scroll-view>
 
 <button  class="agree-button" bindtap="closeThis">
-    我同意 <block wx:if="{{seconds}}">( {{seconds}}S )</block>
+    我同意 
 </button>

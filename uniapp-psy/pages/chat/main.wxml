@@ -1,12 +1,12 @@
 <!--privateChat.wxml-->
 <!-- <page-meta>
-	<navigation-bar title="{{friend.name}}" front-color="#FFFFFF" background-color="#D02129" />
+	<navigation-bar title="{{friend.name}}" front-color="#FFFFFF" background-color="#D02129" /> 
 </page-meta> -->
 <view class="chat">
 	<view class="chat-box">
 		<view class="scroll-view">
 			<view class="header">
-				<i-card full title="{{friend.name}}" extra="计时" thumb="{{friend.avatar}}">
+				<i-card full title="{{friend.name}}"  thumb="{{friend.avatar}}">
 					<button slot="content" bindtap="evaluate" size="mini" type="primary">咨询完成</button>
 					<button slot="content" bindtap="sendRecord" size="mini">发送记录</button>
 				</i-card>
