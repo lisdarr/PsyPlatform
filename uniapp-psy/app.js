@@ -8,6 +8,7 @@ App({
   },
   globalData: {
     token: null,
+    mycookie: null
   },
 
   onLaunch: function () {

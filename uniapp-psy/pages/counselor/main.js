@@ -36,7 +36,7 @@ Page({
         //console.log("全局token:"+app.globalData.token)
         var tokennow = app.globalData.token;
         //console.log("咨询师tokennow："+tokennow)
-        // header = {'cookie':};
+        header = {'cookie':tokennow};
         // wx.request({
         //   url: 'url',
         //   method: "GET",
