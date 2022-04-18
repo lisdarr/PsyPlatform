@@ -12,7 +12,7 @@
             <image src="https://i03piccdn.sogoucdn.com/0354d6ffc3ecbe11" alt class=".consultant-avatar"></image>
             <view class="info">
                 <view class="firstRow">
-                    <view class="consultant-name">{{item.userName}}
+                    <view class="consultant-name">{{item.name}}
                     <view wx:if="{{item.isConsulted === '咨询过'}}" class="isConsulted">咨询过</view>
                     </view>
                 </view>
@@ -20,7 +20,7 @@
                 <i-rate count="{{5}}" disabled value="{{item.rate}}" size="{{35}}" class="cunstom-rate"></i-rate>
             </view>
             <view class="state" wx:if="{{item.status}}">
-                <view class="free" wx:if="{{item.status === '空闲'}}"> 空闲 </view>
+                <view class="free" wx:if="{{item.status === 1}}"> 空闲 </view>
                 <view class="busy" wx:else>
                 {{item.status}}
                 </view>

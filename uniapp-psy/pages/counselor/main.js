@@ -15,17 +15,17 @@ Page({
         //         name:'cymm',
         //         avatar: "/static/images/Avatar-1.png"
         // },
-        Consultants1:[],
-        Consultants:[
-            {
-                gender:"男",
-                userName:"王咨询师",
-                isConsulted:"",
-                rate:"3.4",
-                status:"空闲",
-                icon:"https://i03piccdn.sogoucdn.com/0354d6ffc3ecbe11"
-            }
-        ],
+        Consultants:[],
+        // Consultants:[
+        //     {
+        //         gender:"男",
+        //         userName:"王咨询师",
+        //         isConsulted:"",
+        //         rate:"3.4",
+        //         status:"空闲",
+        //         icon:"https://i03piccdn.sogoucdn.com/0354d6ffc3ecbe11"
+        //     }
+        // ],
     },
 
     /**
@@ -33,25 +33,27 @@ Page({
      */
     onLoad: function () {
         var that = this;
-        //console.log("全局token:"+app.globalData.token)
-        var tokennow = app.globalData.token;
-        //console.log("咨询师tokennow："+tokennow)
-        header = {'cookie':tokennow};
-        // wx.request({
-        //   url: 'url',
-        //   method: "GET",
-        //   success: function(res){
-        //       console.log("咨询师 res:"+res);
-        //       that.setData(
-        //         {
-                    
-        //         }
-        //       )
-        //   },
-        // fail: function() {
-        //   console.log('咨询师获取失败');
-        //   }
-        // })
+        //console.log("全局mycookie:"+app.globalData.mycookie)
+        var cookienow = app.globalData.mycookie;
+        //console.log("咨询师cookienow："+cookienow)
+        wx.request({
+          url: 'http://123.57.45.27:8022/consultant/weChat/choice/',
+          method: "GET",
+          header : {'cookie':cookienow},
+          success: function(res){
+              console.log("咨询师 res.data.consultList[0].avator :"+res.data.consultList[0].avator);
+              that.setData(
+                {
+                    Consultants : res.data.consultList
+                }
+              )
+              console.log("咨询师 that.data.Consultants[0].name :"+that.data.Consultants[0].name);
+              console.log("咨询师 that.data.Consultants[0].status :"+that.data.Consultants[0].status);
+          },
+        fail: function() {
+          console.log('咨询师获取失败');
+          }
+        })
     },
     
     /**
