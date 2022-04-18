@@ -31,8 +31,8 @@
 
                     <view class="card-content">
                         <view class="left">
-                            <image class="avatar" src="{{item.counselor.avatar}}" ></image>
-                            <view class="title-data">{{item.counselor.name}}</view>
+                            <image class="avatar" src="{{item.consultants.avator}}" ></image>
+                            <view class="title-data">{{item.consultants.name}}</view>
                             <view class="{{[ item.status === 'WAITING' ? 'r-point' : 'g-point']}}"></view>
                         </view>
                         <view class="right" wx:if="{{type !== 'current'}}">

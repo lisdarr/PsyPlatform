@@ -34,41 +34,6 @@ Page({
   	avatarUrl:'',
 
 	messages: [],
-	historyMessages: [
-		{
-			startTime:"04-08 16:23",
-			status:"",
-			counselor:{
-				avatar: "https://i03piccdn.sogoucdn.com/0354d6ffc3ecbe11",
-				name:"王咨询师"
-			},
-			duration:"6:23",
-			evaluate:3,
-		},
-		{
-			startTime:"04-08 16:22",
-			status:"",
-			counselor:{
-				avatar: "https://i03piccdn.sogoucdn.com/0354d6ffc3ecbe11",
-				name:"王咨询师"
-			},
-			duration:"4:23",
-			evaluate:4,
-		},
-		{
-			startTime:"04-07 15:21",
-			status:"",
-			counselor:{
-				avatar: "https://i03piccdn.sogoucdn.com/0354d6ffc3ecbe11",
-				name:"王咨询师"
-			},
-			duration:"3:23",
-			evaluate:1,
-		}
-	],
-
-	startTime:" ",
-
 
 	//默认为false展示输入框, 为true时显示录音按钮
 	recordVisible: false,
@@ -115,71 +80,35 @@ Page({
     console.log("点击提交前，hiddenkey的值是",that.data.hiddenkey)
     that.setData({
       hiddenkey:true
-		})
+	})
 				
-		console.log("全局mycookie:"+app.globalData.mycookie)
+	console.log("全局mycookie:"+app.globalData.mycookie)
     var cookienow = app.globalData.mycookie;
-		console.log("评价提交时 cookienow："+cookienow)
-		var starnum = this.data.starIndex;
-		var uuid = this.data.currentUser.uuid;
-		console.log("星星数"+starnum);
-		console.log("uuid: "+uuid)
-		wx.request({
-			url: 'http://123.57.45.27:8022/visitor/weChat/add/',
-			method:"POST",
-      header : {'cookie':cookienow},
-      data:{
-			uuid : "uuid",
-			evaluate : "starnum",
-			con_id : 'consult1'
-      },
+	console.log("评价提交时 cookienow："+cookienow)
+	var starnum = this.data.starIndex;
+	var uuid = this.data.currentUser.uuid;
+	console.log("星星数"+starnum);
+	console.log("uuid: "+uuid)
+	wx.request({
+		url: 'http://123.57.45.27:8022/visitor/weChat/add/',
+		method:"POST",
+		header : {'cookie':cookienow},
+		  data:{
+		uuid : "uuid",
+		evaluate : "starnum",
+		con_id : 'consult1'
+		  },
 		  success: function(res){
-			  console.log('添加咨询记录成功')
-	  	},
-		  fail: function(){
-				console.log('添加咨询记录失败')
-			}
-		})
+			console.log('添加咨询记录成功')
+		},
+		fail: function(){
+			console.log('添加咨询记录失败')
+	}
+	})
 	  
-  	var stime = this.data.startTime;
-  	let a = {
-  		startTime: stime,
-  		status:"",
-	  	counselor:{
-	  		avatar: this.data.friend.avatar,
-  			name: this.data.friend.name
-	  	},
-	  	duration:"2:33",
-	  	evaluate: 0,
-	  };
-
-  	let old = this.data.historyMessages;
-  	old.push(a);
-
-  	that.setData({
-	  	historyMessages: old
-  	});
-
-  	console.log(this.data.historyMessages)
-
-  	let start = that.data.starIndex;
-	  let index = that.data.historyMessages.length-1;
-  	let list = that.data.historyMessages;
-   	list[index].evaluate = start;
-
-  	that.setData({
-  		historyMessages:list
-  	});
-
-	  var model = JSON.stringify(that.data.historyMessages);
-	  getApp().globalData.model = model;
   	wx.switchTab({
   		url: '/pages/index/main',
-	    })
-	
-	  console.log(model)
-  	console.log("点击提交后，starIndex的值是",start)
-  	console.log(that.data.historyMessages[0])
+	})
 	
   },
 
@@ -455,11 +384,6 @@ Page({
 				}
 				wx.stopPullDownRefresh();
 			}
-		});
-		
-		var stime = app.formatDate(lastMessageTimeStamp);
-		this.setData({
-			startTime: stime,
 		});
 
 	},

@@ -52,36 +52,36 @@ Page({
     }
     return;
   },
-    handleProxy1(){
-        wx.request({
-          url: 'http://123.57.45.27:8022/admin/weChat/login/',
-          method:"POST",
-          header : {
-            'content-type': 'application/x-www-form-urlencoded',
-          },
-          data:{
-            username: 'cymm',    //"username",
-            phon_number: '1801911',   //"phon_number",
-            sos_name: 'rc',   //"sos_name",
-            sos_phon_number: '1921892255'   //"sos_phon_number"
-          },
-          success: function(res){
-            console.log('注册信息提交成功');
-            console.log('注册 res.data.token :'+res.data.token);
-            app.globalData.token = res.data.token;
-            console.log('注册 globalData.token :'+res.data.token);
-            console.log('注册 res.header :'+res.header["Set-Cookie"]);
-            app.globalData.mycookie = res.header["Set-Cookie"];
-            console.log('存下来的cookie'+app.globalData.mycookie)
-          },
-          fail: function() {
-            console.log('注册信息提交失败');
-          }
-        })
-        wx.switchTab({
-          url: '/pages/index/main',
-        })
-      },
+  handleProxy1(){
+    wx.request({
+      url: 'http://123.57.45.27:8022/admin/weChat/login/',
+      method:"POST",
+      header : {
+        'content-type': 'application/x-www-form-urlencoded',
+      },
+      data:{
+        username: 'cymm',    //"username",
+        phon_number: '1801911',   //"phon_number",
+        sos_name: 'rc',   //"sos_name",
+        sos_phon_number: '1921892255'   //"sos_phon_number"
+      },
+      success: function(res){
+        console.log('注册信息提交成功');
+        console.log('注册 res.data.token :'+res.data.token);
+        app.globalData.token = res.data.token;
+        console.log('注册 globalData.token :'+res.data.token);
+        console.log('注册 res.header :'+res.header["Set-Cookie"]);
+        app.globalData.mycookie = res.header["Set-Cookie"];
+        console.log('存下来的cookie'+app.globalData.mycookie)
+      },
+      fail: function() {
+        console.log('注册信息提交失败');
+      }
+    })
+    wx.switchTab({
+      url: '/pages/index/main',
+    })
+  },
 
   onLoad() {
     if (wx.getUserProfile) {
