@@ -53,26 +53,28 @@ Page({
     return;
   },
     handleProxy1(){
-    //     wx.request({
-    //       url: 'http://localhost:8000/admin/weChat/login/',
-    //       method:"POST",
-    //       data:{
-    //         username: username,
-    //         phon_number: phon_number,
-    //         sos_name: sos_name,
-    //         sos_phon_number: sos_phon_number
-    //       },
-    //       success: function(res){
-    //         console.log('注册信息提交成功');
-    //         console.log('注册 res:'+res);
-    //         let gettoken = res.data.data.token;
-    //         wx.setStorageSync("token","gettoken");
-    //         console.log('token:'+token)
-    //       },
-    //       fail: function() {
-    //         console.log('注册信息提交失败');
-    //       }
-    //     })
+        wx.request({
+          url: 'http://123.57.45.27:8022/admin/weChat/login/',
+          method:"POST",
+          header : {
+            'content-type': 'application/x-www-form-urlencoded',
+          },
+          data:{
+            username: 'cymm',    //"username",
+            phon_number: '1801911',   //"phon_number",
+            sos_name: 'rc',   //"sos_name",
+            sos_phon_number: '1921892255'   //"sos_phon_number"
+          },
+          success: function(res){
+            console.log('注册信息提交成功');
+            console.log('注册 res.data :'+res.data.token);
+            app.globalData.token = res.data.token;
+            console.log('注册 globalData.token :'+res.data.token);
+          },
+          fail: function() {
+            console.log('注册信息提交失败');
+          }
+        })
         wx.switchTab({
           url: '/pages/index/main',
         })

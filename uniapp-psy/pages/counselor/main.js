@@ -2,6 +2,8 @@
 import IMService from "../../static/lib/imservice";
 import restapi from "../../static/lib/restapi";
 
+const app = getApp()
+
 Page({
 
     /**
@@ -30,8 +32,11 @@ Page({
      * 生命周期函数--监听页面加载
      */
     onLoad: function () {
-        // var that = this;
-        // header = {'cookie':wx.getStorageSync("token")};
+        var that = this;
+        //console.log("全局token:"+app.globalData.token)
+        var tokennow = app.globalData.token;
+        //console.log("咨询师tokennow："+tokennow)
+        // header = {'cookie':};
         // wx.request({
         //   url: 'url',
         //   method: "GET",
@@ -39,7 +44,7 @@ Page({
         //       console.log("咨询师 res:"+res);
         //       that.setData(
         //         {
-        //             Consultants1: res.data.xxx   根据具体的res.data内容赋值给Consultants1
+                    
         //         }
         //       )
         //   },
