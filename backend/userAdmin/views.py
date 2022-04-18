@@ -260,3 +260,10 @@ def addSchedule(request):
         }
         return HttpResponse(json.dumps(res, ensure_ascii=False), status=400)
 
+
+def fresh(request):
+    if request.method == 'GET':
+        fresh_scheToday()
+        return HttpResponse(status=200)
+    else:
+        return HttpResponse(status=400)

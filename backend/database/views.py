@@ -1017,7 +1017,7 @@ def getHistoryConversation(token):
                     'consultants': consultants,
                     "startTime": startTime.strftime("%Y-%m-%d %H:%M:%S"),
                     "state": state,
-                    "duration": duration,
+                    "duration": convert.timeChange(duration),
                     "evaluate": evaluate
                 }
                 print(data)
@@ -1074,13 +1074,14 @@ def getIMRecord(id, type):
         record_id = VisitorConRecord.objects.get(vis_con_id=id).record
 
     records = Record.objects.filter(im_id=record_id)
+    list = ["text", "audio", "image"]
     content = []
     for record in records:
         data = {
             "record_id": record.im_id,
             "sendername": record.user_name,
             "timestamp": datetime.timestamp(record.create_time),
-            "type": record.type,
+            "type": list[record.type],
             "content": record.msg_text
         }
         content.append(data)
@@ -1105,6 +1106,14 @@ def saveCVRecord(form):
     except Visitor.DoesNotExist:
         logging.warning("No Such Visitor.")
         return "No Such Visitor."
+
+    try:
+        contoday = ConToday.objects.get(con_id=consultant.con_id)
+        contoday.today_dur = contoday.today_dur + duration
+        contoday.today_num = contoday.today_num + 1
+        contoday.save()
+    except ConToday.DoesNotExist:
+        ConToday.objects.create(con_id=consultant.con_id, today_dur=duration, today_num=1, state=1)
 
     try:
         record = VisitorConRecord.objects.get(con_id=consultant.con_id, vis_id=visitor.vis_id, record="Wait")
@@ -1142,7 +1151,76 @@ def saveCDRecord(form):
         logging.warning("No Such Director.")
         return "No Such Director."
 
+    try:
+        dirToday = DirToday.objects.get(dir_id=director.dir_id)
+        dirToday.today_dur = dirToday.today_dur + time
+        dirToday.today_num = dirToday.today_num + 1
+        dirToday.save()
+    except ConToday.DoesNotExist:
+        DirToday.objects.create(dir_id=director.dir_id, today_dur=time, today_num=1, state=1)
+
     ConDirRecord.objects.create(con_id=consultant.con_id, dir_id=director.dir_id,
                                 record=id, stime=date, duration=time)
 
     return ""
+
+
+def saveIMRecord(forms):
+    for form in forms:
+        dict = {
+            "text": 0,
+            "audio": 1,
+            "image": 2
+        }
+        record_id = form["record_id"]
+        senderName = form["senderName"]
+        timestamp = datetime.strptime(form["timestamp"], "%Y-%m-%d %H:%M:%S")
+        type = dict.get(form["type"])
+        content = form["content"]
+
+        try:
+            Record.objects.create(im_id=record_id, type=type, create_time=timestamp,
+                                  msg_text=content, user_name=senderName)
+            return ""
+        except Exception as e:
+            return e
+
+
+def getConsultList():
+    content = []
+    consults = Consultant.objects.all()
+    for consult in consults:
+        data = {
+            "avatar": consult.icon,
+            "name": consult.name,
+            "uuid": "consultant-" + str(consult.con_id)
+        }
+
+        content.append(data)
+    return content
+
+
+def fresh_scheToday():
+    try:
+        weekday = convert.getWeekDay(datetime.now())
+
+        ConToday.objects.all().delete()
+
+        conSches = ConSchedule.objects.filter(weekday=weekday)
+
+        conTodayList = []
+        for con in conSches:
+            conTodayList.append(ConToday(con_id=con.con_id, state=0, today_num=0, today_dur=0, now_num=0))
+
+        ConToday.objects.bulk_create(conTodayList)
+
+        DirToday.objects.all().delete()
+        dirSches = DirSchedule.objects.filter(weekday=weekday)
+
+        dirTodayList = []
+        for dir in dirSches:
+            dirTodayList.append(DirToday(dir_id=dir.dir_id, today_num=0, today_dur=0, state=0))
+
+        DirToday.objects.bulk_create(dirTodayList)
+    except Exception as e:
+        logging.warning('发生错误，错误信息为：', e)

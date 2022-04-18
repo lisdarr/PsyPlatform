@@ -152,3 +152,43 @@ def eachRecordGET(request):
         }
         return HttpResponse(json.dumps(res, ensure_ascii=False), status=400)
 
+
+def eachRecordSAVE(request):
+    if request.method == "POST":
+        forms = request.POST.get("chathistory")
+        err = saveIMRecord(forms)
+        if err != "":
+            msg = err
+            status = 500
+        else:
+            msg = "Success!"
+            status = 200
+        res = {
+            "msg": msg,
+            "status": status
+        }
+
+        return HttpResponse(json.dumps(res, ensure_ascii=False), status=status)
+    else:
+        res = {
+            "msg": "Wrong request method",
+            "status": 400
+        }
+        return HttpResponse(json.dumps(res, ensure_ascii=False), status=400)
+
+
+def consultList(request):
+    if request.method == 'GET':
+        content = getConsultList()
+        res = {
+            "content": content,
+            "msg": "Success!",
+            "status": 200
+        }
+        return HttpResponse(json.dumps(res, ensure_ascii=False), status=200)
+    else:
+        res = {
+            "msg": "Wrong request method",
+            "status": 400
+        }
+        return HttpResponse(json.dumps(res, ensure_ascii=False), status=400)

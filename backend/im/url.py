@@ -8,4 +8,6 @@ urlpatterns = [
     path('record/save/cv/', cvRecordSAVE),
     path('record/save/cd/', cdRecordSAVE),
     path('eachRecord/get/', eachRecordGET),
+    path('eachRecord/save/', eachRecordSAVE),
+    path('consultList/', consultList),
 ]
