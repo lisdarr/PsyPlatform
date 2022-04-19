@@ -52,7 +52,7 @@ def checkUser(username, password):
             record.state = 1
             record.save()
         except DirToday.DoesNotExist:
-            DirToday.objects.create(dir_id=user.dir_id, state=1, today_num=0, today_dur=0)
+            DirToday.objects.create(dir_id=user.dir_id, state=1, today_num=0, today_dur=0, now_num=0)
             logging.warning("Director is free today")
 
     if user == '':
@@ -1177,7 +1177,7 @@ def saveCDRecord(form):
         dirToday.today_num = dirToday.today_num + 1
         dirToday.save()
     except ConToday.DoesNotExist:
-        DirToday.objects.create(dir_id=director.dir_id, today_dur=time, today_num=1, state=1)
+        DirToday.objects.create(dir_id=director.dir_id, today_dur=time, today_num=1, state=1, now_num=0)
 
     ConDirRecord.objects.create(con_id=consultant.con_id, dir_id=director.dir_id,
                                 record=id, stime=date, duration=time)
