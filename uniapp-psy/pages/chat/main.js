@@ -21,7 +21,8 @@ Page({
 
   data: {
     starIndex : 0,
-    hiddenkey : true,
+		hiddenkey : true,
+		evalution:'',
 
     //会话相关
     content: '',
@@ -53,14 +54,16 @@ Page({
 	}
 
   },
-
-
   // 星星函数
   onChange(e){
     const index = e.detail.index;
     this.setData({
         'starIndex' : index
     })
+},
+getEvaInput(e){
+	evalution = e.detail.detail.value
+	console.log("evalution:",evalution)
 },
 
 //点击咨询完成弹出评价框
@@ -101,7 +104,8 @@ Page({
 		  data:{
 		uuid : "uuid",
 		evaluate : "starnum",
-		con_id : 'consultant-1'
+		con_id : 'consultant-1',
+		evalution: "evalution"
 		  },
 		  success: function(res){
 			console.log('添加咨询记录成功')
