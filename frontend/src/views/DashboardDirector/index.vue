@@ -125,7 +125,7 @@ export default {
       directorName: null,
       consultTodayNum: null,
       consultTodayTime: null,
-      squareUrl: 'https://images.pexels.com/photos/4491461/pexels-photo-4491461.jpeg?cs=srgb&dl=pexels-karolina-grabowska-4491461.jpg&fm=jpg',
+      squareUrl: '',
       tableData: [],
       calendarData: []
     }
@@ -138,7 +138,7 @@ export default {
       var that = this
       dashboardDirector(getToken()).then((response) => {
         that.consultList = response.consultList
-        // that.squareUrl = response.squareUrl
+        that.squareUrl = response.squarUrl
         that.directorName = response.directorName
         that.consultNum = response.consultNum
         that.consultTodayNum = response.today_num

@@ -80,13 +80,13 @@
                   <ChatMessage
                     :message="message"
                     :to="friend"
-                    :current-user="currentUser"
+                    :currentUser="currentUser"
                     :type="type"
                     @showImageFullScreen="showImageFullScreen"
                   />
                 </div>
               </div>
-              <send-box :to="friend" :type="type" @onSent="scrollToBottom"/>
+              <send-box :to="friend" :type="type" @onSent="scrollToBottomNew"/>
               <!--      放大查看图片-->
               <!--        <div>-->
               <!--          <img src="image.url" alt="[图片]">-->
@@ -125,8 +125,8 @@
 
 import ChatMessage from '@/views/ChatConsult/ChatMessage'
 import SendBox from '@/views/ChatConsult/SendBox'
-import { chatHistory } from '@/api/chat'
-import { SaveDirRecord, SendDirRecord } from '@/api/im'
+import { getConsultList, SaveDirRecord, SendCurrentRecord } from '@/api/im'
+import { chatHistoryDir } from '@/api/chat'
 
 export default {
   name: 'ChatDirector',
@@ -148,11 +148,7 @@ export default {
       // 聊天记录:当前用户在该聊天窗口发生的全部聊天记录
       messages: [],
       // 聊天对象信息
-      friend: {
-        avatar: 'https://i03piccdn.sogoucdn.com/0354d6ffc3ecbe11',
-        name: '王咨询师',
-        uuid: 'consult1'
-      },
+      friend: {},
       // 当前用户信息
       // currentUser: {
       //   avatar: 'https://images.pexels.com/photos/4491461/pexels-photo-4491461.jpeg?cs=srgb&dl=pexels-karolina-grabowska-4491461.jpg&fm=jpg',
@@ -192,12 +188,21 @@ export default {
       timer: '',
       chatNums: {},
       HelpInfo: {},
-      SingleRecord: {}
+      SingleRecord: {},
+      consults: [],
+      RecordHistory: []
     }
   },
   beforeMount() {
+    // 获取咨询师列表
+    getConsultList().then(response => {
+      this.consults = response.content
+      console.log('咨询师列表：' + JSON.stringify(this.consults))
+    }).catch(error => {
+      console.log('获取咨询师列表出错！', error)
+    })
     const self = this
-    this.currentUser.uuid = 'director' + this.$store.getters.id
+    this.currentUser.uuid = 'director-' + this.$store.getters.id
     // 建立会话连接，user包含用户名+头像+用户id
     if (this.goEasy.getConnectionStatus() === 'disconnected') {
       this.service.connect(this.currentUser)
@@ -239,13 +244,16 @@ export default {
       this.type = this.GoEasy.IM_SCENE.PRIVATE
       // 对话人的基本信息，包括name, avatar, uuid;
       // 之后随不同id取不同用户信息
+      console.log('123')
+      console.log(id)
       this.friend = this.findConsultById(id)
+      console.log(this.friend)
       // 和该对话人的全部聊天记录
       this.messages = this.service.getPrivateMessages(id)
       console.log('开始获取同步消息')
       this.timer = setInterval(this.getHistory, 800)
       this.scrollToBottom()
-      if (!this.timer[id]) {
+      if (!this.timerChat[id]) {
         this.timerChat[id] = setInterval(this.timeComputed, 1000)
       }
     },
@@ -281,10 +289,12 @@ export default {
       // 传入监听器，收到一条私聊消息总是滚到到页面底部
       this.service.onNewPrivateMessageReceive = (friendId, message) => {
         if (friendId in self.chatNums) {
-          self.chatNums[friendId] += 1
+          self.chatNums[friendId] = 1 + self.chatNums[friendId]
         } else {
-          self.chatNums[friendId] === 0
+          self.chatNums[friendId] = 1
         }
+        console.log('监听器中统计chatNums：')
+        console.log(self.chatNums)
         // this.getHistory()
         if (friendId === this.friend.uuid) {
           this.markMessageAsRead(friendId)
@@ -323,40 +333,57 @@ export default {
       // 保存本次求助相关信息HelpInfo
       this.HelpInfo.id = this.helpId
       var consultinfo = this.findConsultById(this.$route.query.id)
-      this.HelpInfo.name = consultinfo.name
+      this.HelpInfo.dir_name = this.currentUser.name
+      this.HelpInfo.con_name = consultinfo.name
       this.HelpInfo.time = this.consultTime[this.$route.query.id]
-      this.HelpInfo.date = d.getTime()
+      this.HelpInfo.date = this.formatDate(d.getTime())
       SaveDirRecord(this.HelpInfo).then(response => {
         console.log(response.msg)
       }).catch(error => {
-        console.log(error)
+        console.log('SaveDirRecord', error)
       })
-      clearInterval(this.timer[this.$route.query.id])
+      clearInterval(this.timerChat[this.$route.query.id])
       // 把当前计时器相关数据上传数据库后，清空
       this.timerChat[this.$route.query.id] = ''
       this.consultTime[this.$route.query.id] = ''
-      this.initTime[this.$route.query.id] = d.getTime()
+      // this.initTime[this.$route.query.id] = d.getTime()
       // 保存此次咨询的聊天记录到本地
-      this.goEasy.im.history({
-        userId: self.$route.query.id, // 对方userId
-        lastTimestamp: Date.now(), // 查询发送时间小于（不包含）该时间的历史消息，可用于分页和分批拉取聊天记录，默认为当前时间
-        limit: self.chatNums[self.$route.query.id],
-        onSuccess(result) {
-          for (var item of result.content) {
-            self.SingleRecord.record_id = self.recordId
-            var senderr = self.findUserById(item.senderId)
-            self.SingleRecord.senderName = senderr.name
-            self.SingleRecord.timestamp = item.timestamp
-            self.SingleRecord.type = item.type
-            self.SingleRecord.content = self.getContent(item)
+      chatHistoryDir({
+        appkey: 'BC-a9e0b1b27564446d942734742f8cbf07',
+        userAId: self.$route.query.id,
+        userBId: self.currentUser.uuid,
+        limit: self.chatNums[self.$route.query.id]
+      }).then((response) => {
+        console.log(response)
+        for (var item of response.content) {
+          self.SingleRecord.record_id = self.helpId
+          if (item.senderId === self.$route.query.id) {
+            var senderr = self.findConsultById(item.senderId)
+          } else {
+            senderr = this.currentUser
           }
-          SendDirRecord(self.SingleRecord).then(response => {
-            console.log(response.msg)
-          }).catch(error => {
-            console.log(error)
-          })
+          self.SingleRecord.senderName = senderr.name
+          self.SingleRecord.timestamp = item.timestamp
+          self.SingleRecord.type = item.type
+          self.SingleRecord.content = self.getContent(item)
+          self.RecordHistory.push(self.SingleRecord)
         }
+        // 待改
+        var data = {
+          chathistory: JSON.stringify(self.RecordHistory)
+        }
+        SendCurrentRecord(data).then(response => {
+          console.log(self.RecordHistory)
+          console.log(response.msg)
+        }).catch(error => {
+          console.log('SendCurrentRecordError:' + error)
+        })
+      }).catch((error) => {
+        console.log('出错！')
+        console.log(error)
       })
+      // 复原chatNums对应id的记录数为0
+      self.chatNums[self.$route.query.id] = 0
       this.goEasy.im.removePrivateConversation({
         userId: self.$route.query.id,
         onSuccess: function() {
@@ -366,12 +393,13 @@ export default {
           console.log(error)
         }
       })
+      clearInterval(this.timer)
     },
     getHistory() {
-      chatHistory({
+      chatHistoryDir({
         appkey: 'BC-a9e0b1b27564446d942734742f8cbf07',
-        userAId: 'user1',
-        userBId: 'consult1',
+        userAId: 'user-1',
+        userBId: this.friend.uuid,
         limit: 30
       }).then((response) => {
         console.log(response.content)
@@ -382,14 +410,38 @@ export default {
         console.log('出错！')
         console.log(error)
       })
+    },
+    findConsultById(userId) {
+      var consult = this.consults.find(consult => (consult.uuid === userId))
+      return consult
+    },
+    // 时间戳转换为标准格式 yyyy-MM-dd HH:mm:ss
+    formatDate(timestamp) {
+      var date = new Date(timestamp)
+      var YY = date.getFullYear() + '-'
+      var MM = (date.getMonth() + 1 < 10 ? '0' + (date.getMonth() + 1) : date.getMonth() + 1) + '-'
+      var DD = (date.getDate() < 10 ? '0' + (date.getDate()) : date.getDate())
+      var hh = (date.getHours() < 10 ? '0' + date.getHours() : date.getHours()) + ':'
+      var mm = (date.getMinutes() < 10 ? '0' + date.getMinutes() : date.getMinutes()) + ':'
+      var ss = (date.getSeconds() < 10 ? '0' + date.getSeconds() : date.getSeconds())
+      return YY + MM + DD + ' ' + hh + mm + ss
+    },
+    scrollToBottomNew() {
+      console.log('按完发送键前，当前消息记录数为：' + JSON.stringify(this.chatNums))
+      if (this.chatNums[this.$route.query.id]) {
+        this.chatNums[this.$route.query.id] = 1 + this.chatNums[this.$route.query.id]
+      } else {
+        this.chatNums[this.$route.query.id] = 2
+      }
+      // this.chatNums[this.$route.query.id] = this.chatNums[this.$route.query.id] + 1
+      console.log('按完发送键后，当前消息记录数为：' + JSON.stringify(this.chatNums))
+      this.$nextTick(() => {
+        this.$refs.scrollView.scrollTo(0, this.$refs.scrollView.scrollHeight)
+      })
     }
   },
   beforeDestroy() {
     clearInterval(this.timer)
-  },
-  findConsultById(userId) {
-    var consult = this.consults.find(consult => (consult.uuid === userId))
-    return consult
   }
 }
 </script>

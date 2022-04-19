@@ -12,4 +12,5 @@ urlpatterns = [
     path('schedule/info/', scheduleInfo),
     path('schedule/query/', scheduleQuery),
     path('schedule/add/', addSchedule),
+    path('fresh/', fresh)
 ]

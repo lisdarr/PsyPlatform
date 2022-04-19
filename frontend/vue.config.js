@@ -74,6 +74,12 @@ module.exports = {
         ws: true,
         changeOrigin: true,
         pathRewrite: { '^/ChatDirector': '' }
+      },
+      '/ChatConsult': {
+        target: 'http://rest-hangzhou.goeasy.io/v2/im/history',
+        ws: true,
+        changeOrigin: true,
+        pathRewrite: { '^/ChatConsult': '' }
       }
     }
   },
