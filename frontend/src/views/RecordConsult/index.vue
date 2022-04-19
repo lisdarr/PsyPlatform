@@ -15,8 +15,9 @@
         <el-button size="small" icon="el-icon-search" @click="search">搜索</el-button>
       </div>
     </div>
-    <el-table :data="tableData.slice((currentPage-1)*pageSize, currentPage*pageSize)"
-              style="width: 100%; margin-left: 12px; padding-top: 15px"
+    <el-table
+      :data="tableData.slice((currentPage-1)*pageSize, currentPage*pageSize)"
+      style="width: 100%; margin-left: 12px; padding-top: 15px"
     >
       <el-table-column prop="id" label="编号" width="100"/>
       <el-table-column prop="name" label="咨询人" width="100"/>
@@ -69,6 +70,7 @@ export default {
   },
   methods: {
     handleSizeChange(val) {
+      this.pageSize = val
       console.log(`每页 ${val} 条`)
     },
     handleCurrentChange(val) {

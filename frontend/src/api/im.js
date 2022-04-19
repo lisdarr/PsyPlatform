@@ -18,9 +18,16 @@ export function getUserList() {
   })
 }
 
+export function getConsultList() {
+  return request({
+    url: '/im/consultList/',
+    method: 'GET'
+  })
+}
+
 export function SendCurrentRecord(data) {
   return request({
-    url: '/im/eachRecord/get',
+    url: '/im/eachRecord/save/',
     method: 'POST',
     data: data
   })
@@ -53,7 +60,7 @@ export function askForDir(id) {
 
 export function SaveDirRecord(data) {
   return request({
-    url: '/im/saveDirRecord/',
+    url: '/im/record/save/cd/',
     method: 'POST',
     data: data
   })

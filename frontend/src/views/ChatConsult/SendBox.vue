@@ -3,19 +3,19 @@
     <div class="send-box-top">
       <el-button icon="el-icon-microphone" class="send-button-icon"/>
       <el-popover
-          v-model="emojiShow"
-          placement="top"
-          width="500"
-          height="700"
-          trigger="click"
+        v-model="emojiShow"
+        placement="top"
+        width="500"
+        height="700"
+        trigger="click"
       >
         <div class="browBox">
           <ul style="display: flex;flex-wrap: wrap;list-style: none;">
             <li
-                v-for="(item, index) in faceList"
-                :key="index"
-                style="cursor: pointer;width: 10%;font-size: 26px;text-align: center;list-style: none;"
-                @click="getBrow(index)"
+              v-for="(item, index) in faceList"
+              :key="index"
+              style="cursor: pointer;width: 10%;font-size: 26px;text-align: center;list-style: none;"
+              @click="getBrow(index)"
             >
               {{ item }}
             </li>
@@ -31,22 +31,23 @@
       </el-button>
     </div>
     <el-input
-        v-model="content"
-        class="send-box-bottom"
-        placeholder="请输入内容"
-        type="textarea"
-        :rows="5"
-        @keyup.enter.native="submitMessage"
+      v-model="content"
+      class="send-box-bottom"
+      placeholder="请输入内容"
+      type="textarea"
+      :rows="5"
+      @keyup.enter.native="submitMessage"
     />
   </div>
 </template>
 
 <script>
+
 const appData = require('@/assets/emojis.json')
 export default {
   name: 'SendBox',
   components: {},
-  props: ['to', 'type', 'chatNums'],
+  props: ['to', 'type'],
   data() {
     return {
       audio: {
@@ -96,8 +97,8 @@ export default {
             id: this.to.uuid,
             type: this.type,
             data: {
-              name: this.to.name,
-              avatar: this.to.avatar
+              'name': this.to.name,
+              'avatar': this.to.avatar
             }
           }
         })
@@ -107,25 +108,19 @@ export default {
       }
     },
     sendMessage(message) {
+      console.log(message)
       const toId = message.to.id
       const type = message.to.type
+      let localHistory
       if (type === this.GoEasy.IM_SCENE.PRIVATE) {
-        this.history = this.service.getPrivateMessages(toId)
+        localHistory = this.service.getPrivateMessages(toId)
       } else {
-        this.history = this.service.getGroupMessages(toId)
+        localHistory = this.service.getGroupMessages(toId)
       }
-      this.history.push(message)
-      // console.log(this.history)
-      // if (toId === 'user1') {
-      //   this.$store.dispatch('history/setMessages', this.history)
-      //   const test = { 'messages in store:': this.$store.getters.synmessages }
-      //   console.log(test)
-      // }
-      var self = this
+      localHistory.push(message)
       this.goEasy.im.sendMessage({
         message: message,
         onSuccess: function(message) {
-          self.chatNums[message.to.id] += 1
           console.log('发送成功.', message)
         },
         onFailed: function(error) {
@@ -154,7 +149,6 @@ export default {
     }
   }
 }
-
 </script>
 
 <style>
