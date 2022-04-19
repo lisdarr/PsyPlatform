@@ -5,6 +5,7 @@
   "usingComponents": {
     "i-card": "/static/dist/card/index",
     "i-rate": "/static/dist/rate/index",
+    "i-input":"/static/dist/input/index",
     "GoEasyRecorder": "/components/GoEasyRecorder/goEasyRecorder",
 		"GoEasyAudioPlayer": "/components/GoEasyAudioPlayer/goEasyAudioPlayer",
 		"GoEasyVideoPlayer": "/components/GoEasyVideoPlayer/goEasyVideoPlayer",

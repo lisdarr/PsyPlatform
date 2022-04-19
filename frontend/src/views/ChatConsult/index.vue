@@ -111,13 +111,13 @@
                   <ChatMessage
                     :message="message"
                     :to="friend"
-                    :current-user="currentUser"
+                    :currentUser="currentUser"
                     :type="type"
                     @showImageFullScreen="showImageFullScreen"
                   />
                 </div>
               </div>
-              <send-box :to="friend" :type="type" :chatNums="chatNums" @onSent="scrollToBottom"/>
+              <send-box :to="friend" :type="type" @onSent="scrollToBottomNew()"/>
               <div>
                 <img :src="image.url" alt="[图片]">
               </div>
@@ -134,6 +134,7 @@
 import ChatMessage from '@/views/ChatConsult/ChatMessage'
 import SendBox from '@/views/ChatConsult/SendBox'
 import { askForDir, getUserList, SaveCurrentRecord, SendCurrentRecord } from '@/api/im'
+import { chatHistoryCon } from '@/api/chat'
 
 export default {
   name: 'ChatConsult',
@@ -199,14 +200,17 @@ export default {
       // 用于记录每个用户发送的消息数量，根据该数量取聊天记录
       chatNums: {},
       SingleRecord: {},
+      RecordHistory: [],
       recordId: '',
       RecordInfo: {},
       users: [],
-      friend: {}
+      friend: {},
+      // 记录分配给该用户的督导
+      matchDir: {}
     }
   },
   beforeMount() {
-    this.currentUser.uuid = 'consult-' + this.$store.getters.id
+    this.currentUser.uuid = 'consultant-' + this.$store.getters.id
     // if (this.$store.getters.roles[0] === 'Consultant') {
     //   this.currentUser.uuid = 'consult' + this.$store.getters.id
     // } else if (this.$store.getters.roles[0] === 'Director') {
@@ -224,6 +228,7 @@ export default {
     })
     const self = this
     // 加载会话列表
+    this.initialPrivateListeners()
     this.goEasy.im.latestConversations({
       onSuccess: function(res) {
         const newconversations = res.content.conversations
@@ -244,7 +249,6 @@ export default {
       }
     })
     this.scrollToBottom()
-    this.initialPrivateListeners()
     if (this.messages.length !== 0) {
       this.markMessageAsRead(this.friend.uuid)
     }
@@ -301,16 +305,30 @@ export default {
         this.$refs.scrollView.scrollTo(0, this.$refs.scrollView.scrollHeight)
       })
     },
+    scrollToBottomNew() {
+      console.log('按完发送键前，当前消息记录数为：' + JSON.stringify(this.chatNums))
+      if (this.chatNums[this.$route.query.id]) {
+        this.chatNums[this.$route.query.id] = 1 + this.chatNums[this.$route.query.id]
+      } else {
+        this.chatNums[this.$route.query.id] = 2
+      }
+      // this.chatNums[this.$route.query.id] = this.chatNums[this.$route.query.id] + 1
+      console.log('按完发送键后，当前消息记录数为：' + JSON.stringify(this.chatNums))
+      this.$nextTick(() => {
+        this.$refs.scrollView.scrollTo(0, this.$refs.scrollView.scrollHeight)
+      })
+    },
     initialPrivateListeners() {
       const self = this
-      console.log('监听到新消息')
       // 传入监听器，收到一条私聊消息总是滚到到页面底部
       this.service.onNewPrivateMessageReceive = (friendId, message) => {
         if (friendId in self.chatNums) {
-          self.chatNums[friendId] += 1
+          self.chatNums[friendId] = 1 + self.chatNums[friendId]
         } else {
-          self.chatNums[friendId] === 0
+          self.chatNums[friendId] = 1
         }
+        console.log('监听器中统计chatNums：')
+        console.log(self.chatNums)
         if (friendId === self.friend.uuid) {
           this.markMessageAsRead(friendId)
           this.scrollToBottom()
@@ -340,46 +358,38 @@ export default {
       })
     },
     ToDir() {
-      var dir_conversation = {}
+      const self = this
       askForDir(this.$store.getters.id).then(response => {
+        var dir_conversation
+        const data = response.content[0]
+        self.matchDir[this.friend.uuid] = data.uuid
         dir_conversation = {
           type: 'private',
-          userId: response.content[0].uuid,
+          userId: data.uuid,
           unread: 0, // 未读消息条数
           data: {
-            'avatar': response.content[0].avator,
-            'name': response.content[0].name
+            'avatar': data.avator,
+            'name': data.name
           },
           lastMessage: {}
         }
         this.conversations.push(dir_conversation)
-      }).catch(error => {
-        console.log(error)
-      })
-      // dir_conversation = {
-      //   type: 'private',
-      //   userId: 'director1',
-      //   unread: 0, // 未读消息条数
-      //   // 私聊好友Data信息，来源于发送私聊消息时的to.data和发送方im.connect时传入的data
-      //   data: {
-      //     'avatar': 'https://images.pexels.com/photos/4491461/pexels-photo-4491461.jpeg?cs=srgb&dl=pexels-karolina-grabowska-4491461.jpg&fm=jpg',
-      //     'name': '周导'
-      //   },
-      //   lastMessage: {}
-      // }
-      this.dialogVisible = false
-      this.$router.push({
-        name: 'ChatConsult',
-        query: {
-          id: dir_conversation.userId
+        this.dialogVisible = false
+        this.$router.push({
+          name: 'ChatConsult',
+          query: {
+            id: dir_conversation.userId
+          }
+        })
+        var d = new Date()
+        this.initTime[dir_conversation.userId] = d.getTime()
+        console.log('督导初始时间：' + JSON.stringify(this.initTime))
+        if (!this.timer[dir_conversation.userId]) {
+          this.timer[dir_conversation.userId] = setInterval(this.timeComputed, 1000)
         }
+      }).catch(error => {
+        console.log('askForDirError', error)
       })
-      console.log(this.dirinfo)
-      var d = new Date()
-      this.initTime[dir_conversation.userId] = d.getTime()
-      if (!this.timer[dir_conversation.userId]) {
-        this.timer[dir_conversation.userId] = setInterval(this.timeComputed, 1000)
-      }
     },
     removeConversation(formName) {
       this.$refs[formName].validate((valid) => {
@@ -412,32 +422,56 @@ export default {
       this.dialogFormVisible = false
       const self = this
       self.showLoading = true
-      clearInterval(this.timer[this.$route.query.id])
       // 把当前计时器相关数据上传数据库后，清空
+      clearInterval(this.timer[this.$route.query.id])
       this.timer[this.$route.query.id] = ''
       this.consultTime[this.$route.query.id] = ''
       this.initTime[this.$route.query.id] = d.getTime()
       // 保存此次咨询的聊天记录到本地
-      this.goEasy.im.history({
-        userId: self.$route.query.id, // 对方userId
-        lastTimestamp: Date.now(), // 查询发送时间小于（不包含）该时间的历史消息，可用于分页和分批拉取聊天记录，默认为当前时间
-        limit: self.chatNums[self.$route.query.id],
-        onSuccess(result) {
-          for (var item of result.content) {
-            self.SingleRecord.record_id = self.recordId
+      console.log('传给chatHistory的值：')
+      console.log('userAId:' + JSON.stringify(self.$route.query.id))
+      console.log('userBId:' + JSON.stringify(self.currentUser.uuid))
+      console.log('limit:' + JSON.stringify(self.chatNums[self.$route.query.id]))
+      chatHistoryCon({
+        appkey: 'BC-a9e0b1b27564446d942734742f8cbf07',
+        userAId: self.$route.query.id,
+        userBId: self.currentUser.uuid,
+        limit: self.chatNums[self.$route.query.id]
+      }).then((response) => {
+        console.log(response)
+        for (var item of response.content) {
+          self.SingleRecord.record_id = self.recordId
+          if (item.senderId === self.$route.query.id) {
             var senderr = self.findUserById(item.senderId)
-            self.SingleRecord.senderName = senderr.name
-            self.SingleRecord.timestamp = item.timestamp
-            self.SingleRecord.type = item.type
-            self.SingleRecord.content = self.getContent(item)
+          } else {
+            senderr = this.currentUser
           }
-          SendCurrentRecord(self.SingleRecord).then(response => {
-            console.log(response.msg)
-          }).catch(error => {
-            console.log(error)
-          })
+          self.SingleRecord.senderName = senderr.name
+          self.SingleRecord.timestamp = item.timestamp
+          self.SingleRecord.type = item.type
+          self.SingleRecord.content = self.getContent(item)
+          self.RecordHistory.push(self.SingleRecord)
         }
+        // 所有的list类型的都要进行这个格式转换，否则后端取值异常
+        // this.RecordHistory = qs.stringify(this.RecordHistory, {
+        //   arrayFormat: 'indices'
+        // })
+        var data = {
+          chathistory: JSON.stringify(self.RecordHistory)
+        }
+        SendCurrentRecord(data).then(response => {
+          console.log(self.RecordHistory)
+          console.log(response.msg)
+        }).catch(error => {
+          console.log('SendCurrentRecordError:' + error)
+        })
+      }).catch((error) => {
+        console.log('出错！')
+        console.log(error)
       })
+      // 复原chatNums对应id的记录数为0
+      self.chatNums[self.$route.query.id] = 0
+      console.log('移除当前用户后的chatNums：' + JSON.stringify({ chatNums: self.chatNums }))
       this.goEasy.im.removePrivateConversation({
         userId: self.$route.query.id,
         onSuccess: function() {
@@ -446,6 +480,25 @@ export default {
         onFailed: function(error) {
           console.log(error)
         }
+      })
+      // 判断删除该次咨询对应的督导的聊天框
+      if (this.matchDir[this.friend.uuid]) {
+        var tmpDirId = this.matchDir[this.friend.uuid]
+        clearInterval(this.timer[tmpDirId])
+        this.consultTime[tmpDirId] = ''
+        this.goEasy.im.removePrivateConversation({
+          userId: tmpDirId,
+          onSuccess: function() {
+            self.showLoading = false
+          },
+          onFailed: function(error) {
+            console.log(error)
+          }
+        })
+        this.matchDir[this.friend.uuid] = undefined
+      }
+      this.$router.replace({
+        path: '/ChatConsult'
       })
     },
     findUserById(userId) {

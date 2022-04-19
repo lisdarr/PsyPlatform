@@ -71,6 +71,7 @@ export default {
   },
   methods: {
     handleSizeChange(val) {
+      this.pageSize = val
       console.log(`每页 ${val} 条`)
     },
     handleCurrentChange(val) {

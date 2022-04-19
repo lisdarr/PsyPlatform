@@ -8,7 +8,6 @@
 			<view class="header">
 				<i-card full title="{{friend.name}}"  thumb="{{friend.avatar}}">
 					<button slot="content" bindtap="evaluate" size="mini" type="primary">咨询完成</button>
-					<button slot="content" bindtap="sendRecord" size="mini">发送记录</button>
 				</i-card>
 			</view>
 			<!-- 评价 -->
@@ -22,7 +21,12 @@
 						{{starIndex}}星
 					</i-rate>
 					</i-cell>
-					<view slot="footer"><button bindtap="submit" size="mini" type="primary">提交</button></view>
+					<view slot="footer">
+					  <view class="inputContent">
+              <i-input bind:change="getEvaInput" i-class="EvaInput" title="请输入评价" maxlength="100" clearable right></i-input>
+            </view>
+					  <button bindtap="submit" size="mini" type="primary">提交</button>
+					</view>
 				</i-card>
 			</view>
 

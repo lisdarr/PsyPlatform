@@ -15,13 +15,14 @@ let emojiMap = {
 };
 const app = getApp();
 
-
+var evalute =" "
 
 Page({
 
   data: {
     starIndex : 0,
-    hiddenkey : true,
+		hiddenkey : true,
+		evalution:'',
 
     //会话相关
     content: '',
@@ -31,7 +32,7 @@ Page({
   		name: "cymm",
   		avatar: "/static/images/Avatar-1.png"
   	},
-  	avatarUrl:'',
+	  avatarUrl:'',
 
 	messages: [],
 
@@ -53,14 +54,16 @@ Page({
 	}
 
   },
-
-
   // 星星函数
   onChange(e){
     const index = e.detail.index;
     this.setData({
         'starIndex' : index
     })
+},
+getEvaInput(e){
+	evalution = e.detail.detail.value
+	console.log("evalution:",evalution)
 },
 
 //点击咨询完成弹出评价框
@@ -73,6 +76,11 @@ Page({
     console.log("点击咨询完成后，hiddenkey的值是",that.data.hiddenkey)
   },
 
+  //输入评价
+  getEvalute(e){
+	evalute : e.detail.detail.value
+    console.log("Evalute:",evalute)
+  },
 
 //点击评价的提交按钮结束本次会话
   submit(){
@@ -96,7 +104,8 @@ Page({
 		  data:{
 		uuid : "uuid",
 		evaluate : "starnum",
-		con_id : 'consult1'
+		con_id : 'consultant-1',
+		evalution: "evalution"
 		  },
 		  success: function(res){
 			console.log('添加咨询记录成功')
@@ -149,11 +158,11 @@ Page({
 
 	// 获取初始数据并加载
 	// let friendId = options.to; //咨询师id
-	let friendId = "consult1"
+	let friendId = "consultant-1"
 	let service = app.globalData.service;
 	let friend = {
 		name: "王咨询师",
-		uuid: "consult1",
+		uuid: "consultant-1",
 		avatar: "https://i03piccdn.sogoucdn.com/0354d6ffc3ecbe11"
 	}
 	
