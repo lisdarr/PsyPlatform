@@ -43,6 +43,7 @@ def checkUser(username, password):
             record.state = 1
             record.save()
         except ConToday.DoesNotExist:
+            ConToday.objects.create(con_id=user.con_id, state=1, today_dur=0, today_num=0, now_num=0)
             logging.warning("Consultant " + username + " is free today.")
     if Director.objects.filter(username=username).count() != 0:
         user = Director.objects.get(username=username)
@@ -50,7 +51,8 @@ def checkUser(username, password):
             record = DirToday.objects.get(dir_id=user.dir_id)
             record.state = 1
             record.save()
-        except ConToday.DoesNotExist:
+        except DirToday.DoesNotExist:
+            DirToday.objects.create(dir_id=user.dir_id, state=1, today_num=0, today_dur=0)
             logging.warning("Director is free today")
 
     if user == '':
@@ -235,7 +237,7 @@ def getDashboardDirector(token):
 
     try:
         today_info = DirToday.objects.get(dir_id=user_info.dir_id)
-        consultNum = today_info.today_num
+        consultNum = today_info.now_num
         today_num = today_info.today_num
         today_time = today_info.today_dur
     except DirToday.DoesNotExist:
@@ -972,16 +974,26 @@ def getAllOnlineConsultant(token):
 
 
 def addTalkingRecord(form):
-    uu_id = form["uu_id"]
-    evaluate = form["evaluate"]
+    uu_id = form["uuid"].split("-")[1]
+    evaluate = float(form["evaluate"])
     record = "Wait"
-    con_id = form["con_id"]
+    con_id = form["con_id"].split("-")[1]
+    evalution = form["evalution"]
     stime = datetime.now()
+
+    try:
+        cons = Consultant.objects.get(con_id=con_id)
+        score = (cons.av_score * cons.totel_num + evaluate) / cons.totel_num
+        cons.av_score = score
+        cons.save()
+    except Consultant.DoesNotExist:
+        logging.warning("No such consultant!")
 
     try:
         record = VisitorConRecord.objects.get(vis_id=uu_id, con_id=con_id, v2c_score=-1)
         record.v2c_score = evaluate
         record.stime = stime
+        record.v2c_comm = evalution
         record.save()
     except VisitorConRecord.DoesNotExist:
         if VisitorConRecord.objects.filter(vis_id=uu_id, con_id=con_id).count() > 0:
@@ -989,8 +1001,8 @@ def addTalkingRecord(form):
         else:
             his_state = 0
 
-        VisitorConRecord.objects.create(vis_id=uu_id, v2c_score=evaluate, record=record,
-                                        stime=stime, con_id=con_id, his_state=his_state)
+        VisitorConRecord.objects.create(vis_id=uu_id, v2c_score=evaluate, record=record, duration=0,
+                                        stime=stime, con_id=con_id, his_state=his_state, v2c_comm=evalution)
 
 
 def getHistoryConversation(token):
@@ -1020,7 +1032,6 @@ def getHistoryConversation(token):
                     "duration": convert.timeChange(duration),
                     "evaluate": evaluate
                 }
-                print(data)
                 conversionList.append(data)
             return conversionList, ''
         except VisitorConRecord.DoesNotExist:
@@ -1045,7 +1056,7 @@ def getUserList():
     for director in directors:
         data = {
             "avatar": director.icon,
-            "name": director.name,
+            "name": director.username,
             "uuid": "director-" + str(director.dir_id)
         }
 
@@ -1106,6 +1117,12 @@ def saveCVRecord(form):
     except Visitor.DoesNotExist:
         logging.warning("No Such Visitor.")
         return "No Such Visitor."
+    try:
+        consultant.totel_dur += duration
+        consultant.totel_num += 1
+        consultant.save()
+    except Exception as e:
+        print(e)
 
     try:
         contoday = ConToday.objects.get(con_id=consultant.con_id)
@@ -1113,7 +1130,7 @@ def saveCVRecord(form):
         contoday.today_num = contoday.today_num + 1
         contoday.save()
     except ConToday.DoesNotExist:
-        ConToday.objects.create(con_id=consultant.con_id, today_dur=duration, today_num=1, state=1)
+        ConToday.objects.create(con_id=consultant.con_id, today_dur=duration, today_num=1, state=1, now_num=0)
 
     try:
         record = VisitorConRecord.objects.get(con_id=consultant.con_id, vis_id=visitor.vis_id, record="Wait")
@@ -1127,8 +1144,11 @@ def saveCVRecord(form):
             his_state = 1
         else:
             his_state = 0
-        VisitorConRecord.objects.create(con_id=consultant.con_id, record=id, duration=duration,
-                                        stime=date, vis_id=visitor.vis_id, v2c_score=-1, his_state=his_state)
+        try:
+            VisitorConRecord.objects.create(con_id=consultant.con_id, record=id, duration=duration,
+                                            stime=date, vis_id=visitor.vis_id, v2c_score=-1, his_state=his_state)
+        except Exception as e:
+            return str(e)
         return ""
 
 
@@ -1174,16 +1194,16 @@ def saveIMRecord(forms):
         }
         record_id = form["record_id"]
         senderName = form["senderName"]
-        timestamp = datetime.fromtimestamp(form["timestamp"]/1000)
+        timestamp = datetime.fromtimestamp(form["timestamp"] / 1000)
         type = dict.get(form["type"])
         content = form["content"]
 
         try:
             Record.objects.create(im_id=record_id, type=type, create_time=timestamp,
                                   msg_text=content, user_name=senderName)
-            return ""
         except Exception as e:
             return e
+    return ""
 
 
 def getConsultList():

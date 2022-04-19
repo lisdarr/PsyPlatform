@@ -7,6 +7,12 @@ def timeChange(timeStep):
     min = int(timeStep / 60)
     timeStep -= min * 60
     second = timeStep
+    if hour / 10 == 0:
+        hour = "0"+str(hour)
+    if min / 10 == 0:
+        min = "0"+str(min)
+    if second / 10 == 0:
+        second = "0"+str(second)
 
     return str(hour) + ':' + str(min) + ':' + str(second)
 

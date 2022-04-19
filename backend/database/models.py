@@ -84,6 +84,7 @@ class DirToday(models.Model):
     today_num = models.IntegerField(blank=True, null=True)
     today_dur = models.BigIntegerField(blank=True, null=True)
     state = models.IntegerField(blank=True, null=True)
+    now_num = models.IntegerField(blank=True, null=True)
 
     class Meta:
         managed = False
@@ -126,7 +127,6 @@ class DjangoMigrations(models.Model):
 
 
 class Record(models.Model):
-    id = models.IntegerField(primary_key=True)
     msg_text = models.CharField(max_length=254, db_collation='utf8_general_ci', blank=True, null=True)
     create_time = models.DateTimeField(blank=True, null=True)
     user_name = models.CharField(max_length=254, db_collation='utf8_general_ci', blank=True, null=True)

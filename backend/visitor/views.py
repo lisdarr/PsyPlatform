@@ -96,10 +96,12 @@ def ban(request):
 
 def add(request):
     if request.method == 'POST':
+        print(request.POST)
         form = {
-            "uu_id": request.POST.get("uu_id"),
+            "uuid": request.POST.get("uuid"),
             "evaluate": request.POST.get("evaluate"),
-            "con_id": request.POST.get("con_id")
+            "con_id": request.POST.get("con_id"),
+            "evalution": request.POST.get("evalution")
         }
 
         addTalkingRecord(form)
@@ -143,5 +145,3 @@ def historyConversation(request):
             "status": 400
         }
         return HttpResponse(json.dumps(res, ensure_ascii=False), status=400)
-
-
