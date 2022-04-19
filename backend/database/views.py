@@ -1174,7 +1174,7 @@ def saveIMRecord(forms):
         }
         record_id = form["record_id"]
         senderName = form["senderName"]
-        timestamp = datetime.strptime(form["timestamp"], "%Y-%m-%d %H:%M:%S")
+        timestamp = datetime.fromtimestamp(form["timestamp"])
         type = dict.get(form["type"])
         content = form["content"]
 

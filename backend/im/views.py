@@ -155,7 +155,7 @@ def eachRecordGET(request):
 
 def eachRecordSAVE(request):
     if request.method == "POST":
-        forms = request.POST.get("chathistory")
+        forms = json.loads(request.POST.get("chathistory"))
         err = saveIMRecord(forms)
         if err != "":
             msg = err
