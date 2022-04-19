@@ -51,8 +51,8 @@ def userList(request):
 
 def director(request):
     if request.method == "GET":
-        token = request.COOKIES.get('token')
-        content = askForDir(token)
+        id = request.GET.get('id')
+        content = askForDir(id)
 
         res = {
             "content": content,

@@ -1053,8 +1053,8 @@ def getUserList():
     return content
 
 
-def askForDir(token):
-    consultant = Consultant.objects.get(u_ticket=token)
+def askForDir(id):
+    consultant = Consultant.objects.get(con_id=id)
     director = Director.objects.get(dir_id=consultant.dir_id)
     content = []
     data = {
@@ -1174,7 +1174,7 @@ def saveIMRecord(forms):
         }
         record_id = form["record_id"]
         senderName = form["senderName"]
-        timestamp = datetime.fromtimestamp(form["timestamp"])
+        timestamp = datetime.fromtimestamp(form["timestamp"]/1000)
         type = dict.get(form["type"])
         content = form["content"]
 
@@ -1192,7 +1192,7 @@ def getConsultList():
     for consult in consults:
         data = {
             "avatar": consult.icon,
-            "name": consult.name,
+            "name": consult.username,
             "uuid": "consultant-" + str(consult.con_id)
         }
 
