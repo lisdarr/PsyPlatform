@@ -41,10 +41,10 @@ export default {
 .audio-facade {
   min-width: 0.15rem;
   padding: 0.03rem 0.05rem;
-  height: 0.36rem;
-  line-height: 0.3rem;
+  height: 45px;
+  line-height: 45px;
   background: #618DFF;
-  font-size: 0.12rem;
+  font-size: 20px;
   border-radius: 0.07rem;
   color: #ffffff;
   display: flex;
@@ -52,8 +52,8 @@ export default {
 
 .audio-facade-bg {
   background: url("./images/voice.png") no-repeat center;
-  background-size: 0.15rem;
-  width: 0.2rem;
+  background-size: 20px;
+  width: 30px;
 }
 
 .audio-facade-bg.play-icon {

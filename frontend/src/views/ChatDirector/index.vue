@@ -359,7 +359,7 @@ export default {
         for (var item of response.content) {
           self.SingleRecord = {}
           self.SingleRecord.record_id = self.helpId
-          if (item.senderId === self.$route.query.id) {
+          if (item.senderId === self.friend.uuid) {
             var senderr = self.findConsultById(item.senderId)
           } else {
             senderr = this.currentUser

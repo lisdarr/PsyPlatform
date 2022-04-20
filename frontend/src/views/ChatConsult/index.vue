@@ -443,7 +443,9 @@ export default {
         for (var item of response.content) {
           self.SingleRecord = {}
           self.SingleRecord.record_id = self.recordId
-          if (item.senderId === self.$route.query.id) {
+          console.log('route id:', self.$route.query.id)
+          console.log('friend id:', self.friend.uuid)
+          if (item.senderId === self.friend.uuid) {
             var senderr = self.findUserById(item.senderId)
           } else {
             senderr = this.currentUser
