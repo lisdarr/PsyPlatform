@@ -438,8 +438,10 @@ export default {
         userBId: self.currentUser.uuid,
         limit: self.chatNums[self.$route.query.id]
       }).then((response) => {
-        console.log(response)
+        self.RecordHistory = []
+        console.log('response的值：', JSON.stringify(response))
         for (var item of response.content) {
+          self.SingleRecord = {}
           self.SingleRecord.record_id = self.recordId
           if (item.senderId === self.$route.query.id) {
             var senderr = self.findUserById(item.senderId)
@@ -450,7 +452,9 @@ export default {
           self.SingleRecord.timestamp = item.timestamp
           self.SingleRecord.type = item.type
           self.SingleRecord.content = self.getContent(item)
+          console.log(self.SingleRecord)
           self.RecordHistory.push(self.SingleRecord)
+          console.log('RecordHistory：', JSON.stringify(self.RecordHistory))
         }
         // 所有的list类型的都要进行这个格式转换，否则后端取值异常
         // this.RecordHistory = qs.stringify(this.RecordHistory, {

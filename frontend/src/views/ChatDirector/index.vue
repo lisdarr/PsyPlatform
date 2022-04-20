@@ -354,8 +354,10 @@ export default {
         userBId: self.currentUser.uuid,
         limit: self.chatNums[self.$route.query.id]
       }).then((response) => {
+        self.RecordHistory = []
         console.log(response)
         for (var item of response.content) {
+          self.SingleRecord = {}
           self.SingleRecord.record_id = self.helpId
           if (item.senderId === self.$route.query.id) {
             var senderr = self.findConsultById(item.senderId)

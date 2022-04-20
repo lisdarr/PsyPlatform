@@ -35,6 +35,7 @@ export default {
       }).then(response => {
         this.dialogTableVisible = true
         const resdata = response.content
+        this.gridData = []
         for (const data in resdata) {
           const message = {}
           message['date'] = this.formatDate(resdata[data].timestamp)
@@ -71,6 +72,7 @@ export default {
         type: role
       }).then(response => {
         const resdata = response.content
+        this.gridData = []
         for (const data in resdata) {
           const message = {}
           message['date'] = this.formatDate(resdata[data].timestamp)
